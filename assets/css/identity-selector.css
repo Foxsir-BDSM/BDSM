@@ -1,0 +1,142 @@
+/* ============================================================
+   身份选择器样式（暗色主题，适配 landing.html）
+   ============================================================ */
+
+.identity-selector {
+  margin-top: 0.2rem;
+  width: 100%;
+}
+
+.identity-selector .section-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.identity-selector .section-label small {
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 400;
+  font-size: 0.7rem;
+}
+
+/* ----- 主身份网格（单选卡片） ----- */
+.primary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.identity-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.identity-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+.identity-card .icon {
+  font-size: 1.3rem;
+  display: block;
+}
+.identity-card .label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.1rem;
+}
+.identity-card .badge {
+  font-size: 0.55rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  margin-top: 0.1rem;
+}
+
+/* 主身份选中状态 */
+.identity-card.selected-primary {
+  border-color: #d4a574;
+  background: rgba(212, 165, 116, 0.08);
+  box-shadow: 0 0 20px rgba(212, 165, 116, 0.06);
+}
+.identity-card.selected-primary .label {
+  color: #f5d6a8;
+}
+.identity-card.selected-primary .badge {
+  background: rgba(212, 165, 116, 0.15);
+  color: #d4a574;
+}
+
+/* ----- 副身份网格（多选卡片） ----- */
+.secondary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.secondary-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  padding: 0.3rem 0.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.5;
+  user-select: none;
+}
+.secondary-card:hover {
+  opacity: 0.8;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.secondary-card .icon {
+  font-size: 1rem;
+  display: block;
+}
+.secondary-card .label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.3);
+  display: block;
+}
+
+/* 副身份选中状态 */
+.secondary-card.selected-secondary {
+  border-color: rgba(106, 159, 181, 0.4);
+  background: rgba(106, 159, 181, 0.06);
+  opacity: 1;
+}
+.secondary-card.selected-secondary .label {
+  color: #b0d8e8;
+}
+
+/* ----- 底部提示 ----- */
+.identity-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.15);
+  margin-top: 0.4rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  padding-top: 0.5rem;
+  min-height: 1.6rem;
+  letter-spacing: 0.3px;
+}
+
+/* ===== 响应式：小屏变 2 列 ===== */
+@media (max-width: 500px) {
+  .primary-grid,
+  .secondary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

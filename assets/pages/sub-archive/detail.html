@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>详情 · 下位者档案馆</title>
+    <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
+    <link rel="stylesheet" href="/assets/pages/sub-archive/assets/css/global.css" />
+    <link rel="stylesheet" href="/assets/pages/sub-archive/assets/css/detail.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header detail-header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-icon">
+            <img src="/assets/images/OIP-C.jpg" alt="Foxsir Logo" />
+          </span>
+          <span class="logo-text">Foxsir<span class="logo-highlight">档案库</span></span>
+        </div>
+        <a href="/assets/pages/sub-archive/index.html" class="btn-back">← 返回列表</a>
+      </div>
+    </header>
+
+    <main class="detail-main">
+      <div class="detail-container" id="detailContainer">
+        <div class="loading-spinner"></div>
+        <p>加载详情…</p>
+      </div>
+    </main>
+
+    <script type="module" src="/assets/pages/sub-archive/assets/js/detail.js"></script>
+  </body>
+</html>

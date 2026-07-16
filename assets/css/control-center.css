@@ -1,0 +1,183 @@
+/* 头部 */
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.logo-placeholder {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+.brand-text h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #1e293b;
+}
+.version {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  background: #f1f5f9;
+  padding: 0.1rem 0.6rem;
+  border-radius: 12px;
+}
+.system-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.online {
+  background: #22c55e;
+}
+.offline {
+  background: #ef4444;
+}
+.maintenance {
+  background: #f59e0b;
+}
+
+/* 用户区域 */
+.user-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #475569;
+}
+.user-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.guest-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* 引导区 */
+.guide-section {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+.guide-section summary {
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+.guide-content {
+  padding-top: 1rem;
+}
+.guide-content ul {
+  padding-left: 1.5rem;
+}
+
+/* 项目网格 */
+.projects-section h2 {
+  margin-bottom: 1rem;
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.project-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: transform 0.1s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+.project-card .icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.project-card h3 {
+  margin: 0 0 0.3rem 0;
+}
+.project-card p {
+  color: #64748b;
+  font-size: 0.9rem;
+  flex-grow: 1;
+  margin: 0.3rem 0 0.8rem 0;
+}
+.project-card .badge {
+  align-self: flex-start;
+  margin-bottom: 0.5rem;
+}
+.enter-btn {
+  margin-top: auto;
+  background: #4a6fa5;
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  transition: background 0.2s;
+}
+.enter-btn:hover {
+  background: #345b8a;
+  text-decoration: none;
+}
+.project-card[data-status='maintenance'] .enter-btn {
+  background: #f59e0b;
+  cursor: not-allowed;
+}
+.project-card[data-status='maintenance'] .enter-btn:hover {
+  background: #d97706;
+}
+
+/* 页脚 */
+footer {
+  margin-top: 3rem;
+  padding: 1rem 0;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}

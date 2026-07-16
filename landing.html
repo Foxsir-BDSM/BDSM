@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foxsir · 欲界之门</title>
+    <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
+    <link rel="stylesheet" href="/assets/css/landing.css" />
+    <!-- ===== R-03 身份选择器样式 ===== -->
+    <link rel="stylesheet" href="/assets/css/identity-selector.css" />
+</head>
+<body>
+    <div id="landing-root">
+        <!-- 左区：品牌展示 -->
+        <div class="brand-section">
+            <div class="brand-content">
+                <div class="logo-wrapper">
+                    <div class="logo-icon">
+                        <img src="/assets/images/OIP-C.jpg" alt="Foxsir" />
+                    </div>
+                    <span class="version">Foxsir · 欲研社</span>
+                </div>
+                <h1 class="tagline">欲界之门 · 只渡有缘人</h1>
+                <p class="description">
+                    为 BDSM 同好打造的私密数字庄园。<br />
+                    探索 · 记录 · 连接 · 成长
+                </p>
+                <div class="features">
+                    <span>🔒 隐私至上</span>
+                    <span>⚡ 实时互动</span>
+                    <span>📜 档案传承</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右区：认证 -->
+        <div class="auth-section">
+            <div class="auth-card">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="login">登录</button>
+                    <button class="tab-btn" data-tab="register">注册</button>
+                </div>
+
+                <!-- 登录表单 -->
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">邮箱</label>
+                        <input type="email" id="login-email" placeholder="you@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">密码</label>
+                        <input type="password" id="login-password" placeholder="至少 6 位" required />
+                    </div>
+                    <button type="submit" class="btn-primary">进入欲界</button>
+                    <p class="auth-switch">还没有账号？<a href="#" data-switch-to="register">立即注册</a></p>
+                </form>
+
+                <!-- 注册表单（含身份选择器） -->
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="register-email">邮箱</label>
+                        <input type="email" id="register-email" placeholder="you@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="register-nickname">昵称</label>
+                        <input type="text" id="register-nickname" placeholder="圈内称呼" required />
+                    </div>
+
+                    <!-- ===== R-03 身份选择器容器 ===== -->
+                    <div class="form-group" id="identity-selector-container"></div>
+
+                    <div class="form-group">
+                        <label for="register-password">密码</label>
+                        <input type="password" id="register-password" placeholder="至少 6 位" required />
+                    </div>
+                    <button type="submit" class="btn-primary">创建账号</button>
+                    <p class="auth-switch">已有账号？<a href="#" data-switch-to="login">去登录</a></p>
+                </form>
+
+                <div id="auth-message" class="message"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { supabase } from '/assets/js/supabase-client.js';
+        import { setSession, getCurrentUser } from '/assets/js/auth.js';
+        // ===== R-03 导入身份选择器 =====
+        import { renderIdentitySelector, getSelectedIdentityData, resetIdentitySelector } from '/assets/js/identity-selector.js';
+
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const msgBox = document.getElementById('auth-message');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const switchLinks = document.querySelectorAll('[data-switch-to]');
+
+        function switchTab(tab) {
+            tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+            loginForm.classList.toggle('active', tab === 'login');
+            registerForm.classList.toggle('active', tab === 'register');
+            msgBox.textContent = '';
+            msgBox.className = 'message';
+            // 切换 Tab 时重置身份选择器（避免残留数据）
+            if (tab === 'register') {
+                resetIdentitySelector();
+            }
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+        switchLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchTab(link.dataset.switchTo);
+            });
+        });
+
+        function showMsg(text, type = 'error') {
+            msgBox.textContent = text;
+            msgBox.className = `message ${type}`;
+        }
+
+        // ===== R-03 初始化身份选择器 =====
+        // 注意：容器在注册表单中，需要等 DOM 渲染完成
+        // 由于容器在 register-form 中（默认隐藏），但 DOM 已存在，直接渲染
+        renderIdentitySelector('identity-selector-container');
+
+        // 登录
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) return showMsg('请填写完整信息');
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                await setSession(data.session);
+                showMsg('登录成功，即将跳转…', 'success');
+                setTimeout(() => (window.location.href = '/index.html'), 800);
+            } catch (err) {
+                showMsg(err.message || '登录失败，请重试');
+            }
+        });
+
+        // ===== R-03 注册（含身份数据） =====
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value.trim();
+            const nickname = document.getElementById('register-nickname').value.trim();
+            const password = document.getElementById('register-password').value;
+            if (!email || !nickname || !password) return showMsg('请填写完整信息');
+            if (password.length < 6) return showMsg('密码至少 6 位');
+
+            // ===== 获取身份数据 =====
+            const identityData = getSelectedIdentityData();
+            if (!identityData.valid) {
+                return showMsg(identityData.error, 'error');
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            nickname,
+                            role: 'self',
+                            // ===== R-03 身份字段 =====
+                            primary_identity: identityData.primaryId,
+                            primary_label: identityData.primaryLabel,
+                            gender: identityData.gender,
+                            role_type: identityData.type, // 'top' 或 'bottom'
+                            secondary_identities: identityData.secondaryIds,
+                            points: 0, // R-02 默认积分
+                        }
+                    }
+                });
+                if (error) throw error;
+                if (!data.user) throw new Error('注册异常，请重试');
+
+                // 自动登录
+                const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+                if (signInError) throw signInError;
+
+                await setSession(data.session);
+                showMsg('注册成功，欢迎加入！', 'success');
+                setTimeout(() => (window.location.href = '/index.html'), 800);
+            } catch (err) {
+                showMsg(err.message || '注册失败，请重试');
+            }
+        });
+
+        // 已登录则直接跳转主站
+        const user = await getCurrentUser();
+        if (user) {
+            window.location.href = '/index.html';
+        }
+    </script>
+</body>
+</html>
