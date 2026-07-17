@@ -3,23 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foxsir · 启动器</title>
-    <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
-    <!-- ===== R-02 引入等级样式 ===== -->
+    <title>Foxsir · 欲研所</title>
+    <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <!-- ===== R-02 等级样式 ===== -->
     <link rel="stylesheet" href="/assets/css/level.css" />
-    <!-- ===== R-05 引入头像样式 ===== -->
+    <!-- ===== R-05 头像样式 ===== -->
     <link rel="stylesheet" href="/assets/css/avatar.css" />
-
     <style>
       /* ============================================================
-         1. 全局重置 & 基础（无 Google Fonts）
+         1. 全局重置 & 基础
          ============================================================ */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         background: #0f0e17;
@@ -29,13 +27,14 @@
         justify-content: center;
         align-items: center;
         padding: 20px;
+        /* ===== 全局泛光：新增金色径向渐变 + 原有渐变 ===== */
         background-image:
+          radial-gradient(ellipse at 50% 45%, rgba(212, 165, 116, 0.08) 0%, transparent 60%),
           radial-gradient(ellipse at 20% 50%, rgba(212, 165, 116, 0.06) 0%, transparent 60%),
           radial-gradient(ellipse at 80% 20%, rgba(212, 165, 116, 0.04) 0%, transparent 50%),
           radial-gradient(ellipse at 50% 80%, rgba(26, 26, 46, 0.8) 0%, transparent 70%);
         background-attachment: fixed;
       }
-
       body::before {
         content: '';
         position: fixed;
@@ -52,7 +51,6 @@
         z-index: 0;
         animation: ambientGlow 20s ease-in-out infinite alternate;
       }
-
       @keyframes ambientGlow {
         0% {
           transform: translate(0, 0) scale(1);
@@ -61,7 +59,6 @@
           transform: translate(5%, 3%) scale(1.1);
         }
       }
-
       .app-container {
         position: relative;
         z-index: 1;
@@ -69,37 +66,40 @@
         width: 100%;
         margin: 0 auto;
         padding: 32px 40px 48px;
-        background: rgba(15, 14, 23, 0.75);
+        background: rgba(15, 14, 23, 0.70); /* 略微降低不透明度，让泛光透出来 */
         backdrop-filter: blur(24px) saturate(1.4);
         -webkit-backdrop-filter: blur(24px) saturate(1.4);
         border-radius: 48px;
         border: 1px solid rgba(212, 165, 116, 0.12);
         box-shadow:
+          0 0 80px rgba(212, 165, 116, 0.03),   /* 金色泛光外发光 */
           0 40px 80px rgba(0, 0, 0, 0.6),
           inset 0 1px 0 rgba(255, 255, 255, 0.03);
         transition: box-shadow 0.4s ease;
       }
 
-      .brand-header {
+      /* ============================================================
+         2. 顶栏：Logo + 用户信息
+         ============================================================ */
+      .top-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding-bottom: 24px;
+        padding-bottom: 18px;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        margin-bottom: 32px;
+        margin-bottom: 24px;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 8px 16px;
       }
-
-      .logo-area {
+      .top-bar .logo-area {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
+        flex-shrink: 0;
       }
-
-      .logo-icon {
-        width: 52px;
-        height: 52px;
+      .top-bar .logo-icon {
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         overflow: hidden;
         flex-shrink: 0;
@@ -107,17 +107,15 @@
         border: 1px solid rgba(212, 165, 116, 0.15);
         box-shadow: 0 4px 20px rgba(212, 165, 116, 0.1);
       }
-
-      .logo-icon img {
+      .top-bar .logo-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
       }
-
-      .brand-text h1 {
+      .top-bar .brand-text h1 {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: 28px;
+        font-size: 24px;
         font-weight: 700;
         letter-spacing: 2px;
         background: linear-gradient(135deg, #f5d6a8 0%, #d4a574 60%, #b8946a 100%);
@@ -126,291 +124,241 @@
         background-clip: text;
         line-height: 1.2;
       }
-
-      .brand-text .tagline {
-        font-size: 12px;
-        letter-spacing: 3px;
+      .top-bar .brand-text .tagline {
+        font-size: 10px;
+        letter-spacing: 2.5px;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.12);
         font-weight: 400;
-        -webkit-text-fill-color: rgba(255, 255, 255, 0.3);
+        -webkit-text-fill-color: rgba(255, 255, 255, 0.12);
       }
 
-      .system-status {
+      /* ---- 顶栏右侧：用户信息 ---- */
+      .top-bar .user-info-bar {
         display: flex;
         align-items: center;
-        gap: 10px;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.5);
-        background: rgba(255, 255, 255, 0.03);
-        padding: 6px 16px 6px 12px;
-        border-radius: 40px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-      }
-
-      .status-dot {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #22c55e;
-        box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
-        animation: pulseDot 2s ease-in-out infinite;
-      }
-
-      @keyframes pulseDot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.6; transform: scale(0.85); }
-      }
-
-      .version-badge {
-        background: rgba(212, 165, 116, 0.12);
-        color: #d4a574;
-        padding: 2px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-      }
-
-      /* ===== 用户区域 ===== */
-      .user-section {
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 24px;
-        padding: 20px 28px;
-        margin-bottom: 28px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        gap: 6px;
         flex-wrap: wrap;
-        gap: 16px;
-        transition: background 0.3s ease;
-        min-height: 72px;
+        justify-content: flex-end;
       }
-
-      .user-section:hover {
-        background: rgba(255, 255, 255, 0.035);
-      }
-
-      .user-info {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .user-avatar {
-        width: 44px;
-        height: 44px;
+      .top-bar .user-info-bar .avatar-wrapper {
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #d4a57433, #f5d6a833);
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 1px solid rgba(212, 165, 116, 0.1);
+        background: #1a1a2e;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
-        border: 1px solid rgba(212, 165, 116, 0.15);
-        flex-shrink: 0;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        position: relative;
       }
-
-      .user-name {
+      .top-bar .user-info-bar .avatar-wrapper:hover {
+        border-color: rgba(212, 165, 116, 0.3);
+      }
+      .top-bar .user-info-bar .avatar-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .top-bar .user-info-bar .avatar-wrapper .avatar-letter {
+        font-size: 14px;
         font-weight: 500;
+        color: rgba(255, 255, 255, 0.25);
+      }
+      .top-bar .user-info-bar .uname {
+        font-weight: 500;
+        font-size: 14px;
         color: #fffffe;
-        font-size: 15px;
+        white-space: nowrap;
       }
-
-      .user-role {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.35);
-        background: rgba(255, 255, 255, 0.04);
-        padding: 2px 12px;
+      .top-bar .user-info-bar .level-title {
+        font-size: 11px;
+        color: #d4a574;
+        background: rgba(212, 165, 116, 0.12);
+        padding: 1px 10px;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(212, 165, 116, 0.18);
+        white-space: nowrap;
       }
-
-      .user-actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+      .top-bar .user-info-bar .no-identity {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.12);
+        white-space: nowrap;
       }
-
-      /* ===== 按钮 ===== */
-      .btn {
-        display: inline-block;
-        padding: 8px 22px;
-        border-radius: 40px;
-        font-size: 13px;
-        font-weight: 500;
+      .top-bar .user-info-bar .btn {
+        padding: 3px 12px;
+        font-size: 11px;
+        border-radius: 30px;
         border: none;
         cursor: pointer;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         font-family: inherit;
-        letter-spacing: 0.3px;
-      }
-
-      .btn-primary {
-        background: linear-gradient(135deg, #d4a574, #c4956a);
-        color: #0f0e17;
-        box-shadow: 0 4px 16px rgba(212, 165, 116, 0.2);
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 32px rgba(212, 165, 116, 0.3);
-      }
-
-      .btn-secondary {
-        background: rgba(255, 255, 255, 0.06);
-        color: #fffffe;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-      .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
-      }
-
-      .btn-danger {
-        background: rgba(239, 68, 68, 0.15);
-        color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.15);
-      }
-      .btn-danger:hover {
-        background: rgba(239, 68, 68, 0.25);
-        transform: translateY(-2px);
-      }
-
-      .btn-outline {
-        background: transparent;
-        color: #d4a574;
-        border: 1px solid rgba(212, 165, 116, 0.25);
-      }
-      .btn-outline:hover {
-        background: rgba(212, 165, 116, 0.08);
-        border-color: rgba(212, 165, 116, 0.4);
-        transform: translateY(-2px);
-      }
-
-      .btn-sm {
-        padding: 5px 14px;
-        font-size: 12px;
-      }
-
-      .guide-section {
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 20px;
-        padding: 0;
-        margin-bottom: 32px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        overflow: hidden;
-        transition: border-color 0.3s ease;
-      }
-
-      .guide-section:hover {
-        border-color: rgba(212, 165, 116, 0.08);
-      }
-
-      .guide-section summary {
-        padding: 16px 24px;
-        cursor: pointer;
         font-weight: 500;
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.6);
-        list-style: none;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        user-select: none;
-        transition: color 0.3s ease;
+        white-space: nowrap;
       }
-
-      .guide-section summary::-webkit-details-marker {
-        display: none;
+      .top-bar .user-info-bar .btn-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.04);
       }
-
-      .guide-section summary::after {
-        content: '▾';
-        margin-left: auto;
+      .top-bar .user-info-bar .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fffffe;
+      }
+      .top-bar .user-info-bar .btn-danger {
+        background: rgba(239, 68, 68, 0.08);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.06);
+      }
+      .top-bar .user-info-bar .btn-danger:hover {
+        background: rgba(239, 68, 68, 0.16);
+      }
+      .top-bar .user-info-bar .guest-label {
         font-size: 12px;
         color: rgba(255, 255, 255, 0.15);
-        transition: transform 0.3s ease;
       }
 
-      .guide-section[open] summary::after {
-        transform: rotate(180deg);
+      /* ============================================================
+         3. 欢迎卡片 —— 左侧文字 + 右侧图片（渐变过渡）
+         ============================================================ */
+      .welcome-card {
+        display: flex;
+        flex-direction: row; /* 所有尺寸保持左右结构 */
+        border-radius: 24px;
+        overflow: hidden;
+        margin-bottom: 32px;
+        min-height: 180px;
+        background: rgba(15, 14, 23, 0.65);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .welcome-card:hover {
+        border-color: rgba(212, 165, 116, 0.10);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       }
 
-      .guide-section summary:hover {
-        color: rgba(255, 255, 255, 0.8);
+      /* 左栏：文字 */
+      .welcome-card .welcome-text {
+        flex: 1.2;
+        padding: 44px 48px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: transparent;
       }
-
-      .guide-content {
-        padding: 0 24px 24px;
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 14px;
-        line-height: 1.8;
-        border-top: 1px solid rgba(255, 255, 255, 0.03);
+      .welcome-card .welcome-text .greeting {
+        font-size: 22px;
+        font-weight: 600;
+        color: #e8e0d8;
+        margin-bottom: 6px;
+        letter-spacing: 0.5px;
       }
-
-      .guide-content h3 {
-        color: #fffffe;
-        font-size: 15px;
-        font-weight: 500;
-        margin: 18px 0 6px;
-      }
-
-      .guide-content h3:first-child {
-        margin-top: 8px;
-      }
-
-      .guide-content ul {
-        padding-left: 20px;
-      }
-
-      .guide-content ul li {
-        margin: 4px 0;
-      }
-
-      .guide-highlight {
+      .welcome-card .welcome-text .greeting .highlight {
         color: #d4a574;
       }
-
-      .projects-section {
-        margin-top: 4px;
+      .welcome-card .welcome-text .desc {
+        font-size: 16px;
+        color: rgba(255, 255, 255, 0.80);
+        line-height: 1.7;
+        max-width: 520px;
+        margin-bottom: 18px;
+      }
+      .welcome-card .welcome-text .btn-about {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 28px;
+        border-radius: 40px;
+        background: rgba(212, 165, 116, 0.10);
+        color: #d4a574;
+        border: 1px solid rgba(212, 165, 116, 0.12);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        cursor: pointer;
+        align-self: flex-start;
+      }
+      .welcome-card .welcome-text .btn-about:hover {
+        background: rgba(212, 165, 116, 0.18);
+        border-color: rgba(212, 165, 116, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(212, 165, 116, 0.08);
+      }
+      .welcome-card .welcome-text .btn-about .arrow {
+        display: inline-block;
+        transition: transform 0.3s ease;
+      }
+      .welcome-card .welcome-text .btn-about:hover .arrow {
+        transform: translateX(5px);
       }
 
+      /* 右栏：图片 + 渐变遮罩（从左到右融合） */
+      .welcome-card .welcome-image {
+        flex: 1;
+        background-image:
+          linear-gradient(to right, rgba(15, 14, 23, 0.85) 0%, transparent 45%, transparent 100%),
+          url('/assets/images/OIP-B.jpg');
+        background-size: 100% 100%, cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 180px;
+        transition: filter 0.3s ease;
+      }
+      .welcome-card:hover .welcome-image {
+        filter: brightness(1.02) saturate(1.02);
+      }
+
+      /* ============================================================
+         4. 项目探索
+         ============================================================ */
+      .projects-section {
+        margin-top: 6px;
+      }
       .projects-section-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
         flex-wrap: wrap;
         gap: 8px;
       }
-
+      .projects-section-header::before,
+      .projects-section-header::after {
+        content: "◆";
+        color: rgba(212, 165, 116, 0.35);
+        font-size: 14px;
+      }
       .projects-section-header h2 {
         font-family: 'Georgia', 'Times New Roman', serif;
-        font-size: 24px;
+        font-size: 22px;
         font-weight: 600;
         letter-spacing: 1px;
         color: #fffffe;
       }
-
       .projects-section-header .subtitle {
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.2);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.15);
         letter-spacing: 1px;
       }
 
+      /* PC 三列卡片 */
       .project-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+        gap: 14px;
       }
-
       .project-card {
         background: rgba(255, 255, 255, 0.02);
-        border-radius: 20px;
-        padding: 24px 20px 20px;
+        border-radius: 18px;
+        padding: 22px 18px 18px;
         border: 1px solid rgba(255, 255, 255, 0.04);
         transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
@@ -422,7 +370,6 @@
         text-decoration: none;
         color: inherit;
       }
-
       .project-card::before {
         content: '';
         position: absolute;
@@ -435,121 +382,112 @@
         transition: opacity 0.4s ease;
         pointer-events: none;
       }
-
       .project-card:hover {
-        transform: translateY(-6px);
-        border-color: rgba(212, 165, 116, 0.15);
+        transform: translateY(-4px);
+        border-color: rgba(212, 165, 116, 0.12);
         background: rgba(255, 255, 255, 0.04);
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
       }
-
       .project-card:hover::before {
         opacity: 1;
       }
-
       .project-card .icon-wrap {
-        font-size: 28px;
-        margin-bottom: 12px;
+        font-size: 26px;
+        margin-bottom: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 48px;
-        height: 48px;
-        border-radius: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
         background: rgba(212, 165, 116, 0.06);
         border: 1px solid rgba(212, 165, 116, 0.04);
         flex-shrink: 0;
       }
-
       .project-card h3 {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 500;
         color: #fffffe;
-        margin: 0 0 4px;
+        margin: 0 0 2px;
         letter-spacing: 0.3px;
       }
-
       .project-card p {
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.3);
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.25);
         line-height: 1.5;
-        margin: 0 0 14px;
+        margin: 0 0 12px;
         flex: 1;
       }
-
       .project-card .enter-hint {
-        font-size: 12px;
-        color: rgba(212, 165, 116, 0.4);
+        font-size: 11px;
+        color: #d4a574;
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
         transition: color 0.3s ease;
         margin-top: auto;
       }
-
       .project-card:hover .enter-hint {
-        color: rgba(212, 165, 116, 0.7);
+        color: rgba(212, 165, 116, 0.8);
       }
-
       .project-card .enter-hint::after {
         content: '→';
         transition: transform 0.3s ease;
       }
-
       .project-card:hover .enter-hint::after {
         transform: translateX(4px);
       }
-
       .project-card .status-tag {
         position: absolute;
-        top: 16px;
-        right: 16px;
-        font-size: 10px;
+        top: 14px;
+        right: 14px;
+        font-size: 9px;
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        padding: 2px 10px;
+        padding: 1px 8px;
         border-radius: 20px;
         background: rgba(255, 255, 255, 0.04);
-        color: rgba(255, 255, 255, 0.15);
+        color: rgba(255, 255, 255, 0.1);
       }
-
       .project-card .status-tag.maintenance {
-        background: rgba(245, 158, 11, 0.12);
+        background: rgba(245, 158, 11, 0.1);
         color: #f59e0b;
       }
-
       .project-card .status-tag.offline {
-        background: rgba(239, 68, 68, 0.08);
+        background: rgba(239, 68, 68, 0.06);
         color: #ef4444;
       }
-
       .project-card.disabled {
         opacity: 0.4;
         cursor: not-allowed;
         pointer-events: none;
       }
-
       .project-card.disabled:hover {
         transform: none;
         border-color: rgba(255, 255, 255, 0.04);
         background: rgba(255, 255, 255, 0.02);
       }
 
+      /* ============================================================
+         5. 页脚
+         ============================================================ */
       .footer {
-        margin-top: 40px;
-        padding-top: 20px;
+        margin-top: 36px;
+        padding-top: 18px;
         border-top: 1px solid rgba(255, 255, 255, 0.04);
         text-align: center;
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.12);
+        font-size: 11px;
+        color: rgba(212, 165, 116, 0.4);
         letter-spacing: 0.5px;
       }
-
       .footer span {
-        color: rgba(212, 165, 116, 0.2);
+        color: rgba(212, 165, 116, 0.6);
       }
 
+      /* ============================================================
+         6. Toast
+         ============================================================ */
       .toast-container {
         position: fixed;
         bottom: 30px;
@@ -561,123 +499,45 @@
         max-width: 360px;
         width: 100%;
       }
-
       .toast {
-        padding: 14px 24px;
-        border-radius: 16px;
+        padding: 12px 20px;
+        border-radius: 14px;
         background: rgba(15, 14, 23, 0.9);
         backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.06);
         color: #fffffe;
-        font-size: 14px;
+        font-size: 13px;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         animation: toastIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         transform-origin: bottom right;
       }
-
       .toast.error {
-        border-color: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.15);
       }
       .toast.error .toast-icon {
         color: #f87171;
       }
-
       .toast.success {
-        border-color: rgba(34, 197, 94, 0.2);
+        border-color: rgba(34, 197, 94, 0.15);
       }
       .toast.success .toast-icon {
         color: #22c55e;
       }
-
       @keyframes toastIn {
         from { opacity: 0; transform: translateY(20px) scale(0.95); }
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
-
       .toast-out {
         animation: toastOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
       }
-
       @keyframes toastOut {
         from { opacity: 1; transform: translateY(0) scale(1); }
         to { opacity: 0; transform: translateY(20px) scale(0.95); }
       }
 
-      @media (max-width: 768px) {
-        .app-container {
-          padding: 20px;
-          border-radius: 32px;
-        }
-
-        .brand-header {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 12px;
-        }
-
-        .brand-text h1 {
-          font-size: 24px;
-        }
-
-        .system-status {
-          align-self: flex-start;
-          font-size: 12px;
-        }
-
-        .user-section {
-          flex-direction: column;
-          align-items: stretch;
-          padding: 16px 20px;
-        }
-
-        .user-info {
-          flex-wrap: wrap;
-        }
-
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 12px;
-        }
-
-        .project-card {
-          padding: 18px 16px 16px;
-        }
-
-        .project-card .icon-wrap {
-          width: 40px;
-          height: 40px;
-          font-size: 22px;
-        }
-
-        .guide-content {
-          font-size: 13px;
-          padding: 0 16px 16px;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .app-container {
-          padding: 16px;
-          border-radius: 24px;
-        }
-
-        .brand-text h1 {
-          font-size: 20px;
-        }
-
-        .project-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 10px;
-        }
-
-        .project-card h3 {
-          font-size: 14px;
-        }
-        .project-card p {
-          font-size: 12px;
-        }
-      }
-
+      /* ============================================================
+         7. 滚动条
+         ============================================================ */
       ::-webkit-scrollbar {
         width: 4px;
       }
@@ -685,23 +545,202 @@
         background: rgba(255, 255, 255, 0.02);
       }
       ::-webkit-scrollbar-thumb {
-        background: rgba(212, 165, 116, 0.2);
+        background: rgba(212, 165, 116, 0.15);
         border-radius: 10px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: rgba(212, 165, 116, 0.3);
+        background: rgba(212, 165, 116, 0.25);
+      }
+
+      /* ============================================================
+         8. 响应式 · 平板 820px（保持左右结构）
+         ============================================================ */
+      @media (max-width: 820px) {
+        .top-bar {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 8px;
+          padding-bottom: 14px;
+        }
+        .top-bar .user-info-bar {
+          justify-content: flex-start;
+          gap: 4px;
+        }
+
+        /* 欢迎卡片：左右结构，调整比例 */
+        .welcome-card {
+          flex-direction: row !important;
+          min-height: auto;
+          border-radius: 20px;
+        }
+        .welcome-card .welcome-text {
+          padding: 28px 30px;
+          flex: 1.2;
+        }
+        .welcome-card .welcome-text .greeting {
+          font-size: 20px;
+        }
+        .welcome-card .welcome-text .desc {
+          font-size: 15px;
+          max-width: 100%;
+        }
+        .welcome-card .welcome-image {
+          flex: 1;
+          min-height: 160px;
+          background-image:
+            linear-gradient(to right, rgba(15, 14, 23, 0.80) 0%, transparent 40%, transparent 100%),
+            url('/assets/images/OIP-B.jpg');
+          background-size: 100% 100%, cover;
+          background-position: center;
+          border-radius: 0;
+        }
+
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 10px;
+        }
+        .project-card {
+          padding: 16px 14px 14px;
+        }
+        .project-card .icon-wrap {
+          width: 36px;
+          height: 36px;
+          font-size: 22px;
+        }
+      }
+
+      /* ============================================================
+         9. 响应式 · 手机 ≤480px（左右结构 + 紧凑适配）
+         ============================================================ */
+      @media (max-width: 480px) {
+        .app-container {
+          padding: 14px;
+          border-radius: 24px;
+        }
+        .top-bar .brand-text h1 {
+          font-size: 20px;
+        }
+        .top-bar .logo-icon {
+          width: 38px;
+          height: 38px;
+        }
+        .top-bar .user-info-bar .avatar-wrapper {
+          width: 30px;
+          height: 30px;
+        }
+        .top-bar .user-info-bar .uname {
+          font-size: 12px;
+        }
+        .top-bar .user-info-bar .level-title {
+          font-size: 10px;
+          padding: 0 8px;
+        }
+        .top-bar .user-info-bar .btn {
+          font-size: 10px;
+          padding: 2px 10px;
+        }
+
+        /* 欢迎卡片：左右结构，更紧凑 */
+        .welcome-card {
+          flex-direction: row !important;
+          border-radius: 16px;
+          margin-bottom: 20px;
+          min-height: 130px;
+        }
+        .welcome-card .welcome-text {
+          padding: 16px 14px 16px 18px;
+          flex: 1.4;
+        }
+        .welcome-card .welcome-text .greeting {
+          font-size: 15px;
+          margin-bottom: 4px;
+        }
+        .welcome-card .welcome-text .desc {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.82);
+          margin-bottom: 10px;
+          line-height: 1.6;
+          max-width: 100%;
+        }
+        .welcome-card .welcome-text .btn-about {
+          font-size: 11px;
+          padding: 6px 16px;
+          gap: 4px;
+        }
+        .welcome-card .welcome-image {
+          flex: 0 0 38%;
+          min-height: 130px;
+          background-image:
+            linear-gradient(to right, rgba(15, 14, 23, 0.80) 0%, transparent 35%, transparent 100%),
+            url('/assets/images/OIP-B.jpg');
+          background-size: 100% 100%, cover;
+          background-position: center;
+          border-radius: 0;
+        }
+
+        /* 项目列表 → 垂直横向条目 */
+        .project-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          grid-template-columns: unset;
+        }
+        .project-card {
+          flex-direction: row !important;
+          align-items: center;
+          padding: 16px 18px;
+          gap: 14px;
+          border-radius: 16px;
+        }
+        .project-card .icon-wrap {
+          width: 44px;
+          height: 44px;
+          flex-shrink: 0;
+          margin-bottom: 0;
+          font-size: 24px;
+        }
+        .project-card .text-group {
+          flex: 1;
+        }
+        .project-card h3 {
+          font-size: 15px;
+          margin: 0 0 3px;
+        }
+        .project-card p {
+          font-size: 12px;
+          margin: 0;
+          color: rgba(255, 255, 255, 0.3);
+        }
+        .project-card .enter-hint {
+          margin-top: 0;
+          font-size: 18px;
+          color: #d4a574;
+        }
+        .project-card .status-tag {
+          top: 10px;
+          right: 12px;
+          font-size: 8px;
+          padding: 0 6px;
+        }
+        .projects-section-header::before,
+        .projects-section-header::after {
+          font-size: 11px;
+        }
       }
     </style>
   </head>
   <body>
-    <!-- ===== R-01 路由守卫：未登录自动跳转至引导页 ===== -->
+    <!-- ===== R-01 路由守卫 ===== -->
     <script type="module">
       import { initGuard } from '/assets/js/guard.js';
       initGuard();
     </script>
 
     <div class="app-container">
-      <header class="brand-header">
+      <!-- ============================================================
+      顶栏：Logo（左）+ 用户信息（右）
+      ============================================================ -->
+      <header class="top-bar">
         <div class="logo-area">
           <div class="logo-icon">
             <img src="/assets/images/OIP-C.jpg" alt="Foxsir Logo" />
@@ -711,35 +750,33 @@
             <div class="tagline">BDSM · 安全 · 尊重 · 共识</div>
           </div>
         </div>
-        <div class="system-status">
-          <span class="status-dot"></span>
-          <span id="statusText">系统运行中</span>
-          <span class="version-badge">v1.0</span>
-        </div>
+        <!-- 用户信息由 JS 渲染 -->
+        <div class="user-info-bar" id="topUserInfo"></div>
       </header>
 
-      <section class="user-section" id="userSection"></section>
-
-      <section class="guide-section">
-        <details>
-          <summary>📖 新用户引导</summary>
-          <div class="guide-content">
-            <h3>🦊 Foxsir 是什么？</h3>
-            <p>Foxsir-BDSM 是一个面向 BDSM 爱好者的 <span class="guide-highlight">安全、私密、尊重</span> 的社区平台，提供档案展示、科普学习、任务成长和随机匹配等功能。</p>
-            <h3>✨ 可以做什么？</h3>
-            <ul>
-              <li>📤 浏览 <span class="guide-highlight">上位者</span> 档案馆</li>
-              <li>📥 浏览 <span class="guide-highlight">下位者</span> 档案馆</li>
-              <li>📖 阅读 <span class="guide-highlight">科普文章</span> 与指南</li>
-              <li>🎯 参与 <span class="guide-highlight">成长任务</span></li>
-              <li>🎲 <span class="guide-highlight">随机匹配</span> 志趣相投的朋友</li>
-            </ul>
-            <h3>🗺️ 推荐探索路线</h3>
-            <p>游客 🚶 → 注册 📝 → 完善资料 ✏️ → 浏览档案馆 📚 → 学习科普 📖 → 开始任务 🎯 → 体验匹配 🎲</p>
+      <!-- ============================================================
+      欢迎卡片 —— 左侧文字 + 右侧图片（渐变过渡）
+      ============================================================ -->
+      <section class="welcome-card">
+        <div class="welcome-text">
+          <div class="greeting">
+          欢迎来到 <span class="highlight">Foxsir · 欲研所</span>
           </div>
-        </details>
+          <div class="desc">
+            这里是 BDSM 爱好者的私密乐园<br />
+            我们将在这探索、学习、认识、交流<br />
+            <span style="display: inline-block; padding-left: 2em;">——不过这一切都要从了解规则开始</span>
+          </div>
+          <a href="/about.html" class="btn-about">
+            📖 了解规则 <span class="arrow">→</span>
+          </a>
+        </div>
+        <div class="welcome-image" role="img" aria-label="Foxsir 庄园背景"></div>
       </section>
 
+      <!-- ============================================================
+      项目探索
+      ============================================================ -->
       <section class="projects-section">
         <div class="projects-section-header">
           <h2>🚀 探索</h2>
@@ -748,11 +785,20 @@
         <div class="project-grid" id="projectGrid"></div>
       </section>
 
+      <!-- ============================================================
+      页脚
+      ============================================================ -->
       <div class="footer"><span>✦</span> 以安全、尊重、共识为核心 <span>✦</span></div>
     </div>
 
+    <!-- ============================================================
+    Toast 容器
+    ============================================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ============================================================
+    Import Map & 主脚本
+    ============================================================ -->
     <script type="importmap">
       {
         "imports": {
@@ -766,12 +812,10 @@
       import { signOut, getCurrentUser, getUserIdentity } from '/assets/js/auth.js';
       import { getUserRole } from '/assets/js/identity.js';
       import { getVisibleProjects } from '/assets/js/registry.js';
-      // ===== R-02 等级模块导入 =====
       import { calculateLevel, getLevelBadge, getLevelProgressBar, formatPoints } from '/assets/js/level.js';
-      // ===== R-05 头像模块导入 =====
-      import { uploadAvatar, deleteAvatar } from '/assets/js/avatar.js';
+      import { uploadAvatar } from '/assets/js/avatar.js';
 
-      const userSection = document.getElementById('userSection');
+      const topUserInfo = document.getElementById('topUserInfo');
       const projectGrid = document.getElementById('projectGrid');
       const toastContainer = document.getElementById('toastContainer');
 
@@ -809,121 +853,82 @@
         return '👤';
       }
 
+      function isMobileScreen() {
+        return window.innerWidth <= 480;
+      }
+
       // ============================================================
-      // R-05 改进：渲染用户区域（含真实头像 + 上传功能）
+      // 渲染顶栏用户信息
       // ============================================================
-      async function renderUserSection() {
+      async function renderTopUser() {
         const user = await getCurrentUser();
         const role = await getUserRole();
 
         if (!user) {
-          userSection.innerHTML = `<p style="color:rgba(255,255,255,0.3);font-size:14px;">👤 请登录以访问完整功能</p>`;
+          topUserInfo.innerHTML = `
+            <span class="guest-label">👤 未登录</span>
+          `;
           return;
         }
 
-        // 获取身份和积分信息
         const identity = await getUserIdentity();
         const displayName = getDisplayName(user);
-        const displayRole = ROLE_MAP[role] || role;
         const userId = user.id;
 
-        // ===== R-05 头像逻辑 =====
         const avatarUrl = identity?.avatarUrl || null;
         const avatarLetter = getAvatarLetter(user);
-
-        // 构建头像 HTML：有真实头像则显示图片，否则显示字母
         let avatarHtml = '';
         if (avatarUrl) {
           avatarHtml = `<img src="${avatarUrl}" alt="${displayName}" />`;
         } else {
-          avatarHtml = `<span style="font-size:20px;font-weight:500;color:rgba(255,255,255,0.3);">${avatarLetter}</span>`;
+          avatarHtml = `<span class="avatar-letter">${avatarLetter}</span>`;
         }
 
-        // ===== 等级徽章逻辑 =====
-        let levelHtml = '';
-        let pointsHtml = '';
-        let progressHtml = '';
-
+        let levelTitleHtml = '';
         if (identity && identity.primaryId) {
-          const points = identity.points ?? 0;
-          const badge = getLevelBadge(identity.primaryId, points, 'md');
-          const progress = getLevelProgressBar(identity.primaryId, points);
-          const formattedPoints = formatPoints(points);
+          const points = user.user_metadata?.points ?? 0;
           const levelInfo = calculateLevel(identity.primaryId, points);
-
-          levelHtml = `<span style="display:inline-block;">${badge}</span>`;
-          pointsHtml = `<span class="user-points">积分 <strong>${formattedPoints}</strong></span>`;
-          progressHtml = `<div style="width:100%;max-width:200px;margin-top:2px;">${progress}</div>`;
-
-          if (levelInfo.isMaxLevel) {
-            pointsHtml += ` <span style="font-size:10px;color:#f5d6a8;background:rgba(212,165,116,0.1);padding:0 8px;border-radius:10px;">👑 满级</span>`;
-          }
+          levelTitleHtml = `<span class="level-title">${levelInfo.title}</span>`;
         } else {
-          levelHtml = `<span style="font-size:12px;color:rgba(255,255,255,0.2);">未设置身份</span>`;
-          pointsHtml = `<span class="user-points">积分 <strong>0</strong></span>`;
+          levelTitleHtml = `<span class="no-identity">—</span>`;
         }
 
         const isAdmin = ['admin', 'subadmin'].includes(role);
         const adminBtn = isAdmin
-          ? `<a href="/admin.html" class="btn btn-secondary btn-sm">⚙️ 管理</a>`
+          ? `<a href="/admin.html" class="btn btn-secondary">⚙️ 管理</a>`
           : '';
 
-        // ===== R-05 头像组件（含上传功能） =====
-        userSection.innerHTML = `
-          <div class="user-info">
-            <div class="avatar-wrapper" id="avatarWrapper">
-              ${avatarHtml}
-              <div class="avatar-overlay" id="avatarOverlay">
-                <span class="icon">📷</span>
-                <span>更换</span>
-              </div>
-              <input type="file" id="avatarInput" accept="image/*" style="display:none;" />
-            </div>
-            <div>
-              <div class="user-name">${displayName}</div>
-              <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:2px;">
-                <span class="user-role">${displayRole}</span>
-                ${levelHtml}
-                ${pointsHtml}
-              </div>
-              ${progressHtml}
-            </div>
+        topUserInfo.innerHTML = `
+          <div class="avatar-wrapper" id="topAvatarWrapper">
+            ${avatarHtml}
+            <input type="file" id="topAvatarInput" accept="image/*" style="display:none;" />
           </div>
-          <div class="user-actions">
-            ${adminBtn}
-            <button id="logoutBtn" class="btn btn-danger btn-sm">登出</button>
-          </div>
+          <span class="uname">${displayName}</span>
+          ${levelTitleHtml}
+          ${adminBtn}
+          <button id="topLogoutBtn" class="btn btn-danger">登出</button>
         `;
 
-        // ===== R-05 绑定头像上传事件 =====
-        const avatarWrapper = document.getElementById('avatarWrapper');
-        const avatarInput = document.getElementById('avatarInput');
-
+        // 头像上传
+        const avatarWrapper = document.getElementById('topAvatarWrapper');
+        const avatarInput = document.getElementById('topAvatarInput');
         if (avatarWrapper && avatarInput) {
-          // 点击头像区域触发文件选择
           avatarWrapper.addEventListener('click', () => {
             avatarInput.click();
           });
-
-          // 文件选择后上传
           avatarInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
-
-            // 校验文件类型
             if (!file.type.startsWith('image/')) {
               showToast('请选择图片文件', 'error');
               avatarInput.value = '';
               return;
             }
-
-            // 校验大小（原始文件 < 5MB，压缩后会变小）
             if (file.size > 5 * 1024 * 1024) {
               showToast('图片大小请勿超过 5MB', 'error');
               avatarInput.value = '';
               return;
             }
-
             try {
               showToast('上传中...', 'info');
               const result = await uploadAvatar(file, userId);
@@ -931,7 +936,6 @@
                 showToast('上传失败: ' + result.error.message, 'error');
               } else {
                 showToast('头像更新成功 🎉', 'success');
-                // 刷新页面显示新头像
                 setTimeout(() => renderAll(), 300);
               }
             } catch (err) {
@@ -942,23 +946,42 @@
           });
         }
 
-        // 登出按钮
-        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+        document.getElementById('topLogoutBtn')?.addEventListener('click', async () => {
           await signOut();
         });
       }
 
+      // ============================================================
+      // 渲染项目
+      // ============================================================
       async function renderProjects() {
         const role = await getUserRole();
         const visible = getVisibleProjects(role);
+        const mobile = isMobileScreen();
 
         if (visible.length === 0) {
           projectGrid.innerHTML = `<p style="color:rgba(255,255,255,0.2);grid-column:1/-1;text-align:center;padding:40px 0;">暂无可用项目</p>`;
           return;
         }
 
-        projectGrid.innerHTML = visible
-          .map((project) => {
+        if (mobile) {
+          projectGrid.innerHTML = visible.map(project => {
+            const statusClass = project.status === 'maintenance' ? 'maintenance' : '';
+            const disabled = project.status === 'offline' || project.status === 'maintenance';
+            return `
+              <a href="${project.url}" class="project-card ${disabled ? 'disabled' : ''}">
+                ${project.status === 'maintenance' ? `<span class="status-tag ${statusClass}">维护中</span>` : ''}
+                <div class="icon-wrap">${project.icon || '📦'}</div>
+                <div class="text-group">
+                  <h3>${project.name}</h3>
+                  <p>${project.description}</p>
+                </div>
+                <span class="enter-hint">${disabled ? '暂不可用' : '>'}</span>
+              </a>
+            `;
+          }).join('');
+        } else {
+          projectGrid.innerHTML = visible.map(project => {
             const statusClass = project.status === 'maintenance' ? 'maintenance' : '';
             const disabled = project.status === 'offline' || project.status === 'maintenance';
             return `
@@ -970,21 +993,24 @@
                 <span class="enter-hint">${disabled ? '暂不可用' : '进入'}</span>
               </a>
             `;
-          })
-          .join('');
+          }).join('');
+        }
       }
 
+      // ============================================================
+      // 渲染全部
+      // ============================================================
       async function renderAll() {
-        await renderUserSection();
+        await renderTopUser();
         await renderProjects();
       }
 
-      // 监听认证状态变化（自动刷新）
+      window.addEventListener('resize', () => renderProjects());
+
       import { onAuthStateChange } from '/assets/js/auth.js';
       onAuthStateChange(() => renderAll());
 
       renderAll();
-
       window.showToast = showToast;
     </script>
   </body>
