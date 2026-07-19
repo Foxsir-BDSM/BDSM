@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模块介绍 · Foxsir</title>
+    <link rel="icon" href="/assets/OIP-C-DsxhjT2W.jpg" type="image/jpeg" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: #0f0e17;
+        color: #fffffe;
+        min-height: 100vh;
+        background-image: radial-gradient(ellipse at 50% 30%, rgba(212, 165, 116, 0.05) 0%, transparent 60%);
+        background-attachment: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+      }
+      .module-detail-card {
+        max-width: 680px;
+        width: 100%;
+        padding: 48px 40px;
+        background: rgba(15, 14, 23, 0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+      .module-detail-card .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        font-size: 13px;
+        transition: color 0.3s ease;
+      }
+      .module-detail-card .back-link:hover {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .module-detail-card .icon-big {
+        font-size: 64px;
+        margin-bottom: 16px;
+        display: block;
+      }
+      .module-detail-card h1 {
+        font-family: 'Georgia', serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #fffffe;
+        margin-bottom: 8px;
+      }
+      .module-detail-card .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.2);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+      .module-detail-card .desc {
+        font-size: 16px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 24px;
+      }
+      .module-detail-card .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 28px;
+      }
+      .module-detail-card .features .tag {
+        background: rgba(212, 165, 116, 0.06);
+        border: 1px solid rgba(212, 165, 116, 0.06);
+        padding: 4px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .module-detail-card .cta-area {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .module-detail-card .cta-area .btn {
+        padding: 12px 32px;
+        border-radius: 40px;
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        text-decoration: none;
+      }
+      .module-detail-card .cta-area .btn-primary {
+        background: linear-gradient(135deg, #d4a574, #b8946a);
+        color: #0f0e17;
+      }
+      .module-detail-card .cta-area .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(212, 165, 116, 0.2);
+      }
+      .module-detail-card .cta-area .btn-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .module-detail-card .cta-area .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fffffe;
+      }
+      .module-detail-card .status-badge {
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 30px;
+        font-size: 11px;
+        margin-bottom: 16px;
+        background: rgba(212, 165, 116, 0.06);
+        color: rgba(212, 165, 116, 0.4);
+      }
+      .module-detail-card .status-badge.maintenance {
+        background: rgba(245, 158, 11, 0.06);
+        color: #f59e0b;
+      }
+      @media (max-width: 480px) {
+        .module-detail-card { padding: 30px 20px; }
+        .module-detail-card h1 { font-size: 24px; }
+      }
+    </style>
+  <script type="module" crossorigin src="/assets/module-CWui5Kxt.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/supabase-client-BlgCfJt8.js">
+  <link rel="modulepreload" crossorigin href="/assets/registry-QV5SsSS_.js">
+  <link rel="modulepreload" crossorigin href="/assets/auth-Cyt5DioV.js">
+  <link rel="modulepreload" crossorigin href="/assets/identity-Be7cwsfl.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
+</head>
+<body>
+
+  <div class="module-detail-card" id="moduleDetail">
+    <p style="color:rgba(255,255,255,0.2);">加载中…</p>
+  </div>
+</body>
+</html>

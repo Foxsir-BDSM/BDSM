@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>下位者档案馆 · 管理后台</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+        }
+      }
+    </script>
+    <script type="module" crossorigin src="/assets/assets_pages_sub-archive_admin-CVokmxC9.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/supabase-client-BlgCfJt8.js">
+    <link rel="modulepreload" crossorigin href="/assets/identity-Be7cwsfl.js">
+    <link rel="modulepreload" crossorigin href="/assets/auth-Cyt5DioV.js">
+    <link rel="modulepreload" crossorigin href="/assets/ui-helpers-CEBwo3Z9.js">
+    <link rel="modulepreload" crossorigin href="/assets/api-CAcsciEw.js">
+    <link rel="stylesheet" crossorigin href="/assets/assets_pages_sub-archive_admin--Er0HbJT.css">
+    <link rel="stylesheet" crossorigin href="/assets/global-DUIjPawF.css">
+  </head>
+  <body>
+    <!-- 顶部导航 -->
+    <header class="admin-header">
+      <h1>
+        <img
+          src="/assets/OIP-C-DsxhjT2W.jpg"
+          alt="Foxsir"
+          style="height: 32px; vertical-align: middle; margin-right: 8px; border-radius: 4px"
+        />
+        下位者档案馆 · 管理后台
+      </h1>
+      <div id="userInfo">
+        <span id="userEmail"></span>
+        <span id="userRole"></span>
+        <button id="logoutBtn">退�?/button>
+      </div>
+    </header>
+
+    <!-- 管理面板（登录后显示，权限不足时会替换内容） -->
+    <div id="adminPanel" style="display: none; padding: 2rem">
+      <div class="toolbar">
+        <span>�?<span id="totalCount">0</span> 条档�?/span>
+        <input type="text" id="searchInput" placeholder="按姓名搜�?.." />
+      </div>
+      <div id="recordsTableContainer">
+        <!-- 动态渲染表�?-->
+      </div>
+    </div>
+
+    <!-- 使用 importmap 加载 Supabase（由欲研所处理，这里留空�?-->
+
+
+  </body>
+</html>

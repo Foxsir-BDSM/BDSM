@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>管理面板 · Foxsir</title>
+  <link rel="icon" href="/assets/OIP-A-OLsRkys7.jpg" type="image/jpeg" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+      }
+    }
+  </script>
+  <script type="module" crossorigin src="/assets/admin-C-HaEhrz.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/supabase-client-BlgCfJt8.js">
+  <link rel="modulepreload" crossorigin href="/assets/identity-Be7cwsfl.js">
+  <link rel="modulepreload" crossorigin href="/assets/auth-Cyt5DioV.js">
+  <link rel="modulepreload" crossorigin href="/assets/ui-helpers-CEBwo3Z9.js">
+  <link rel="modulepreload" crossorigin href="/assets/api-CAcsciEw.js">
+  <link rel="stylesheet" crossorigin href="/assets/admin-DlyjlR0V.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
+</head>
+<body>
+  <!-- ===== 顶部导航 ===== -->
+  <header class="admin-header">
+    <div class="header-left">
+      <a href="/" class="back-link">← 返回欲研所</a>
+      <div class="brand-mark">
+        <img src="/assets/OIP-C-DsxhjT2W.jpg" alt="Foxsir" class="brand-icon" />
+        <h1>管理面板</h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="adminUserInfo" class="admin-user"></span>
+      <button id="adminLogoutBtn" class="btn-logout">登出</button>
+    </div>
+  </header>
+
+  <!-- ===== 规则横幅 ===== -->
+  <div class="rule-banner">
+    <img src="/assets/OIP-A-OLsRkys7.jpg" alt="母の规则" class="rule-image" />
+    <div class="rule-text">
+      <h2>📜 管理规则</h2>
+      <p>本面板用于管理用户权限及档案信息的可见性。请谨慎操作，所有变更将记录日志。</p>
+    </div>
+  </div>
+
+  <!-- ===== Tab 导航 ===== -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="userPerm">
+      👤 用户权限 <span class="badge ready">已就绪</span>
+    </button>
+    <button class="tab-btn" data-tab="domArchive">
+      📤 上位档案 <span class="badge coming">开发中</span>
+    </button>
+    <button class="tab-btn" data-tab="subArchive">
+      📥 下位档案 <span class="badge ready">已就绪</span>
+    </button>
+  </nav>
+
+  <!-- ===== Tab 内容 ===== -->
+  <div class="tab-content">
+
+    <!-- 面板一：用户权限 -->
+    <div class="tab-pane active" id="pane-userPerm">
+      <div class="toolbar">
+        <div class="left">
+          <span class="stats-label">共 <strong id="totalUsers">0</strong> 位用户</span>
+        </div>
+        <div class="right">
+          <!-- ===== R-04 新增：昵称搜索框 ===== -->
+          <input type="text" id="userSearchInput" placeholder="🔍 搜索昵称或邮箱…" />
+          <button id="pushBtn" class="btn btn-gold">📤 Push 生效</button>
+        </div>
+      </div>
+      <div id="userTableContainer"></div>
+      <div id="pushResult" class="push-result"></div>
+    </div>
+
+    <!-- 面板二：上位档案（占位） -->
+    <div class="tab-pane" id="pane-domArchive">
+      <div class="coming-soon">
+        <div class="placeholder-icon">🚧</div>
+        <p>上位档案馆尚未接入</p>
+        <p class="sub-text">此功能即将开放，敬请期待……</p>
+      </div>
+    </div>
+
+    <!-- 面板三：下位档案 -->
+    <div class="tab-pane" id="pane-subArchive">
+      <div class="toolbar">
+        <div class="left">
+          <span class="stats-label">共 <strong id="subTotalCount">0</strong> 条档案</span>
+        </div>
+        <div class="right">
+          <!-- ===== R-06 已修复：搜索使用字段ID 'fqidTsBW5js'（姓名） ===== -->
+          <input type="text" id="subSearchInput" placeholder="🔍 搜索姓名" />
+        </div>
+      </div>
+      <div id="subRecordsContainer"></div>
+    </div>
+
+  </div>
+
+</body>
+</html>

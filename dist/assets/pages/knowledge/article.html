@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文章 · Foxsir</title>
+    <link rel="icon" href="/assets/OIP-C-DsxhjT2W.jpg" type="image/jpeg" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f0e17;
+            color: #fffffe;
+            min-height: 100vh;
+            background-image: radial-gradient(ellipse at 50% 30%, rgba(212,165,116,0.05) 0%, transparent 60%);
+            padding: 40px 20px;
+        }
+        .article-container { max-width: 800px; margin:0 auto; }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.2);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: rgba(255,255,255,0.6); }
+        .article-header {
+            margin-bottom: 24px;
+        }
+        .article-header .category {
+            display: inline-block;
+            background: rgba(212,165,116,0.06);
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            color: #d4a574;
+            margin-bottom: 8px;
+        }
+        .article-header h1 {
+            font-family: 'Georgia', serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+        .article-header .meta {
+            font-size: 13px;
+            color: rgba(255,255,255,0.2);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .article-body {
+            font-size: 17px;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.85);
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .article-body h2 { font-size: 24px; margin: 28px 0 12px; color: #fffffe; }
+        .article-body h3 { font-size: 20px; margin: 24px 0 8px; color: #fffffe; }
+        .article-body p { margin-bottom: 16px; }
+        .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 16px; }
+        .article-body blockquote {
+            padding: 12px 20px;
+            border-left: 3px solid #d4a574;
+            background: rgba(212,165,116,0.03);
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0;
+            color: rgba(255,255,255,0.6);
+        }
+        .article-body img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+        .article-footer {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .article-footer .points {
+            font-size: 14px;
+            color: #d4a574;
+        }
+        .article-footer .btn-claim {
+            padding: 8px 24px;
+            border-radius: 30px;
+            border: none;
+            background: linear-gradient(135deg, #d4a574, #b8946a);
+            color: #0f0e17;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        .article-footer .btn-claim:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(212,165,116,0.2);
+        }
+        .article-footer .btn-claim:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255,255,255,0.2);
+        }
+        .error-msg .icon { font-size: 48px; margin-bottom: 16px; }
+        .error-msg a { color: #d4a574; text-decoration: none; }
+        .error-msg a:hover { text-decoration: underline; }
+        @media (max-width: 480px) {
+            .article-header h1 { font-size: 24px; }
+            .article-body { font-size: 15px; }
+        }
+    </style>
+    <script type="importmap">
+        { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+  <script type="module" crossorigin src="/assets/assets_pages_knowledge_article-g0Bi2o8l.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/supabase-client-BlgCfJt8.js">
+  <link rel="modulepreload" crossorigin href="/assets/preload-helper-CLcXU_4U.js">
+  <link rel="modulepreload" crossorigin href="/assets/content-config-Bq1Nvs_5.js">
+  <link rel="modulepreload" crossorigin href="/assets/auth-Cyt5DioV.js">
+  <link rel="modulepreload" crossorigin href="/assets/loading-BK0rGq7M.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
+</head>
+<body>
+    <div class="article-container">
+        <a href="/assets/pages/knowledge/index.html" class="back-link">← 返回列表</a>
+        <div id="articleContent">
+            <p style="color:rgba(255,255,255,0.2);">加载中…</p>
+        </div>
+    </div>
+
+
+</body>
+</html>

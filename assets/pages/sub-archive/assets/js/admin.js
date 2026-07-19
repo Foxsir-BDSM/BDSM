@@ -2,10 +2,10 @@
 // 管理面板主逻辑（Tab 切换 + 用户权限 + 下位档案管理）
 // ============================================================
 
-import { getCurrentUser, getUserRole } from './identity.js';
-import { signOut } from './auth.js';
-import { supabase } from './supabase-client.js';
-import { showToast } from './ui-helpers.js';
+import { getCurrentUser, getUserRole } from '/assets/js/identity.js';
+import { signOut } from '/assets/js/auth.js';
+import { supabase } from '/assets/js/supabase-client.js';
+import { showToast } from '/assets/js/ui-helpers.js';
 
 // ----- 下位者档案馆 API 模块 -----
 import {
@@ -153,7 +153,7 @@ async function pushChanges() {
 }
 
 // ============================================================
-// 3. 下位档案管理（★ 核心修复：增加详细日志，确保强制刷新 ★）
+// 3. 下位档案管理
 // ============================================================
 
 const subRecordsContainer = document.getElementById('subRecordsContainer');
@@ -171,11 +171,10 @@ const SUB_EDITABLE_FIELDS = [
   '认证',
 ];
 
-// ★ 强制从服务器加载（forceRefresh = true）
 async function loadSubRecords() {
   try {
     console.log('📡 强制从服务器加载档案数据...');
-    const records = await fetchSubRecords(true); // forceRefresh = true
+    const records = await fetchSubRecords(true);
     subRecords = records;
     filteredSubRecords = records;
     renderSubTable();
@@ -214,7 +213,6 @@ function renderSubTable() {
   html += `</tbody></table>`;
   subRecordsContainer.innerHTML = html;
 
-  // ★ 绑定保存事件，增加详细日志 ★
   document.querySelectorAll('.save-sub-btn').forEach((btn) => {
     btn.addEventListener('click', async function () {
       const recordId = this.dataset.recordId;
@@ -222,7 +220,6 @@ function renderSubTable() {
       const checkboxes = row.querySelectorAll('.sub-check');
       const statusSpan = document.getElementById(`sub-status-${recordId}`);
 
-      // 收集更新数据
       const updates = {};
       checkboxes.forEach((cb) => {
         const fieldId = cb.dataset.fieldId;
@@ -236,20 +233,13 @@ function renderSubTable() {
       statusSpan.style.color = '#f39c12';
 
       try {
-        // 执行更新
         const result = await updateRecordFields(recordId, updates);
         console.log('✅ 更新响应:', result);
-
-        // 清除缓存
         clearSubCache();
         console.log('🧹 缓存已清除');
-
         statusSpan.textContent = '✅ 已保存';
         statusSpan.style.color = '#2d7d46';
-
-        // ★ 强制重新加载数据
         await loadSubRecords();
-
         showToast('档案更新成功', 'info');
       } catch (err) {
         console.error('❌ 保存失败:', err);

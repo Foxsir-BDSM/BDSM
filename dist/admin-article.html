@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>内容管理 · Foxsir</title>
+    <link rel="icon" href="/assets/OIP-C-DsxhjT2W.jpg" type="image/jpeg" />
+    <!-- ===== EasyMDE 编辑器（可视化 Markdown） ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f0e17;
+            color: #fffffe;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .admin-container { max-width: 1100px; margin:0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header h1 { font-size: 26px; font-weight: 600; }
+        .header .back-link {
+            color: rgba(255,255,255,0.2);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .header .back-link:hover { color: rgba(255,255,255,0.6); }
+        
+        .panel {
+            background: rgba(255,255,255,0.02);
+            border-radius: 18px;
+            padding: 24px 28px;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 24px;
+        }
+        .panel h2 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.2);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: #fffffe;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: rgba(212,165,116,0.2);
+        }
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.1);
+        }
+        
+        .publish-target {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .publish-target .target-btn {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: transparent;
+            color: rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .publish-target .target-btn:hover {
+            border-color: rgba(212,165,116,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+        .publish-target .target-btn.active {
+            border-color: rgba(212,165,116,0.2);
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        .publish-target .target-btn .icon { margin-right: 6px; }
+        
+        #editorContainer .EasyMDEContainer {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .CodeMirror {
+            background: rgba(255,255,255,0.02);
+            min-height: 300px;
+            color: #d4d0c8;
+            font-size: 15px;
+        }
+        #editorContainer .EasyMDEContainer .CodeMirror-scroll {
+            min-height: 300px;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar {
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button {
+            color: rgba(255,255,255,0.3);
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button:hover {
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button.active {
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar i.separator {
+            border-left: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .editor-preview {
+            background: rgba(255,255,255,0.02);
+            color: #d4d0c8;
+        }
+        #editorContainer .EasyMDEContainer .editor-preview pre {
+            background: rgba(255,255,255,0.04);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .form-actions .btn {
+            padding: 12px 32px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 15px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #d4a574, #b8946a); color: #0f0e17; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,165,116,0.2); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+        .btn-danger { background: rgba(239,68,68,0.06); color: #f87171; }
+        .btn-danger:hover { background: rgba(239,68,68,0.12); }
+        
+        #statusMsg {
+            margin-top: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        #statusMsg.success { display: block; background: rgba(34,197,94,0.06); color: #22c55e; border: 1px solid rgba(34,197,94,0.06); }
+        #statusMsg.error { display: block; background: rgba(239,68,68,0.06); color: #f87171; border: 1px solid rgba(239,68,68,0.06); }
+        #statusMsg.loading { display: block; background: rgba(212,165,116,0.06); color: #d4a574; border: 1px solid rgba(212,165,116,0.06); }
+        
+        .token-section {
+            background: rgba(255,255,255,0.02);
+            border-radius: 18px;
+            padding: 20px 24px;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 24px;
+        }
+        .token-section .token-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .token-section .token-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: #fffffe;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        .token-section .token-row input:focus { outline: none; border-color: rgba(212,165,116,0.2); }
+        .token-section .token-row .btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .token-section .token-row .btn:hover { background: rgba(212,165,116,0.12); }
+        .token-section .hint {
+            font-size: 12px;
+            color: rgba(255,255,255,0.1);
+            margin-top: 8px;
+        }
+        .token-status {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .token-status.ok { background: rgba(34,197,94,0.06); color: #22c55e; }
+        .token-status.fail { background: rgba(239,68,68,0.06); color: #f87171; }
+        
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .publish-target { flex-wrap: wrap; }
+            .publish-target .target-btn { flex: 1; text-align: center; }
+            .admin-container { padding: 0 4px; }
+            .panel { padding: 16px; }
+        }
+    </style>
+<script type="importmap">
+{
+    "imports": {
+        "easymde": "https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"
+    }
+}
+</script>
+  <script type="module" crossorigin src="/assets/admin-article-BP_OhfJg.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/supabase-client-BlgCfJt8.js">
+  <link rel="modulepreload" crossorigin href="/assets/easymde-kqwopcDm.js">
+  <link rel="modulepreload" crossorigin href="/assets/content-config-Bq1Nvs_5.js">
+  <link rel="modulepreload" crossorigin href="/assets/auth-Cyt5DioV.js">
+  <link rel="modulepreload" crossorigin href="/assets/identity-Be7cwsfl.js">
+</head>
+<body>
+
+<div class="admin-container">
+    <!-- ===== 顶栏 ===== -->
+    <div class="header">
+        <h1>📝 内容管理</h1>
+        <a href="/index.html" class="back-link">← 返回首页</a>
+    </div>
+
+    <!-- ===== Token 配置区（硬编码已生效） ===== -->
+    <div class="token-section" id="tokenSection">
+        <div class="token-row">
+            <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="ghp_gIVYqCa1x0FoMjgCceQpjjzRF8ogDrj3eH5Jx" />
+            <button class="btn" id="saveTokenBtn">保存 Token</button>
+            <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
+        </div>
+        <div class="hint">
+            💡 Token 已硬编码到页面中（仅开发测试用）。正式上线前请移除或改用环境变量。
+        </div>
+    </div>
+
+    <!-- ===== 编辑器面板 ===== -->
+    <div class="panel">
+        <h2>✏️ 编写内容</h2>
+
+        <!-- 发布目标选择 -->
+        <div class="publish-target" id="targetSelector">
+            <button class="target-btn active" data-target="knowledge">
+                <span class="icon">📚</span> 知识区
+            </button>
+            <button class="target-btn" data-target="tasks">
+                <span class="icon">🎯</span> 任务区
+            </button>
+        </div>
+
+        <!-- 表单 -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>标题 *</label>
+                <input type="text" id="editTitle" placeholder="文章标题" />
+            </div>
+            <div class="form-group">
+                <label>Slug（URL 标识）*</label>
+                <input type="text" id="editSlug" placeholder="my-article-slug" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>分类</label>
+                <select id="editCategory">
+                    <option value="入门指南">入门指南</option>
+                    <option value="安全知识">安全知识</option>
+                    <option value="技巧教程">技巧教程</option>
+                    <option value="圈层文化">圈层文化</option>
+                    <option value="日常任务">日常任务</option>
+                    <option value="挑战任务">挑战任务</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>阅读积分</label>
+                <input type="number" id="editPoints" value="5" min="0" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>摘要</label>
+            <input type="text" id="editSummary" placeholder="简短描述（可选）" />
+        </div>
+        <div class="form-group">
+            <label>封面图 URL</label>
+            <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
+        </div>
+
+        <!-- 可视化编辑器 -->
+        <div class="form-group">
+            <label>正文</label>
+            <div id="editorContainer"></div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" id="publishBtn">🚀 发布</button>
+            <button class="btn btn-secondary" id="clearBtn">清空</button>
+        </div>
+        <div id="statusMsg"></div>
+    </div>
+
+    <!-- ===== 已发布内容列表 ===== -->
+    <div class="panel">
+        <h2>📋 已发布内容</h2>
+        <div id="listContainer">
+            <div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">加载中…</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Import Map ===== -->
+
+
+<!-- ===== 主逻辑 ===== -->
+</body>
+</html>

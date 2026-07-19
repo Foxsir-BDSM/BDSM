@@ -1,0 +1,1 @@
+const e="Foxsir-BDSM",n="foxsir-content",r={owner:e,repo:n,branches:{knowledge:"knowledge",tasks:"tasks"},paths:{knowledge:"articles",tasks:"tasks"},getCdnUrl:(t,s)=>`https://cdn.jsdelivr.net/gh/${e}/${n}@${t}/${s}`,getApiUrl:(t,s)=>`https://api.github.com/repos/${e}/${n}/contents/${s}?ref=${t}`};export{r as C};

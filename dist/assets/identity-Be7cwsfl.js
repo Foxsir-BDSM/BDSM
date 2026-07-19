@@ -1,0 +1,1 @@
+import{s as t}from"./supabase-client-BlgCfJt8.js";async function s(){const{data:r,error:e}=await t.auth.getUser();return e||!r.user?null:r.user}async function u(){const r=await s();return r&&r.user_metadata?.role||"guest"}export{s as a,u as g};

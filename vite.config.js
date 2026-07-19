@@ -14,6 +14,7 @@ export default defineConfig({
     open: '/index.html',
   },
   build: {
+    target: 'esnext',        // ← 添加这一行，支持顶级 await
     outDir: 'dist',
     rollupOptions: {
       input: Object.fromEntries(
@@ -27,8 +28,6 @@ export default defineConfig({
       ),
     },
   },
-  // ⚠️ 确保下面这行被删除或注释掉
-  // publicDir: 'assets',
   optimizeDeps: {
     entries: [],
   }
