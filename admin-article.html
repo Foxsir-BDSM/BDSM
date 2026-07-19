@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>内容管理 · Foxsir</title>
+    <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <!-- ===== EasyMDE 编辑器（可视化 Markdown） ===== -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f0e17;
+            color: #fffffe;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .admin-container { max-width: 1100px; margin:0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .header h1 { font-size: 26px; font-weight: 600; }
+        .header .back-link {
+            color: rgba(255,255,255,0.2);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        .header .back-link:hover { color: rgba(255,255,255,0.6); }
+        
+        .panel {
+            background: rgba(255,255,255,0.02);
+            border-radius: 18px;
+            padding: 24px 28px;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 24px;
+        }
+        .panel h2 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.2);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: #fffffe;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: rgba(212,165,116,0.2);
+        }
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.1);
+        }
+        
+        .publish-target {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .publish-target .target-btn {
+            padding: 10px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: transparent;
+            color: rgba(255,255,255,0.2);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .publish-target .target-btn:hover {
+            border-color: rgba(212,165,116,0.1);
+            color: rgba(255,255,255,0.5);
+        }
+        .publish-target .target-btn.active {
+            border-color: rgba(212,165,116,0.2);
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        .publish-target .target-btn .icon { margin-right: 6px; }
+        
+        #editorContainer .EasyMDEContainer {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .CodeMirror {
+            background: rgba(255,255,255,0.02);
+            min-height: 300px;
+            color: #d4d0c8;
+            font-size: 15px;
+        }
+        #editorContainer .EasyMDEContainer .CodeMirror-scroll {
+            min-height: 300px;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar {
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button {
+            color: rgba(255,255,255,0.3);
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button:hover {
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar button.active {
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+        }
+        #editorContainer .EasyMDEContainer .editor-toolbar i.separator {
+            border-left: 1px solid rgba(255,255,255,0.04);
+        }
+        #editorContainer .EasyMDEContainer .editor-preview {
+            background: rgba(255,255,255,0.02);
+            color: #d4d0c8;
+        }
+        #editorContainer .EasyMDEContainer .editor-preview pre {
+            background: rgba(255,255,255,0.04);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .form-actions .btn {
+            padding: 12px 32px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 15px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #d4a574, #b8946a); color: #0f0e17; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,165,116,0.2); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+        .btn-danger { background: rgba(239,68,68,0.06); color: #f87171; }
+        .btn-danger:hover { background: rgba(239,68,68,0.12); }
+        
+        #statusMsg {
+            margin-top: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: none;
+        }
+        #statusMsg.success { display: block; background: rgba(34,197,94,0.06); color: #22c55e; border: 1px solid rgba(34,197,94,0.06); }
+        #statusMsg.error { display: block; background: rgba(239,68,68,0.06); color: #f87171; border: 1px solid rgba(239,68,68,0.06); }
+        #statusMsg.loading { display: block; background: rgba(212,165,116,0.06); color: #d4a574; border: 1px solid rgba(212,165,116,0.06); }
+        
+        .token-section {
+            background: rgba(255,255,255,0.02);
+            border-radius: 18px;
+            padding: 20px 24px;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-bottom: 24px;
+        }
+        .token-section .token-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .token-section .token-row input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.02);
+            color: #fffffe;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        .token-section .token-row input:focus { outline: none; border-color: rgba(212,165,116,0.2); }
+        .token-section .token-row .btn {
+            padding: 10px 24px;
+            border-radius: 30px;
+            border: none;
+            background: rgba(212,165,116,0.06);
+            color: #d4a574;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .token-section .token-row .btn:hover { background: rgba(212,165,116,0.12); }
+        .token-section .hint {
+            font-size: 12px;
+            color: rgba(255,255,255,0.1);
+            margin-top: 8px;
+        }
+        .token-status {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .token-status.ok { background: rgba(34,197,94,0.06); color: #22c55e; }
+        .token-status.fail { background: rgba(239,68,68,0.06); color: #f87171; }
+        
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .publish-target { flex-wrap: wrap; }
+            .publish-target .target-btn { flex: 1; text-align: center; }
+            .admin-container { padding: 0 4px; }
+            .panel { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <!-- ===== 顶栏 ===== -->
+    <div class="header">
+        <h1>📝 内容管理</h1>
+        <a href="/index.html" class="back-link">← 返回首页</a>
+    </div>
+
+    <!-- ===== Token 配置区（硬编码已生效） ===== -->
+    <div class="token-section" id="tokenSection">
+        <div class="token-row">
+            <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="ghp_gIVYqCa1x0FoMjgCceQpjjzRF8ogDrj3eH5Jx" />
+            <button class="btn" id="saveTokenBtn">保存 Token</button>
+            <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
+        </div>
+        <div class="hint">
+            💡 Token 已硬编码到页面中（仅开发测试用）。正式上线前请移除或改用环境变量。
+        </div>
+    </div>
+
+    <!-- ===== 编辑器面板 ===== -->
+    <div class="panel">
+        <h2>✏️ 编写内容</h2>
+
+        <!-- 发布目标选择 -->
+        <div class="publish-target" id="targetSelector">
+            <button class="target-btn active" data-target="knowledge">
+                <span class="icon">📚</span> 知识区
+            </button>
+            <button class="target-btn" data-target="tasks">
+                <span class="icon">🎯</span> 任务区
+            </button>
+        </div>
+
+        <!-- 表单 -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>标题 *</label>
+                <input type="text" id="editTitle" placeholder="文章标题" />
+            </div>
+            <div class="form-group">
+                <label>Slug（URL 标识）*</label>
+                <input type="text" id="editSlug" placeholder="my-article-slug" />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label>分类</label>
+                <select id="editCategory">
+                    <option value="入门指南">入门指南</option>
+                    <option value="安全知识">安全知识</option>
+                    <option value="技巧教程">技巧教程</option>
+                    <option value="圈层文化">圈层文化</option>
+                    <option value="日常任务">日常任务</option>
+                    <option value="挑战任务">挑战任务</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>阅读积分</label>
+                <input type="number" id="editPoints" value="5" min="0" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label>摘要</label>
+            <input type="text" id="editSummary" placeholder="简短描述（可选）" />
+        </div>
+        <div class="form-group">
+            <label>封面图 URL</label>
+            <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
+        </div>
+
+        <!-- 可视化编辑器 -->
+        <div class="form-group">
+            <label>正文</label>
+            <div id="editorContainer"></div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" id="publishBtn">🚀 发布</button>
+            <button class="btn btn-secondary" id="clearBtn">清空</button>
+        </div>
+        <div id="statusMsg"></div>
+    </div>
+
+    <!-- ===== 已发布内容列表 ===== -->
+    <div class="panel">
+        <h2>📋 已发布内容</h2>
+        <div id="listContainer">
+            <div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">加载中…</div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Import Map ===== -->
+<script type="importmap">
+{
+    "imports": {
+        "easymde": "https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js"
+    }
+}
+</script>
+
+<!-- ===== 主逻辑 ===== -->
+<script type="module">
+    import EasyMDE from 'easymde';
+    import { CONTENT_CONFIG } from '/assets/js/content-config.js';
+    import { getCurrentUser } from '/assets/js/auth.js';
+    import { getUserRole } from '/assets/js/identity.js';
+    import { showLoading, hideLoading } from '/assets/js/loading.js';
+
+    // ===== DOM 引用 =====
+    const tokenInput = document.getElementById('githubToken');
+    const saveTokenBtn = document.getElementById('saveTokenBtn');
+    const tokenStatus = document.getElementById('tokenStatus');
+    const targetBtns = document.querySelectorAll('.target-btn');
+    const editTitle = document.getElementById('editTitle');
+    const editSlug = document.getElementById('editSlug');
+    const editCategory = document.getElementById('editCategory');
+    const editPoints = document.getElementById('editPoints');
+    const editSummary = document.getElementById('editSummary');
+    const editCover = document.getElementById('editCover');
+    const publishBtn = document.getElementById('publishBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const listContainer = document.getElementById('listContainer');
+
+    let currentTarget = 'knowledge';
+    let editor = null;
+
+    // ===== Token 管理（硬编码） =====
+    const HARDCODED_TOKEN = 'ghp_gIVYqCa1x0FoMjgCceQpjjzRF8ogDrj3eH5Jx';
+    const TOKEN_KEY = 'foxsir_github_token';
+
+    function loadToken() {
+        // 优先使用硬编码
+        const token = HARDCODED_TOKEN;
+        localStorage.setItem(TOKEN_KEY, token);
+        tokenInput.value = token;
+        tokenStatus.textContent = '✅ 已配置（硬编码）';
+        tokenStatus.className = 'token-status ok';
+        return token;
+    }
+
+    function saveToken() {
+        const token = tokenInput.value.trim();
+        if (token) {
+            localStorage.setItem(TOKEN_KEY, token);
+            tokenStatus.textContent = '✅ 已配置';
+            tokenStatus.className = 'token-status ok';
+            showStatus('Token 已保存', 'success');
+        } else {
+            localStorage.removeItem(TOKEN_KEY);
+            tokenStatus.textContent = '❌ 未配置';
+            tokenStatus.className = 'token-status fail';
+        }
+    }
+
+    saveTokenBtn.addEventListener('click', saveToken);
+
+    // ===== 初始化编辑器 =====
+    function initEditor() {
+        if (editor) return;
+        editor = new EasyMDE({
+            element: document.createElement('textarea'),
+            placeholder: '在这里写内容… 支持 Markdown 语法',
+            spellChecker: false,
+            autoDownloadFontAwesome: false,
+            toolbar: [
+                'bold', 'italic', 'heading', '|',
+                'quote', 'unordered-list', 'ordered-list', '|',
+                'link', 'image', 'table', '|',
+                'preview', 'side-by-side', 'fullscreen', '|',
+                'guide'
+            ],
+            status: ['lines', 'words'],
+            styleSelectedText: false,
+            toolbarTips: true,
+        });
+        document.getElementById('editorContainer').appendChild(editor.element);
+    }
+
+    // ===== 发布目标切换 =====
+    targetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            targetBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentTarget = btn.dataset.target;
+            showStatus(`当前发布到：${currentTarget === 'knowledge' ? '📚 知识区' : '🎯 任务区'}`, 'loading');
+            setTimeout(() => { statusMsg.style.display = 'none'; }, 1500);
+            loadList();
+        });
+    });
+
+    // ===== 状态消息 =====
+    function showStatus(text, type = 'loading') {
+        statusMsg.textContent = text;
+        statusMsg.className = type;
+        statusMsg.style.display = 'block';
+    }
+
+    function hideStatus() {
+        statusMsg.style.display = 'none';
+    }
+
+    // ===== 检查权限 =====
+    async function checkAuth() {
+        const user = await getCurrentUser();
+        const role = await getUserRole();
+        if (!user || !['admin', 'subadmin'].includes(role)) {
+            alert('需要管理员权限');
+            window.location.href = '/index.html';
+            return false;
+        }
+        return true;
+    }
+
+    // ===== 生成 Slug =====
+    function generateSlug(title) {
+        return title
+            .toLowerCase()
+            .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .slice(0, 50);
+    }
+
+    // ===== 获取当前内容列表（从 GitHub 分支） =====
+    async function loadList() {
+        const token = loadToken();
+        if (!token) {
+            listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 请先配置 GitHub Token</div>`;
+            return;
+        }
+
+        const { owner, repo, branches, paths } = CONTENT_CONFIG;
+        const branch = branches[currentTarget];
+        const path = paths[currentTarget];
+
+        try {
+            const response = await fetch(
+                `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+                { headers: { 'Authorization': `token ${token}` } }
+            );
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>`;
+                    return;
+                }
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const files = data.filter(f => f.name.endsWith('.md'));
+
+            if (files.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = files.map(file => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.02);">
+                    <span style="font-size:14px;">${file.name.replace('.md', '')}</span>
+                    <span style="font-size:11px;color:rgba(255,255,255,0.1);">
+                        ${new Date(file.commit?.committer?.date || file.sha).toLocaleDateString()}
+                    </span>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error('加载列表失败:', err);
+            listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 加载失败</div>`;
+        }
+    }
+
+    // ===== 发布文章（修复版 Base64 编码） =====
+    async function publishArticle() {
+        const token = loadToken();
+        if (!token) {
+            showStatus('⚠️ 请先配置 GitHub Token', 'error');
+            return;
+        }
+
+        const title = editTitle.value.trim();
+        let slug = editSlug.value.trim();
+        const category = editCategory.value;
+        const points = parseInt(editPoints.value) || 0;
+        const summary = editSummary.value.trim();
+        const cover = editCover.value.trim();
+        const content = editor.value();
+
+        if (!title) { showStatus('⚠️ 请输入标题', 'error'); return; }
+        if (!slug) { slug = generateSlug(title); editSlug.value = slug; }
+        if (!content) { showStatus('⚠️ 请输入正文内容', 'error'); return; }
+
+        // 构建 frontmatter
+        const frontmatter = `---
+title: ${title}
+slug: ${slug}
+category: ${category}
+reading_points: ${points}
+summary: ${summary || ''}
+cover_url: ${cover || ''}
+is_public: true
+created_at: ${new Date().toISOString()}
+---\n\n`;
+
+        const fullContent = frontmatter + content;
+        const fileName = `${slug}.md`;
+        const path = `${CONTENT_CONFIG.paths[currentTarget]}/${fileName}`;
+        const branch = CONTENT_CONFIG.branches[currentTarget];
+        const { owner, repo } = CONTENT_CONFIG;
+
+        showStatus(`⏳ 发布到 ${currentTarget === 'knowledge' ? '知识区' : '任务区'}…`, 'loading');
+        publishBtn.disabled = true;
+
+        try {
+            // 1. 检查文件是否存在（获取 SHA）
+            let sha = null;
+            try {
+                const checkRes = await fetch(
+                    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+                    { headers: { 'Authorization': `token ${token}` } }
+                );
+                if (checkRes.ok) {
+                    const existing = await checkRes.json();
+                    sha = existing.sha;
+                }
+            } catch (_) {}
+
+            // 2. 使用 TextEncoder 进行 Base64 编码（修复）
+            const encoder = new TextEncoder();
+            const data = encoder.encode(fullContent);
+            let binary = '';
+            data.forEach(byte => binary += String.fromCharCode(byte));
+            const contentBase64 = btoa(binary);
+
+            const payload = {
+                message: `📝 发布: ${title} (${currentTarget})`,
+                content: contentBase64,
+                branch: branch,
+            };
+            if (sha) payload.sha = sha;
+
+            console.log('🚀 发布请求:', { path, branch, payload });
+
+            const commitRes = await fetch(
+                `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                }
+            );
+
+            // 获取详细错误信息
+            const responseText = await commitRes.text();
+            console.log('📦 GitHub 响应:', commitRes.status, responseText);
+
+            if (!commitRes.ok) {
+                let errorMsg = `HTTP ${commitRes.status}`;
+                try {
+                    const errJson = JSON.parse(responseText);
+                    errorMsg = errJson.message || errorMsg;
+                } catch (_) {
+                    errorMsg = responseText || errorMsg;
+                }
+                throw new Error(errorMsg);
+            }
+
+            showStatus(`✅ 发布成功！已推送到 ${currentTarget} 分支`, 'success');
+            await loadList();
+
+            // 清空表单（保留标题和分类方便连续发布）
+            editSlug.value = '';
+            editSummary.value = '';
+            editCover.value = '';
+            editor.value('');
+            editTitle.value = '';
+
+        } catch (err) {
+            console.error('发布失败:', err);
+            showStatus(`❌ 发布失败: ${err.message}`, 'error');
+        } finally {
+            publishBtn.disabled = false;
+        }
+    }
+
+    // ===== 清空表单 =====
+    function clearForm() {
+        if (editor) editor.value('');
+        editTitle.value = '';
+        editSlug.value = '';
+        editSummary.value = '';
+        editCover.value = '';
+        hideStatus();
+    }
+
+    // ===== 事件绑定 =====
+    publishBtn.addEventListener('click', publishArticle);
+    clearBtn.addEventListener('click', clearForm);
+
+    // 标题失焦自动生成 Slug
+    editTitle.addEventListener('blur', () => {
+        if (!editSlug.value.trim()) {
+            editSlug.value = generateSlug(editTitle.value);
+        }
+    });
+
+    // ===== 初始化 =====
+    (async function init() {
+        const ok = await checkAuth();
+        if (!ok) return;
+
+        loadToken();
+        initEditor();
+        await loadList();
+
+        // 默认选中知识区
+        document.querySelector('.target-btn[data-target="knowledge"]')?.classList.add('active');
+        currentTarget = 'knowledge';
+
+        // 如果 URL 有 ?target= 参数
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetParam = urlParams.get('target');
+        if (targetParam === 'tasks' || targetParam === 'knowledge') {
+            const btn = document.querySelector(`.target-btn[data-target="${targetParam}"]`);
+            if (btn) btn.click();
+        }
+    })();
+
+    // 暴露给全局（调试用）
+    window.__admin = { editor, publishArticle, loadList, clearForm };
+</script>
+</body>
+</html>

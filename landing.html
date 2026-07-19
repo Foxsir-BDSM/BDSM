@@ -5,83 +5,326 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Foxsir · 欲界之门</title>
     <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
-    <link rel="stylesheet" href="/assets/css/landing.css" />
-    <!-- ===== R-03 身份选择器样式 ===== -->
-    <link rel="stylesheet" href="/assets/css/identity-selector.css" />
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0f0e17;
+            color: #fffffe;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image:
+                radial-gradient(ellipse at 50% 30%, rgba(212, 165, 116, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 70%, rgba(212, 165, 116, 0.04) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .hero-wrapper {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .logo-icon {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            border: 1px solid rgba(212, 165, 116, 0.15);
+            box-shadow: 0 0 40px rgba(212, 165, 116, 0.05);
+        }
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(212, 165, 116, 0.08);
+            border: 1px solid rgba(212, 165, 116, 0.12);
+            padding: 4px 18px;
+            border-radius: 30px;
+            font-size: 11px;
+            color: #d4a574;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-family: 'Georgia', serif;
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 14px;
+            background: linear-gradient(135deg, #f5d6a8 0%, #d4a574 50%, #b8946a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 480px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        /* ===== CTA 按钮组 ===== */
+        .cta-group {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .cta-group .btn {
+            padding: 14px 36px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .cta-group .btn-primary {
+            background: linear-gradient(135deg, #d4a574, #b8946a);
+            color: #0f0e17;
+            box-shadow: 0 8px 32px rgba(212, 165, 116, 0.15);
+        }
+        .cta-group .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(212, 165, 116, 0.25);
+        }
+        .cta-group .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .cta-group .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fffffe;
+        }
+
+        /* ============================================================
+           社交区域：分割线 + 引导语 + 图标（黑金配色）
+           ============================================================ */
+        .social-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 12px;
+            margin-bottom: 14px;
+        }
+        .social-divider .line {
+            flex: 1;
+            max-width: 80px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .social-divider .label {
+            font-size: 12px;
+            color: rgba(212, 165, 116, 0.4);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        /* ===== 作者社交 提亮 ===== */
+        .social-divider .label strong {
+            color: #d4a574;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+        }
+
+        .social-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(212, 165, 116, 0.15);
+            background: rgba(212, 165, 116, 0.02);
+            color: #d4a574;
+            text-decoration: none;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .social-btn:hover {
+            background: rgba(212, 165, 116, 0.10);
+            border-color: rgba(212, 165, 116, 0.30);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(212, 165, 116, 0.08);
+        }
+
+        /* ---------- Telegram 图标 ---------- */
+        .social-btn.telegram svg {
+            width: 22px;
+            height: 22px;
+            fill: #d4a574;
+            stroke: none;
+        }
+        .social-btn.telegram:hover svg {
+            fill: #f0d6b0;
+        }
+
+        /* ---------- Twitter / X 图标 ---------- */
+        .social-btn.twitter svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #d4a574;
+            stroke-width: 2;
+            stroke-linejoin: round;
+        }
+        .social-btn.twitter:hover svg {
+            stroke: #f0d6b0;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+            margin: 20px auto 16px;
+        }
+
+        .footer-links {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.1);
+        }
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+            transition: color 0.3s;
+            margin: 0 8px;
+        }
+        .footer-links a:hover {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 32px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+            .cta-group .btn {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+            .social-btn {
+                width: 40px;
+                height: 40px;
+            }
+            .social-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            .social-divider .label {
+                font-size: 10px;
+            }
+            .social-divider .line {
+                max-width: 40px;
+            }
+        }
+        @media (max-width: 380px) {
+            .social-divider .label {
+                font-size: 9px;
+            }
+            .social-divider .line {
+                max-width: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div id="landing-root">
-        <!-- 左区：品牌展示 -->
-        <div class="brand-section">
-            <div class="brand-content">
-                <div class="logo-wrapper">
-                    <div class="logo-icon">
-                        <img src="/assets/images/OIP-C.jpg" alt="Foxsir" />
-                    </div>
-                    <span class="version">Foxsir · 欲研社</span>
-                </div>
-                <h1 class="tagline">欲界之门 · 只渡有缘人</h1>
-                <p class="description">
-                    为 BDSM 同好打造的私密数字庄园。<br />
-                    探索 · 记录 · 连接 · 成长
-                </p>
-                <div class="features">
-                    <span>🔒 隐私至上</span>
-                    <span>⚡ 实时互动</span>
-                    <span>📜 档案传承</span>
-                </div>
-            </div>
+
+    <div class="hero-wrapper">
+        <!-- Logo -->
+        <div class="logo-icon">
+            <img src="/assets/images/OIP-C.jpg" alt="Foxsir" />
         </div>
 
-        <!-- 右区：认证 -->
-        <div class="auth-section">
-            <div class="auth-card">
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="login">登录</button>
-                    <button class="tab-btn" data-tab="register">注册</button>
-                </div>
+        <!-- 标识 -->
+        <div class="hero-badge">✦ 私密数字庄园 ✦</div>
 
-                <!-- 登录表单 -->
-                <form id="login-form" class="auth-form active">
-                    <div class="form-group">
-                        <label for="login-email">邮箱</label>
-                        <input type="email" id="login-email" placeholder="you@example.com" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="login-password">密码</label>
-                        <input type="password" id="login-password" placeholder="至少 6 位" required />
-                    </div>
-                    <button type="submit" class="btn-primary">进入欲界</button>
-                    <p class="auth-switch">还没有账号？<a href="#" data-switch-to="register">立即注册</a></p>
-                </form>
+        <!-- 标题 -->
+        <h1>欲界之门 · 只渡有缘人</h1>
+        <p class="subtitle">
+            为 BDSM 同好打造的私密数字庄园。<br />
+            探索 · 记录 · 连接 · 成长
+        </p>
 
-                <!-- 注册表单（含身份选择器） -->
-                <form id="register-form" class="auth-form">
-                    <div class="form-group">
-                        <label for="register-email">邮箱</label>
-                        <input type="email" id="register-email" placeholder="you@example.com" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="register-nickname">昵称</label>
-                        <input type="text" id="register-nickname" placeholder="圈内称呼" required />
-                    </div>
-
-                    <!-- ===== R-03 身份选择器容器 ===== -->
-                    <div class="form-group" id="identity-selector-container"></div>
-
-                    <div class="form-group">
-                        <label for="register-password">密码</label>
-                        <input type="password" id="register-password" placeholder="至少 6 位" required />
-                    </div>
-                    <button type="submit" class="btn-primary">创建账号</button>
-                    <p class="auth-switch">已有账号？<a href="#" data-switch-to="login">去登录</a></p>
-                </form>
-
-                <div id="auth-message" class="message"></div>
-            </div>
+        <!-- CTA 按钮 -->
+        <div class="cta-group">
+            <a href="/auth.html" class="btn btn-primary">🌿 立即加入</a>
+            <a href="/about.html" class="btn btn-secondary">📖 了解规则 →</a>
         </div>
-    </div>
 
+        <!-- ============================================================
+             社交区域：分割线 + 引导语 + 图标（黑金配色）
+             链接已填入，如需修改请替换 href 中的地址
+             ============================================================ -->
+        <div class="social-divider">
+            <span class="line"></span>
+            <span class="label">—— <strong>作者社交</strong> ——</span>
+            <span class="line"></span>
+        </div>
+
+        <div class="social-buttons">
+            <!-- Telegram -->
+            <a href="https://t.me/Foxsir0" class="social-btn telegram" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                </svg>
+            </a>
+
+            <!-- Twitter / X -->
+            <a href="https://twitter.com/foxsir00" class="social-btn twitter" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- 底部分隔
+        <div class="divider"></div>
+ -->
+        <!-- 底部链接
+        <div class="footer-links">
+            <a href="/auth.html">登录</a>
+            <span style="color:rgba(255,255,255,0.04);">·</span>
+            <a href="/about.html">关于</a>
+        </div>
+    </div> -->
+
+    <!-- ===== Import Map ===== -->
     <script type="importmap">
         {
             "imports": {
@@ -90,121 +333,14 @@
         }
     </script>
 
+    <!-- ===== 已登录跳转 ===== -->
     <script type="module">
-        import { supabase } from '/assets/js/supabase-client.js';
-        import { setSession, getCurrentUser } from '/assets/js/auth.js';
-        // ===== R-03 导入身份选择器 =====
-        import { renderIdentitySelector, getSelectedIdentityData, resetIdentitySelector } from '/assets/js/identity-selector.js';
-
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const msgBox = document.getElementById('auth-message');
-        const tabBtns = document.querySelectorAll('.tab-btn');
-        const switchLinks = document.querySelectorAll('[data-switch-to]');
-
-        function switchTab(tab) {
-            tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-            loginForm.classList.toggle('active', tab === 'login');
-            registerForm.classList.toggle('active', tab === 'register');
-            msgBox.textContent = '';
-            msgBox.className = 'message';
-            // 切换 Tab 时重置身份选择器（避免残留数据）
-            if (tab === 'register') {
-                resetIdentitySelector();
-            }
-        }
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-        });
-        switchLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                switchTab(link.dataset.switchTo);
-            });
-        });
-
-        function showMsg(text, type = 'error') {
-            msgBox.textContent = text;
-            msgBox.className = `message ${type}`;
-        }
-
-        // ===== R-03 初始化身份选择器 =====
-        // 注意：容器在注册表单中，需要等 DOM 渲染完成
-        // 由于容器在 register-form 中（默认隐藏），但 DOM 已存在，直接渲染
-        renderIdentitySelector('identity-selector-container');
-
-        // 登录
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
-            const password = document.getElementById('login-password').value;
-            if (!email || !password) return showMsg('请填写完整信息');
-
-            try {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                await setSession(data.session);
-                showMsg('登录成功，即将跳转…', 'success');
-                setTimeout(() => (window.location.href = '/index.html'), 800);
-            } catch (err) {
-                showMsg(err.message || '登录失败，请重试');
-            }
-        });
-
-        // ===== R-03 注册（含身份数据） =====
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value.trim();
-            const nickname = document.getElementById('register-nickname').value.trim();
-            const password = document.getElementById('register-password').value;
-            if (!email || !nickname || !password) return showMsg('请填写完整信息');
-            if (password.length < 6) return showMsg('密码至少 6 位');
-
-            // ===== 获取身份数据 =====
-            const identityData = getSelectedIdentityData();
-            if (!identityData.valid) {
-                return showMsg(identityData.error, 'error');
-            }
-
-            try {
-                const { data, error } = await supabase.auth.signUp({
-                    email,
-                    password,
-                    options: {
-                        data: {
-                            nickname,
-                            role: 'self',
-                            // ===== R-03 身份字段 =====
-                            primary_identity: identityData.primaryId,
-                            primary_label: identityData.primaryLabel,
-                            gender: identityData.gender,
-                            role_type: identityData.type, // 'top' 或 'bottom'
-                            secondary_identities: identityData.secondaryIds,
-                            points: 0, // R-02 默认积分
-                        }
-                    }
-                });
-                if (error) throw error;
-                if (!data.user) throw new Error('注册异常，请重试');
-
-                // 自动登录
-                const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-                if (signInError) throw signInError;
-
-                await setSession(data.session);
-                showMsg('注册成功，欢迎加入！', 'success');
-                setTimeout(() => (window.location.href = '/index.html'), 800);
-            } catch (err) {
-                showMsg(err.message || '注册失败，请重试');
-            }
-        });
-
-        // 已登录则直接跳转主站
+        import { getCurrentUser } from '/assets/js/auth.js';
         const user = await getCurrentUser();
         if (user) {
             window.location.href = '/index.html';
         }
     </script>
+
 </body>
 </html>

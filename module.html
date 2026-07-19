@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模块介绍 · Foxsir</title>
+    <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: #0f0e17;
+        color: #fffffe;
+        min-height: 100vh;
+        background-image: radial-gradient(ellipse at 50% 30%, rgba(212, 165, 116, 0.05) 0%, transparent 60%);
+        background-attachment: fixed;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+      }
+      .module-detail-card {
+        max-width: 680px;
+        width: 100%;
+        padding: 48px 40px;
+        background: rgba(15, 14, 23, 0.8);
+        backdrop-filter: blur(20px);
+        border-radius: 32px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+        text-align: center;
+      }
+      .module-detail-card .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        font-size: 13px;
+        transition: color 0.3s ease;
+      }
+      .module-detail-card .back-link:hover {
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .module-detail-card .icon-big {
+        font-size: 64px;
+        margin-bottom: 16px;
+        display: block;
+      }
+      .module-detail-card h1 {
+        font-family: 'Georgia', serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: #fffffe;
+        margin-bottom: 8px;
+      }
+      .module-detail-card .sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.2);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+      }
+      .module-detail-card .desc {
+        font-size: 16px;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 24px;
+      }
+      .module-detail-card .features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        margin-bottom: 28px;
+      }
+      .module-detail-card .features .tag {
+        background: rgba(212, 165, 116, 0.06);
+        border: 1px solid rgba(212, 165, 116, 0.06);
+        padding: 4px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .module-detail-card .cta-area {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .module-detail-card .cta-area .btn {
+        padding: 12px 32px;
+        border-radius: 40px;
+        font-size: 15px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        text-decoration: none;
+      }
+      .module-detail-card .cta-area .btn-primary {
+        background: linear-gradient(135deg, #d4a574, #b8946a);
+        color: #0f0e17;
+      }
+      .module-detail-card .cta-area .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(212, 165, 116, 0.2);
+      }
+      .module-detail-card .cta-area .btn-secondary {
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .module-detail-card .cta-area .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fffffe;
+      }
+      .module-detail-card .status-badge {
+        display: inline-block;
+        padding: 4px 16px;
+        border-radius: 30px;
+        font-size: 11px;
+        margin-bottom: 16px;
+        background: rgba(212, 165, 116, 0.06);
+        color: rgba(212, 165, 116, 0.4);
+      }
+      .module-detail-card .status-badge.maintenance {
+        background: rgba(245, 158, 11, 0.06);
+        color: #f59e0b;
+      }
+      @media (max-width: 480px) {
+        .module-detail-card { padding: 30px 20px; }
+        .module-detail-card h1 { font-size: 24px; }
+      }
+    </style>
+</head>
+<body>
+  <script type="module">
+    import { getVisibleProjects } from '/assets/js/registry.js';
+    import { getCurrentUser } from '/assets/js/auth.js';
+    import { getUserRole } from '/assets/js/identity.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const moduleId = params.get('id');
+
+    const container = document.getElementById('moduleDetail');
+
+    async function renderModule() {
+      if (!moduleId) {
+        container.innerHTML = `<p style="color:rgba(255,255,255,0.3);">未指定模块</p>`;
+        return;
+      }
+
+      const role = await getUserRole();
+      const projects = getVisibleProjects(role);
+      const project = projects.find(p => p.id === moduleId);
+
+      if (!project) {
+        container.innerHTML = `<p style="color:rgba(255,255,255,0.3);">模块不存在或暂无权限查看</p>`;
+        return;
+      }
+
+      const user = await getCurrentUser();
+      const isLoggedIn = !!user;
+      const isMaintenance = project.status === 'maintenance';
+      const isOffline = project.status === 'offline';
+
+      let statusBadge = '';
+      if (isMaintenance) {
+        statusBadge = `<div class="status-badge maintenance">🔧 维护中</div>`;
+      } else if (isOffline) {
+        statusBadge = `<div class="status-badge" style="background:rgba(239,68,68,0.06);color:#ef4444;">⛔ 暂不可用</div>`;
+      }
+
+      const ctaHtml = isLoggedIn
+        ? `<a href="${project.url}" class="btn btn-primary">进入 ${project.name}</a>`
+        : `<a href="/landing.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}" class="btn btn-primary">登录后解锁</a>
+           <a href="/landing.html" class="btn btn-secondary">返回首页</a>`;
+
+      container.innerHTML = `
+        <a href="/landing.html#modules-section" class="back-link">← 返回探索</a>
+        <span class="icon-big">${project.icon || '📦'}</span>
+        ${statusBadge}
+        <h1>${project.name}</h1>
+        <div class="sub">${project.id}</div>
+        <p class="desc">${project.description || '该模块正在建设中，敬请期待。'}</p>
+        <div class="features">
+          <span class="tag">🔒 私密内容</span>
+          <span class="tag">⚡ 实时互动</span>
+          <span class="tag">📜 档案沉淀</span>
+        </div>
+        <div class="cta-area">
+          ${ctaHtml}
+        </div>
+        ${!isLoggedIn ? `<p style="font-size:12px;color:rgba(255,255,255,0.1);margin-top:16px;">登录后可解锁完整功能</p>` : ''}
+      `;
+    }
+
+    renderModule();
+  </script>
+
+  <div class="module-detail-card" id="moduleDetail">
+    <p style="color:rgba(255,255,255,0.2);">加载中…</p>
+  </div>
+</body>
+</html>

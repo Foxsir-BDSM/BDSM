@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易内容管理 · Foxsir</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css">
+    <style>
+        body { background: #0f0e17; color: #fffffe; font-family: 'Inter', sans-serif; padding: 30px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { font-size: 28px; margin-bottom: 20px; }
+        .panel { background: rgba(255,255,255,0.02); border-radius: 18px; padding: 24px; border: 1px solid rgba(255,255,255,0.04); margin-bottom: 24px; }
+        .panel h2 { font-size: 16px; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: rgba(255,255,255,0.2); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color: #fffffe; font-size: 14px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: rgba(212,165,116,0.2); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .btn { padding: 12px 32px; border-radius: 30px; border: none; font-weight: 500; cursor: pointer; font-family: inherit; font-size: 15px; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #d4a574, #b8946a); color: #0f0e17; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(212,165,116,0.2); }
+        .btn-secondary { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); }
+        #statusMsg { margin-top: 12px; padding: 10px 16px; border-radius: 10px; font-size: 13px; display: none; }
+        #statusMsg.success { display: block; background: rgba(34,197,94,0.06); color: #22c55e; border: 1px solid rgba(34,197,94,0.06); }
+        #statusMsg.error { display: block; background: rgba(239,68,68,0.06); color: #f87171; border: 1px solid rgba(239,68,68,0.06); }
+        #statusMsg.loading { display: block; background: rgba(212,165,116,0.06); color: #d4a574; border: 1px solid rgba(212,165,116,0.06); }
+        .target-tabs { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .target-tabs .tab { padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.04); background: transparent; color: rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s; font-family: inherit; font-size: 14px; }
+        .target-tabs .tab.active { border-color: rgba(212,165,116,0.2); background: rgba(212,165,116,0.06); color: #d4a574; }
+        .list-item { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; }
+        .list-item .date { font-size: 11px; color: rgba(255,255,255,0.1); }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+        .token-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .token-row input { flex: 1; min-width: 200px; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); background: rgba(255,255,255,0.02); color: #fffffe; font-size: 14px; font-family: monospace; }
+        .token-status { font-size: 12px; }
+        .token-status.ok { color: #22c55e; }
+        .token-status.fail { color: #f87171; }
+        .hint { font-size: 12px; color: rgba(255,255,255,0.1); margin-top: 6px; }
+        #editorTextarea { display: none; }
+        .EasyMDEContainer { border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04); }
+        .EasyMDEContainer .CodeMirror { background: rgba(255,255,255,0.02); min-height: 300px; color: #d4d0c8; }
+        .EasyMDEContainer .editor-toolbar { background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .EasyMDEContainer .editor-toolbar button { color: rgba(255,255,255,0.3); }
+        .EasyMDEContainer .editor-toolbar button:hover { background: rgba(212,165,116,0.06); color: #d4a574; }
+        .EasyMDEContainer .editor-preview { background: rgba(255,255,255,0.02); color: #d4d0c8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📝 简易内容管理</h1>
+
+    <!-- Token 配置 -->
+    <div class="panel">
+        <div class="token-row">
+            <input type="password" id="tokenInput" placeholder="GitHub Token" value="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">
+            <button class="btn btn-secondary" id="saveTokenBtn">保存</button>
+            <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
+        </div>
+        <div class="hint">Token 已硬编码，可直接使用。如需更换，粘贴新 Token 后点击保存。</div>
+    </div>
+
+    <!-- 编辑器 -->
+    <div class="panel">
+        <h2>✏️ 编写内容</h2>
+        <div class="target-tabs">
+            <button class="tab active" data-target="knowledge">📚 知识区</button>
+            <button class="tab" data-target="tasks">🎯 任务区</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>标题 *</label><input type="text" id="title" placeholder="文章标题"></div>
+            <div class="form-group"><label>Slug *</label><input type="text" id="slug" placeholder="my-article"></div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>分类</label>
+                <select id="category">
+                    <option value="入门指南">入门指南</option>
+                    <option value="安全知识">安全知识</option>
+                    <option value="技巧教程">技巧教程</option>
+                    <option value="圈层文化">圈层文化</option>
+                    <option value="日常任务">日常任务</option>
+                    <option value="挑战任务">挑战任务</option>
+                </select>
+            </div>
+            <div class="form-group"><label>积分</label><input type="number" id="points" value="5" min="0"></div>
+        </div>
+        <div class="form-group"><label>摘要</label><input type="text" id="summary" placeholder="简短描述"></div>
+        <div class="form-group"><label>封面图 URL</label><input type="text" id="cover" placeholder="https://example.com/cover.jpg"></div>
+        <div class="form-group"><label>正文</label>
+            <textarea id="editorTextarea" placeholder="支持 Markdown 语法"></textarea>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+            <button class="btn btn-primary" id="publishBtn">🚀 发布</button>
+            <button class="btn btn-secondary" id="clearBtn">清空</button>
+        </div>
+        <div id="statusMsg"></div>
+    </div>
+
+    <!-- 已发布列表 -->
+    <div class="panel">
+        <h2>📋 已发布内容</h2>
+        <div id="listContainer"><div style="text-align:center;padding:20px;color:rgba(255,255,255,0.1);">加载中…</div></div>
+    </div>
+</div>
+
+<!-- ===== 加载 EasyMDE ===== -->
+<script src="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.js">
+</script>
+
+<!-- ===== 主脚本 ===== -->
+<script>
+    // ===== 配置 =====
+    const CONFIG = {
+        owner: 'Foxsir-BDSM',
+        repo: 'foxsir-content',
+        branches: { knowledge: 'knowledge', tasks: 'tasks' },
+        paths: { knowledge: 'articles', tasks: 'tasks' }
+    };
+    const TOKEN_KEY = 'foxsir_github_token';
+    const HARDCODED_TOKEN = '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';
+
+    // ===== DOM 引用 =====
+    const tokenInput = document.getElementById('tokenInput');
+    const saveTokenBtn = document.getElementById('saveTokenBtn');
+    const tokenStatus = document.getElementById('tokenStatus');
+    const tabs = document.querySelectorAll('.tab');
+    const titleEl = document.getElementById('title');
+    const slugEl = document.getElementById('slug');
+    const categoryEl = document.getElementById('category');
+    const pointsEl = document.getElementById('points');
+    const summaryEl = document.getElementById('summary');
+    const coverEl = document.getElementById('cover');
+    const publishBtn = document.getElementById('publishBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const statusMsg = document.getElementById('statusMsg');
+    const listContainer = document.getElementById('listContainer');
+    const textarea = document.getElementById('editorTextarea');
+
+    let currentTarget = 'knowledge';
+    let editor = null;
+
+    // ===== Token 管理（强制使用硬编码） =====
+    function loadToken() {
+        // 强制使用硬编码 token，并覆盖 localStorage 中的旧值
+        const token = HARDCODED_TOKEN;
+        localStorage.setItem(TOKEN_KEY, token);
+        tokenInput.value = token;
+        tokenStatus.textContent = '✅ 已配置';
+        tokenStatus.className = 'token-status ok';
+        return token;
+    }
+
+    function saveToken() {
+        const token = tokenInput.value.trim();
+        if (token && token.length > 10) {
+            localStorage.setItem(TOKEN_KEY, token);
+            tokenStatus.textContent = '✅ 已配置';
+            tokenStatus.className = 'token-status ok';
+            showStatus('Token 已保存', 'success');
+            loadList();
+        } else {
+            localStorage.removeItem(TOKEN_KEY);
+            tokenStatus.textContent = '❌ 无效 Token';
+            tokenStatus.className = 'token-status fail';
+            showStatus('请输入有效的 Token', 'error');
+        }
+    }
+    saveTokenBtn.addEventListener('click', saveToken);
+
+    // ===== 初始化编辑器 =====
+    function initEditor() {
+        if (editor) return;
+        try {
+            editor = new EasyMDE({
+                element: textarea,
+                spellChecker: false,
+                toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'image', 'table', '|', 'preview', 'side-by-side', 'fullscreen'],
+                status: ['lines', 'words']
+            });
+            console.log('✅ EasyMDE 初始化成功');
+        } catch (err) {
+            console.error('❌ EasyMDE 初始化失败:', err);
+            textarea.style.display = 'block';
+            textarea.style.minHeight = '300px';
+            textarea.style.background = 'rgba(255,255,255,0.02)';
+            textarea.style.color = '#d4d0c8';
+            textarea.style.padding = '12px';
+            textarea.style.border = '1px solid rgba(255,255,255,0.04)';
+            textarea.style.borderRadius = '12px';
+            showStatus('编辑器加载失败，已降级为纯文本区', 'error');
+        }
+    }
+
+    // ===== 状态消息 =====
+    function showStatus(text, type = 'loading') {
+        statusMsg.textContent = text;
+        statusMsg.className = type;
+        statusMsg.style.display = 'block';
+    }
+    function hideStatus() { statusMsg.style.display = 'none'; }
+
+    // ===== Slug 生成 =====
+    function generateSlug(title) {
+        return title.toLowerCase().replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 50);
+    }
+
+    // ===== 加载列表 =====
+    async function loadList() {
+        const token = loadToken();
+        if (!token) {
+            listContainer.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.1);">请先配置 GitHub Token</div>';
+            return;
+        }
+        const branch = CONFIG.branches[currentTarget];
+        const path = CONFIG.paths[currentTarget];
+        try {
+            const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${branch}`, {
+                headers: { 'Authorization': `token ${token}` }
+            });
+            if (!res.ok) {
+                if (res.status === 401) {
+                    listContainer.innerHTML = '<div style="text-align:center;padding:20px;color:#f87171;">❌ Token 无效或权限不足，请重新生成并保存</div>';
+                    return;
+                }
+                if (res.status === 404) {
+                    listContainer.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.1);">📭 暂无内容</div>';
+                    return;
+                }
+                throw new Error('HTTP ' + res.status);
+            }
+            const data = await res.json();
+            const files = data.filter(f => f.name.endsWith('.md'));
+            if (files.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.1);">📭 暂无内容</div>';
+                return;
+            }
+            listContainer.innerHTML = files.map(f =>
+                `<div class="list-item">
+                    <span>${f.name.replace('.md', '')}</span>
+                    <span class="date">${new Date(f.commit?.committer?.date || f.sha).toLocaleDateString()}</span>
+                </div>`
+            ).join('');
+        } catch (e) {
+            listContainer.innerHTML = `<div style="text-align:center;padding:20px;color:rgba(255,255,255,0.1);">⚠️ ${e.message}</div>`;
+        }
+    }
+
+    // ===== 发布 =====
+    async function publishArticle() {
+        const token = loadToken();
+        if (!token) { showStatus('请先配置 GitHub Token', 'error'); return; }
+
+        const title = titleEl.value.trim();
+        let slug = slugEl.value.trim();
+        if (!title) { showStatus('请输入标题', 'error'); return; }
+        if (!slug) { slug = generateSlug(title); slugEl.value = slug; }
+
+        let content;
+        if (editor) {
+            content = editor.value();
+        } else {
+            content = textarea.value;
+        }
+        if (!content) { showStatus('请输入正文', 'error'); return; }
+
+        const frontmatter = `---\ntitle: ${title}\nslug: ${slug}\ncategory: ${categoryEl.value}\nreading_points: ${parseInt(pointsEl.value) || 0}\nsummary: ${summaryEl.value.trim() || ''}\ncover_url: ${coverEl.value.trim() || ''}\nis_public: true\ncreated_at: ${new Date().toISOString()}\n---\n\n`;
+        const fullContent = frontmatter + content;
+        const path = `${CONFIG.paths[currentTarget]}/${slug}.md`;
+        const branch = CONFIG.branches[currentTarget];
+
+        showStatus(`⏳ 发布到 ${currentTarget}…`, 'loading');
+        publishBtn.disabled = true;
+
+        try {
+            // 检查是否存在
+            let sha = null;
+            try {
+                const check = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${branch}`, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+                if (check.ok) { const existing = await check.json(); sha = existing.sha; }
+            } catch (_) {}
+
+            // Base64 编码
+            const encoder = new TextEncoder();
+            const data = encoder.encode(fullContent);
+            let binary = '';
+            data.forEach(byte => binary += String.fromCharCode(byte));
+            const contentBase64 = btoa(binary);
+
+            const payload = {
+                message: `📝 发布: ${title} (${currentTarget})`,
+                content: contentBase64,
+                branch: branch,
+            };
+            if (sha) payload.sha = sha;
+
+            const commitRes = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const responseText = await commitRes.text();
+            if (!commitRes.ok) {
+                let errMsg = responseText;
+                try { const j = JSON.parse(responseText); errMsg = j.message || errMsg; } catch (_) {}
+                throw new Error(errMsg);
+            }
+
+            showStatus(`✅ 发布成功！已推送到 ${currentTarget}`, 'success');
+            await loadList();
+            // 清空部分字段
+            slugEl.value = '';
+            summaryEl.value = '';
+            coverEl.value = '';
+            if (editor) editor.value('');
+            else textarea.value = '';
+            titleEl.value = '';
+        } catch (err) {
+            console.error('发布失败:', err);
+            showStatus(`❌ 失败: ${err.message}`, 'error');
+        } finally {
+            publishBtn.disabled = false;
+        }
+    }
+
+    // ===== 事件绑定 =====
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            currentTarget = tab.dataset.target;
+            loadList();
+        });
+    });
+
+    publishBtn.addEventListener('click', publishArticle);
+    clearBtn.addEventListener('click', () => {
+        if (editor) editor.value('');
+        else textarea.value = '';
+        titleEl.value = '';
+        slugEl.value = '';
+        summaryEl.value = '';
+        coverEl.value = '';
+        hideStatus();
+    });
+    titleEl.addEventListener('blur', () => {
+        if (!slugEl.value.trim()) slugEl.value = generateSlug(titleEl.value);
+    });
+
+    // ===== 初始化 =====
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 DOM 已加载，初始化…');
+        loadToken();
+        initEditor();
+        loadList();
+    });
+
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        console.log('🚀 DOM 已就绪，立即初始化…');
+        loadToken();
+        setTimeout(function() {
+            initEditor();
+            loadList();
+        }, 50);
+    }
+</script>
+</body>
+</html>

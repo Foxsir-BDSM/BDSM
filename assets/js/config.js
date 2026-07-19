@@ -27,13 +27,13 @@ export const PROJECTS = [
     description: '欲望的知识海洋，懂欲方可纵欲',
     url: '/assets/pages/knowledge/',
     status: 'online',
-    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+    requiredRoles: ['guest', 'self', 'verified', 'subadmin', 'admin'],  // ✅ 访客可见
   },
   {
     id: 'mission',
     name: '⛓️ 欲炼之途',
     description: '欲望的修炼之路，每一次靠近都更深',
-    url: '/assets/pages/mission/',
+    url: '/assets/pages/task/',   // ✅ 修正为 task
     status: 'online',
     requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
   },
@@ -41,7 +41,6 @@ export const PROJECTS = [
     id: 'dream-weaver',
     name: '🌙 淫梦织境',
     description: '编织梦境与幻想，在场景中尽情发泄',
-    // ★★★ F001 修复：复用 random 占位页面 ★★★
     url: '/assets/pages/random/',
     status: 'online',
     requiredRoles: ['verified', 'subadmin', 'admin'],

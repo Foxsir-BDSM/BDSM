@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>欲识之海 · Foxsir</title>
+    <title>欲渊之庭 · Foxsir</title>
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ===== 与之前完全相同的样式，省略以节省篇幅，但实际应保留全部样式 ===== */
+        /* ===== 样式与知识区完全相同，仅标题颜色微调，为节省篇幅略去，实际应完整保留 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -106,12 +106,12 @@
         .filters .filter-btn:hover:not(.active) {
             color: rgba(255,255,255,0.6);
         }
-        .article-grid {
+        .task-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
         }
-        .article-card {
+        .task-card {
             background: rgba(255,255,255,0.02);
             border-radius: 18px;
             padding: 20px;
@@ -123,13 +123,13 @@
             flex-direction: column;
             position: relative;
         }
-        .article-card:hover {
+        .task-card:hover {
             transform: translateY(-4px);
             border-color: rgba(212,165,116,0.12);
             background: rgba(255,255,255,0.04);
             box-shadow: 0 12px 40px rgba(0,0,0,0.3);
         }
-        .article-card .cover {
+        .task-card .cover {
             width: 100%;
             height: 140px;
             background-size: cover;
@@ -139,7 +139,7 @@
             background-color: rgba(255,255,255,0.02);
             flex-shrink: 0;
         }
-        .article-card .meta {
+        .task-card .meta {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -147,25 +147,25 @@
             color: rgba(255,255,255,0.15);
             margin-bottom: 6px;
         }
-        .article-card .meta .category {
+        .task-card .meta .category {
             background: rgba(212,165,116,0.06);
             padding: 0 10px;
             border-radius: 20px;
             color: #d4a574;
         }
-        .article-card h3 {
+        .task-card h3 {
             font-size: 17px;
             font-weight: 500;
             margin-bottom: 6px;
             color: #fffffe;
         }
-        .article-card p {
+        .task-card p {
             font-size: 13px;
             color: rgba(255,255,255,0.3);
             line-height: 1.5;
             flex: 1;
         }
-        .article-card .footer {
+        .task-card .footer {
             margin-top: 12px;
             display: flex;
             justify-content: space-between;
@@ -174,17 +174,17 @@
             border-top: 1px solid rgba(255,255,255,0.02);
             padding-top: 10px;
         }
-        .article-card .footer .badge {
+        .task-card .footer .badge {
             color: #d4a574;
         }
-        .article-card .card-actions {
+        .task-card .card-actions {
             display: none;
             gap: 8px;
             margin-top: 10px;
             padding-top: 10px;
             border-top: 1px solid rgba(255,255,255,0.04);
         }
-        .article-card .card-actions .btn-sm {
+        .task-card .card-actions .btn-sm {
             padding: 4px 14px;
             border-radius: 20px;
             border: none;
@@ -194,21 +194,21 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-        .article-card .card-actions .btn-edit {
+        .task-card .card-actions .btn-edit {
             background: rgba(212,165,116,0.06);
             color: #d4a574;
         }
-        .article-card .card-actions .btn-edit:hover {
+        .task-card .card-actions .btn-edit:hover {
             background: rgba(212,165,116,0.12);
         }
-        .article-card .card-actions .btn-delete {
+        .task-card .card-actions .btn-delete {
             background: rgba(239,68,68,0.06);
             color: #f87171;
         }
-        .article-card .card-actions .btn-delete:hover {
+        .task-card .card-actions .btn-delete:hover {
             background: rgba(239,68,68,0.12);
         }
-        .article-card .card-actions.visible {
+        .task-card .card-actions.visible {
             display: flex;
         }
         .empty-state {
@@ -218,7 +218,7 @@
         }
         .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
         @media (max-width: 480px) {
-            .article-grid { grid-template-columns: 1fr; }
+            .task-grid { grid-template-columns: 1fr; }
             .header h1 { font-size: 22px; }
             .header .right-actions .btn { font-size: 11px; padding: 6px 12px; }
         }
@@ -354,7 +354,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>📚 欲识之海</h1>
+        <h1>🎯 欲渊之庭</h1>
         <div class="right-actions" id="adminActions">
             <a href="/landing.html#modules-section" class="back-link">← 返回探索</a>
             <button class="btn btn-publish" id="publishBtn" style="display:none;">✨ 发布</button>
@@ -364,14 +364,12 @@
 
     <div class="filters" id="filterContainer">
         <button class="filter-btn active" data-category="all">全部</button>
-        <button class="filter-btn" data-category="入门指南">入门指南</button>
-        <button class="filter-btn" data-category="安全知识">安全知识</button>
-        <button class="filter-btn" data-category="技巧教程">技巧教程</button>
-        <button class="filter-btn" data-category="圈层文化">圈层文化</button>
+        <button class="filter-btn" data-category="日常任务">日常任务</button>
+        <button class="filter-btn" data-category="挑战任务">挑战任务</button>
     </div>
 
-    <div class="article-grid" id="articleGrid">
-        <div class="empty-state"><div class="icon">📖</div><p>加载中…</p></div>
+    <div class="task-grid" id="taskGrid">
+        <div class="empty-state"><div class="icon">🎯</div><p>加载中…</p></div>
     </div>
 </div>
 
@@ -379,7 +377,7 @@
 <div class="modal-overlay" id="editorModal">
     <div class="modal-box">
         <button class="modal-close" id="modalCloseBtn">✕</button>
-        <div class="modal-title" id="modalTitle">📝 发布新文章</div>
+        <div class="modal-title" id="modalTitle">📝 发布新任务</div>
 
         <input type="hidden" id="editSlug" />
         <input type="hidden" id="editMode" value="create" />
@@ -387,15 +385,13 @@
         <div class="form-row">
             <div class="form-group">
                 <label>标题 *</label>
-                <input type="text" id="modalTitleInput" placeholder="文章标题" />
+                <input type="text" id="modalTitleInput" placeholder="任务标题" />
             </div>
             <div class="form-group">
                 <label>分类</label>
                 <select id="modalCategory">
-                    <option value="入门指南">入门指南</option>
-                    <option value="安全知识">安全知识</option>
-                    <option value="技巧教程">技巧教程</option>
-                    <option value="圈层文化">圈层文化</option>
+                    <option value="日常任务">日常任务</option>
+                    <option value="挑战任务">挑战任务</option>
                 </select>
             </div>
         </div>
@@ -405,7 +401,7 @@
                 <input type="text" id="modalSlug" placeholder="自动生成" readonly style="opacity:0.5;" />
             </div>
             <div class="form-group">
-                <label>阅读积分</label>
+                <label>完成积分</label>
                 <input type="number" id="modalPoints" value="5" min="0" />
             </div>
         </div>
@@ -456,13 +452,11 @@
     } from '/assets/js/content-manager.js';
     import EasyMDE from 'easymde';
 
-    // ===== 常量 =====
-    const BRANCH = CONTENT_CONFIG.branches.knowledge;
-    const PATH = CONTENT_CONFIG.paths.knowledge;
-    const TARGET_NAME = '知识区';
+    const BRANCH = CONTENT_CONFIG.branches.tasks;
+    const PATH = CONTENT_CONFIG.paths.tasks;
+    const TARGET_NAME = '任务区';
 
-    // ===== DOM 引用 =====
-    const grid = document.getElementById('articleGrid');
+    const grid = document.getElementById('taskGrid');
     const filterBtns = document.querySelectorAll('.filter-btn');
     const publishBtn = document.getElementById('publishBtn');
     const manageBtn = document.getElementById('manageBtn');
@@ -483,13 +477,12 @@
     const editMode = document.getElementById('editMode');
 
     let currentCategory = 'all';
-    let allArticles = [];
+    let allTasks = [];
     let isManageMode = false;
     let editorInstance = null;
     let currentUserRole = null;
     let pendingContent = '';   // 暂存编辑器内容
 
-    // ===== 权限控制 =====
     async function checkAdmin() {
         const user = await getCurrentUser();
         const role = await getUserRole();
@@ -504,13 +497,12 @@
         return false;
     }
 
-    // ===== 获取文章列表（实时，带缓存破坏） =====
-    async function fetchArticles() {
+    // ===== 获取任务列表（实时，带缓存破坏） =====
+    async function fetchTasks() {
         const files = await fetchContentList(BRANCH, PATH);
-        const articles = await Promise.all(
+        const tasks = await Promise.all(
             files.map(async (file) => {
                 try {
-                    // 加时间戳破坏缓存
                     const url = file.download_url + '?t=' + Date.now();
                     const res = await fetch(url);
                     const raw = await res.text();
@@ -520,74 +512,72 @@
                 }
             })
         );
-        return articles.filter(a => a !== null);
+        return tasks.filter(t => t !== null);
     }
 
-    // ===== 渲染文章 =====
-    async function renderArticles(category = 'all') {
-        showLoading('加载文章', '欲识之海…');
+    async function renderTasks(category = 'all') {
+        showLoading('加载任务', '欲渊之庭…');
         try {
             const user = await getCurrentUser();
-            let articles = await fetchArticles();
-            allArticles = articles;
+            let tasks = await fetchTasks();
+            allTasks = tasks;
 
             if (category !== 'all') {
-                articles = articles.filter(a => a.category === category);
+                tasks = tasks.filter(t => t.category === category);
             }
 
             if (!user) {
-                articles = articles.filter(a => a.is_public);
+                tasks = tasks.filter(t => t.is_public);
             }
 
-            if (articles.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>暂无文章，敬请期待</p></div>`;
+            if (tasks.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>暂无任务，敬请期待</p></div>`;
                 return;
             }
 
-            grid.innerHTML = articles.map(article => {
-                const coverStyle = article.cover_url
-                    ? `background-image: url(${article.cover_url});`
+            grid.innerHTML = tasks.map(task => {
+                const coverStyle = task.cover_url
+                    ? `background-image: url(${task.cover_url});`
                     : `background: linear-gradient(135deg, rgba(212,165,116,0.05), rgba(212,165,116,0.01));`;
-                const isLocked = !user && !article.is_public;
+                const isLocked = !user && !task.is_public;
 
                 return `
-                    <div class="article-card" data-slug="${article.slug}">
-                        <a href="/assets/pages/knowledge/article.html?slug=${article.slug}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
+                    <div class="task-card" data-slug="${task.slug}">
+                        <a href="/assets/pages/task/detail.html?slug=${task.slug}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
                             <div class="cover" style="${coverStyle}"></div>
                             <div class="meta">
-                                <span class="category">${article.category}</span>
-                                <span>${new Date(article.created_at).toLocaleDateString('zh-CN')}</span>
+                                <span class="category">${task.category}</span>
+                                <span>${new Date(task.created_at).toLocaleDateString('zh-CN')}</span>
                             </div>
-                            <h3>${article.title}</h3>
-                            <p>${article.summary || '点击阅读全文…'}</p>
+                            <h3>${task.title}</h3>
+                            <p>${task.summary || '点击查看详情…'}</p>
                             <div class="footer">
-                                <span>${isLocked ? '🔒 登录后解锁' : '📖 阅读'}</span>
-                                <span class="badge">${article.is_public ? '公开' : '私密'}</span>
+                                <span>${isLocked ? '🔒 登录后解锁' : '🎯 查看任务'}</span>
+                                <span class="badge">${task.is_public ? '公开' : '私密'}</span>
                             </div>
                         </a>
                         <div class="card-actions ${isManageMode ? 'visible' : ''}">
-                            <button class="btn-sm btn-edit" data-slug="${article.slug}">✏️ 编辑</button>
-                            <button class="btn-sm btn-delete" data-slug="${article.slug}">🗑️ 删除</button>
+                            <button class="btn-sm btn-edit" data-slug="${task.slug}">✏️ 编辑</button>
+                            <button class="btn-sm btn-delete" data-slug="${task.slug}">🗑️ 删除</button>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            // 绑定编辑/删除事件
             document.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const slug = btn.dataset.slug;
-                    const article = allArticles.find(a => a.slug === slug);
-                    if (article) openEditor('edit', article);
+                    const task = allTasks.find(t => t.slug === slug);
+                    if (task) openEditor('edit', task);
                 });
             });
             document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const slug = btn.dataset.slug;
-                    const article = allArticles.find(a => a.slug === slug);
-                    if (article) confirmDelete(article);
+                    const task = allTasks.find(t => t.slug === slug);
+                    if (task) confirmDelete(task);
                 });
             });
 
@@ -599,21 +589,19 @@
         }
     }
 
-    // ===== 管理模式切换 =====
     manageBtn.addEventListener('click', () => {
         isManageMode = !isManageMode;
         manageBtn.classList.toggle('active', isManageMode);
         manageBtn.textContent = isManageMode ? '✕ 退出管理' : '⚙️ 管理';
-        renderArticles(currentCategory);
+        renderTasks(currentCategory);
     });
 
-    // ===== 筛选 =====
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCategory = btn.dataset.category;
-            renderArticles(currentCategory);
+            renderTasks(currentCategory);
         });
     });
 
@@ -627,21 +615,18 @@
         modalStatus.style.display = 'block';
     }
 
-    function hideStatus() {
-        modalStatus.style.display = 'none';
-    }
+    function hideStatus() { modalStatus.style.display = 'none'; }
 
     function openEditor(mode, data = null) {
         editMode.value = mode;
 
-        // ----- 填充表单字段（非编辑器部分） -----
         if (mode === 'create') {
-            modalTitle.textContent = '📝 发布新文章';
+            modalTitle.textContent = '📝 发布新任务';
             modalSubmitBtn.textContent = '🚀 发布';
             modalTitleInput.value = '';
             modalSlug.value = '';
             editSlug.value = '';
-            modalCategory.value = '入门指南';
+            modalCategory.value = '日常任务';
             modalPoints.value = 5;
             modalSummary.value = '';
             modalCover.value = '';
@@ -652,19 +637,17 @@
             modalTitleInput.value = data.title;
             modalSlug.value = data.slug;
             editSlug.value = data.slug;
-            modalCategory.value = data.category || '入门指南';
+            modalCategory.value = data.category || '日常任务';
             modalPoints.value = data.reading_points || 5;
             modalSummary.value = data.summary || '';
             modalCover.value = data.cover_url || '';
             pendingContent = data.content || '';
         }
 
-        // ----- 显示弹窗 -----
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         hideStatus();
 
-        // ----- 初始化编辑器并填充内容（延迟确保 DOM 就绪） -----
         setTimeout(() => {
             initEditor();
             if (editorInstance) {
@@ -705,14 +688,11 @@
 
     function destroyEditor() {
         if (editorInstance) {
-            try {
-                editorInstance.toTextArea();
-            } catch (_) {}
+            try { editorInstance.toTextArea(); } catch (_) {}
             editorInstance = null;
         }
     }
 
-    // ===== 标题 → Slug 自动生成 =====
     modalTitleInput.addEventListener('input', () => {
         const title = modalTitleInput.value.trim();
         if (title && !editSlug.value) {
@@ -720,7 +700,6 @@
         }
     });
 
-    // ===== 提交（发布/更新） =====
     modalSubmitBtn.addEventListener('click', async () => {
         const title = modalTitleInput.value.trim();
         let slug = modalSlug.value.trim() || editSlug.value;
@@ -751,7 +730,7 @@
             showStatus(`✅ ${mode === 'create' ? '发布' : '更新'}成功！`, 'success');
             setTimeout(() => {
                 closeEditor();
-                renderArticles(currentCategory);
+                renderTasks(currentCategory);
             }, 600);
         } catch (err) {
             console.error('提交失败:', err);
@@ -761,16 +740,15 @@
         }
     });
 
-    // ===== 删除确认 =====
-    async function confirmDelete(article) {
-        if (!confirm(`确定要删除「${article.title}」吗？此操作不可撤销。`)) return;
+    async function confirmDelete(task) {
+        if (!confirm(`确定要删除「${task.title}」吗？此操作不可撤销。`)) return;
 
         showLoading('删除中…', '');
         try {
-            const filePath = `${PATH}/${article.slug}.md`;
+            const filePath = `${PATH}/${task.slug}.md`;
             await deleteContent(BRANCH, filePath);
             alert('✅ 删除成功！');
-            renderArticles(currentCategory);
+            renderTasks(currentCategory);
         } catch (err) {
             console.error('删除失败:', err);
             alert('❌ 删除失败：' + err.message);
@@ -779,7 +757,6 @@
         }
     }
 
-    // ===== Modal 关闭事件 =====
     modalCloseBtn.addEventListener('click', closeEditor);
     modalCancelBtn.addEventListener('click', closeEditor);
     modal.addEventListener('click', (e) => {
@@ -789,7 +766,6 @@
         if (e.key === 'Escape' && modal.classList.contains('active')) closeEditor();
     });
 
-    // ===== 发布按钮 =====
     publishBtn.addEventListener('click', () => {
         openEditor('create');
     });
@@ -800,7 +776,7 @@
 
     (async function init() {
         await checkAdmin();
-        await renderArticles('all');
+        await renderTasks('all');
     })();
 </script>
 </body>
