@@ -9,7 +9,7 @@ import { CONTENT_CONFIG } from './content-config.js';
 export function getToken() {
     const token = localStorage.getItem('foxsir_github_token');
     if (token && token.length > 10) return token;
-    return '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';
+    return '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';
 }
 
 // ===== 获取文件列表 =====
