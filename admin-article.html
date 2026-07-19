@@ -248,15 +248,15 @@
         <a href="/index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <!-- ===== Token 配置区（硬编码已生效） ===== -->
+    <!-- ===== Token 配置区 ===== -->
     <div class="token-section" id="tokenSection">
         <div class="token-row">
-            <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="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" />
+            <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="" />
             <button class="btn" id="saveTokenBtn">保存 Token</button>
             <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
         </div>
         <div class="hint">
-            💡 Token 已硬编码到页面中（仅开发测试用）。正式上线前请移除或改用环境变量。
+            💡 请从 Vercel 环境变量或手动输入 Token。硬编码已移除。
         </div>
     </div>
 
@@ -369,18 +369,40 @@
     let currentTarget = 'knowledge';
     let editor = null;
 
-    // ===== Token 管理（硬编码） =====
-    const HARDCODED_TOKEN = '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';
     const TOKEN_KEY = 'foxsir_github_token';
 
+    // ===== Token 管理（从环境变量或 localStorage 读取） =====
+    function getEnvToken() {
+        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+            return import.meta.env.VITE_GITHUB_TOKEN;
+        }
+        return null;
+    }
+
     function loadToken() {
-        // 优先使用硬编码
-        const token = HARDCODED_TOKEN;
-        localStorage.setItem(TOKEN_KEY, token);
-        tokenInput.value = token;
-        tokenStatus.textContent = '✅ 已配置（硬编码）';
-        tokenStatus.className = 'token-status ok';
-        return token;
+        // 1. 优先从 localStorage 读取
+        let token = localStorage.getItem(TOKEN_KEY);
+        if (token && token.length > 10) {
+            tokenInput.value = token;
+            tokenStatus.textContent = '✅ 已配置（localStorage）';
+            tokenStatus.className = 'token-status ok';
+            return token;
+        }
+
+        // 2. 从环境变量读取
+        const envToken = getEnvToken();
+        if (envToken && envToken.length > 10) {
+            tokenInput.value = envToken;
+            localStorage.setItem(TOKEN_KEY, envToken);
+            tokenStatus.textContent = '✅ 已配置（环境变量）';
+            tokenStatus.className = 'token-status ok';
+            return envToken;
+        }
+
+        tokenInput.value = '';
+        tokenStatus.textContent = '❌ 未配置';
+        tokenStatus.className = 'token-status fail';
+        return null;
     }
 
     function saveToken() {
@@ -466,7 +488,7 @@
             .slice(0, 50);
     }
 
-    // ===== 获取当前内容列表（从 GitHub 分支） =====
+    // ===== 获取当前内容列表 =====
     async function loadList() {
         const token = loadToken();
         if (!token) {
@@ -515,7 +537,7 @@
         }
     }
 
-    // ===== 发布文章（修复版 Base64 编码） =====
+    // ===== 发布文章 =====
     async function publishArticle() {
         const token = loadToken();
         if (!token) {
@@ -535,18 +557,7 @@
         if (!slug) { slug = generateSlug(title); editSlug.value = slug; }
         if (!content) { showStatus('⚠️ 请输入正文内容', 'error'); return; }
 
-        // 构建 frontmatter
-        const frontmatter = `---
-title: ${title}
-slug: ${slug}
-category: ${category}
-reading_points: ${points}
-summary: ${summary || ''}
-cover_url: ${cover || ''}
-is_public: true
-created_at: ${new Date().toISOString()}
----\n\n`;
-
+        const frontmatter = `---\ntitle: ${title}\nslug: ${slug}\ncategory: ${category}\nreading_points: ${points}\nsummary: ${summary || ''}\ncover_url: ${cover || ''}\nis_public: true\ncreated_at: ${new Date().toISOString()}\n---\n\n`;
         const fullContent = frontmatter + content;
         const fileName = `${slug}.md`;
         const path = `${CONTENT_CONFIG.paths[currentTarget]}/${fileName}`;
@@ -557,7 +568,6 @@ created_at: ${new Date().toISOString()}
         publishBtn.disabled = true;
 
         try {
-            // 1. 检查文件是否存在（获取 SHA）
             let sha = null;
             try {
                 const checkRes = await fetch(
@@ -570,7 +580,6 @@ created_at: ${new Date().toISOString()}
                 }
             } catch (_) {}
 
-            // 2. 使用 TextEncoder 进行 Base64 编码（修复）
             const encoder = new TextEncoder();
             const data = encoder.encode(fullContent);
             let binary = '';
@@ -598,7 +607,6 @@ created_at: ${new Date().toISOString()}
                 }
             );
 
-            // 获取详细错误信息
             const responseText = await commitRes.text();
             console.log('📦 GitHub 响应:', commitRes.status, responseText);
 
@@ -616,7 +624,6 @@ created_at: ${new Date().toISOString()}
             showStatus(`✅ 发布成功！已推送到 ${currentTarget} 分支`, 'success');
             await loadList();
 
-            // 清空表单（保留标题和分类方便连续发布）
             editSlug.value = '';
             editSummary.value = '';
             editCover.value = '';
@@ -645,7 +652,6 @@ created_at: ${new Date().toISOString()}
     publishBtn.addEventListener('click', publishArticle);
     clearBtn.addEventListener('click', clearForm);
 
-    // 标题失焦自动生成 Slug
     editTitle.addEventListener('blur', () => {
         if (!editSlug.value.trim()) {
             editSlug.value = generateSlug(editTitle.value);
@@ -661,11 +667,9 @@ created_at: ${new Date().toISOString()}
         initEditor();
         await loadList();
 
-        // 默认选中知识区
         document.querySelector('.target-btn[data-target="knowledge"]')?.classList.add('active');
         currentTarget = 'knowledge';
 
-        // 如果 URL 有 ?target= 参数
         const urlParams = new URLSearchParams(window.location.search);
         const targetParam = urlParams.get('target');
         if (targetParam === 'tasks' || targetParam === 'knowledge') {
@@ -674,7 +678,6 @@ created_at: ${new Date().toISOString()}
         }
     })();
 
-    // 暴露给全局（调试用）
     window.__admin = { editor, publishArticle, loadList, clearForm };
 </script>
 </body>

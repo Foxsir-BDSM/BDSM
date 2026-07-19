@@ -157,7 +157,10 @@
         function getToken() {
             const token = localStorage.getItem('foxsir_github_token');
             if (token && token.length > 10) return token;
-            return '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';
+            if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+                return import.meta.env.VITE_GITHUB_TOKEN;
+            }
+            return null;
         }
 
         // ===== 从 GitHub 获取任务内容 =====
@@ -167,6 +170,10 @@
             const url = CONTENT_CONFIG.getApiUrl(branch, path);
             const token = getToken();
             
+            if (!token) {
+                throw new Error('未配置 GitHub Token');
+            }
+
             try {
                 const response = await fetch(url, {
                     headers: { 'Authorization': `token ${token}` }

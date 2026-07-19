@@ -7,14 +7,26 @@ import { CONTENT_CONFIG } from './content-config.js';
 
 // ===== 获取 Token =====
 export function getToken() {
+    // 1. 优先从 localStorage 读取（用户手动配置）
     const token = localStorage.getItem('foxsir_github_token');
     if (token && token.length > 10) return token;
-    return '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';
+    
+    // 2. 从 Vite 环境变量读取（Vercel 部署时注入）
+    if (import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+        return import.meta.env.VITE_GITHUB_TOKEN;
+    }
+    
+    // 3. 都没有则返回 null（让调用方处理）
+    return null;
 }
 
 // ===== 获取文件列表 =====
 export async function fetchContentList(branch, path) {
     const token = getToken();
+    if (!token) {
+        console.error('❌ 未配置 GitHub Token');
+        return [];
+    }
     const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}`;
     try {
         const response = await fetch(url, {
@@ -36,6 +48,7 @@ export async function fetchContentList(branch, path) {
 // ===== 获取文件 SHA（用于更新/删除） =====
 export async function getFileSha(branch, path) {
     const token = getToken();
+    if (!token) return null;
     const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}`;
     try {
         const response = await fetch(url, {
@@ -52,13 +65,14 @@ export async function getFileSha(branch, path) {
 // ===== 创建或更新文件 =====
 export async function createOrUpdateContent(branch, path, content, message) {
     const token = getToken();
+    if (!token) throw new Error('未配置 GitHub Token');
+    
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     let binary = '';
     data.forEach(byte => binary += String.fromCharCode(byte));
     const contentBase64 = btoa(binary);
 
-    // 检查是否存在（获取 SHA）
     let sha = null;
     try {
         const check = await fetch(
@@ -102,6 +116,7 @@ export async function createOrUpdateContent(branch, path, content, message) {
 // ===== 删除文件 =====
 export async function deleteContent(branch, path) {
     const token = getToken();
+    if (!token) throw new Error('未配置 GitHub Token');
     const sha = await getFileSha(branch, path);
     if (!sha) throw new Error('文件不存在');
 

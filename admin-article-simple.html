@@ -54,11 +54,11 @@
     <!-- Token 配置 -->
     <div class="panel">
         <div class="token-row">
-            <input type="password" id="tokenInput" placeholder="GitHub Token" value="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">
+            <input type="password" id="tokenInput" placeholder="GitHub Token" value="">
             <button class="btn btn-secondary" id="saveTokenBtn">保存</button>
             <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
         </div>
-        <div class="hint">Token 已硬编码，可直接使用。如需更换，粘贴新 Token 后点击保存。</div>
+        <div class="hint">💡 请从 Vercel 环境变量或手动输入 Token。硬编码已移除。</div>
     </div>
 
     <!-- 编辑器 -->
@@ -118,7 +118,6 @@
         paths: { knowledge: 'articles', tasks: 'tasks' }
     };
     const TOKEN_KEY = 'foxsir_github_token';
-    const HARDCODED_TOKEN = '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';
 
     // ===== DOM 引用 =====
     const tokenInput = document.getElementById('tokenInput');
@@ -140,22 +139,47 @@
     let currentTarget = 'knowledge';
     let editor = null;
 
-    // ===== Token 管理（强制使用硬编码） =====
+    // ===== Token 管理（从环境变量或 localStorage 读取） =====
+    function getEnvToken() {
+        // 尝试从 Vite 环境变量读取（Vercel 部署时注入）
+        if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+            return import.meta.env.VITE_GITHUB_TOKEN;
+        }
+        return null;
+    }
+
     function loadToken() {
-        // 强制使用硬编码 token，并覆盖 localStorage 中的旧值
-        const token = HARDCODED_TOKEN;
-        localStorage.setItem(TOKEN_KEY, token);
-        tokenInput.value = token;
-        tokenStatus.textContent = '✅ 已配置';
-        tokenStatus.className = 'token-status ok';
-        return token;
+        // 1. 优先从 localStorage 读取
+        let token = localStorage.getItem(TOKEN_KEY);
+        if (token && token.length > 10) {
+            tokenInput.value = token;
+            tokenStatus.textContent = '✅ 已配置（localStorage）';
+            tokenStatus.className = 'token-status ok';
+            return token;
+        }
+
+        // 2. 从环境变量读取
+        const envToken = getEnvToken();
+        if (envToken && envToken.length > 10) {
+            tokenInput.value = envToken;
+            localStorage.setItem(TOKEN_KEY, envToken);
+            tokenStatus.textContent = '✅ 已配置（环境变量）';
+            tokenStatus.className = 'token-status ok';
+            return envToken;
+        }
+
+        // 3. 没有 Token
+        tokenInput.value = '';
+        tokenStatus.textContent = '❌ 未配置 Token';
+        tokenStatus.className = 'token-status fail';
+        return null;
     }
 
     function saveToken() {
         const token = tokenInput.value.trim();
         if (token && token.length > 10) {
             localStorage.setItem(TOKEN_KEY, token);
-            tokenStatus.textContent = '✅ 已配置';
+            tokenStatus.textContent = '✅ 已保存';
             tokenStatus.className = 'token-status ok';
             showStatus('Token 已保存', 'success');
             loadList();

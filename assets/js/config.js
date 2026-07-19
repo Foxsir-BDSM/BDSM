@@ -27,13 +27,13 @@ export const PROJECTS = [
     description: '欲望的知识海洋，懂欲方可纵欲',
     url: '/assets/pages/knowledge/',
     status: 'online',
-    requiredRoles: ['guest', 'self', 'verified', 'subadmin', 'admin'],  // ✅ 访客可见
+    requiredRoles: ['guest', 'self', 'verified', 'subadmin', 'admin'],
   },
   {
     id: 'mission',
     name: '⛓️ 欲炼之途',
     description: '欲望的修炼之路，每一次靠近都更深',
-    url: '/assets/pages/task/',   // ✅ 修正为 task
+    url: '/assets/pages/task/',
     status: 'online',
     requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
   },
