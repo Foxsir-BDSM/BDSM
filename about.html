@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>关于 · Foxsir</title>
+    <title>用户指南 · Foxsir v2.2</title>
     <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
     <style>
         /* ============================================================
@@ -28,7 +28,7 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 40px 48px;
             background: rgba(15, 14, 23, 0.85);
@@ -144,10 +144,10 @@
 
         h2 {
             font-family: 'Georgia', 'Times New Roman', serif;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 600;
             color: #f5d6a8;
-            margin: 40px 0 16px 0;
+            margin: 44px 0 16px 0;
             padding-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
@@ -157,23 +157,23 @@
         }
 
         h3 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
             color: #d4a574;
-            margin: 24px 0 8px 0;
+            margin: 26px 0 10px 0;
         }
 
         p {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.9;
             font-size: 15px;
             margin-bottom: 12px;
         }
 
         ul,
         ol {
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.9;
             font-size: 15px;
             padding-left: 24px;
             margin-bottom: 16px;
@@ -202,6 +202,66 @@
         }
 
         /* ============================================================
+           表格样式
+           ============================================================ */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 12px 0 20px 0;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            min-width: 480px;
+        }
+
+        th,
+        td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.02);
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        td .tag {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        td .tag-ready {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+        }
+
+        td .tag-dev {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+        }
+
+        td .tag-open {
+            background: rgba(34, 197, 94, 0.08);
+            color: #22c55e;
+        }
+
+        /* ============================================================
            信息卡片
            ============================================================ */
         .info-card {
@@ -225,8 +285,17 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
+        .info-card .value code {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #d4a574;
+            font-family: monospace;
+        }
+
         /* ============================================================
-           角色表格
+           角色卡片
            ============================================================ */
         .role-grid {
             display: grid;
@@ -262,6 +331,7 @@
             background: rgba(255, 255, 255, 0.04);
             color: rgba(255, 255, 255, 0.3);
             margin-bottom: 6px;
+            font-family: monospace;
         }
 
         .role-card .role-badge.admin {
@@ -296,62 +366,39 @@
         }
 
         /* ============================================================
-           板块网格
+           身份网格
            ============================================================ */
-        .feature-grid {
+        .identity-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin: 12px 0 20px 0;
+            gap: 8px;
+            margin: 12px 0 16px 0;
         }
 
-        .feature-card {
+        .identity-item {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 12px;
-            padding: 16px 18px;
+            border-radius: 10px;
+            padding: 10px 14px;
             text-align: center;
-            transition: border-color 0.2s;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        .feature-card:hover {
-            border-color: rgba(212, 165, 116, 0.08);
-        }
-
-        .feature-card .icon {
-            font-size: 28px;
+        .identity-item .id-icon {
+            font-size: 20px;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 2px;
         }
 
-        .feature-card .name {
-            font-size: 14px;
+        .identity-item .id-label {
             font-weight: 500;
             color: #fffffe;
         }
 
-        .feature-card .desc {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.3);
-            margin-top: 2px;
-        }
-
-        .feature-card .status-tag {
-            display: inline-block;
-            font-size: 10px;
-            padding: 1px 8px;
-            border-radius: 20px;
-            margin-top: 6px;
-        }
-
-        .feature-card .status-tag.ready {
-            background: rgba(34, 197, 94, 0.08);
-            color: #22c55e;
-        }
-
-        .feature-card .status-tag.coming {
-            background: rgba(245, 158, 11, 0.08);
-            color: #f59e0b;
+        .identity-item .id-type {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.25);
         }
 
         /* ============================================================
@@ -404,9 +451,9 @@
         /* ============================================================
            响应式
            ============================================================ */
-        @media (max-width: 768px) {
+        @media (max-width: 820px) {
             .container {
-                padding: 24px 20px;
+                padding: 28px 24px;
                 border-radius: 32px;
             }
 
@@ -418,7 +465,26 @@
                 grid-template-columns: 1fr;
             }
 
-            .feature-grid {
+            .identity-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+                border-radius: 24px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+
+            .identity-grid {
                 grid-template-columns: 1fr 1fr;
             }
 
@@ -431,21 +497,6 @@
             .nav-bar .nav-links {
                 flex-wrap: wrap;
             }
-        }
-
-        @media (max-width: 480px) {
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 16px;
-                border-radius: 24px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
 
             .step-list li {
                 padding-left: 36px;
@@ -456,6 +507,32 @@
                 height: 24px;
                 font-size: 11px;
                 top: 12px;
+            }
+
+            table {
+                font-size: 12px;
+                min-width: 360px;
+            }
+
+            th,
+            td {
+                padding: 6px 10px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .identity-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+            }
+
+            .identity-item {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+
+            .identity-item .id-icon {
+                font-size: 16px;
             }
         }
     </style>
@@ -475,7 +552,7 @@
             </div>
             <div class="nav-links">
                 <a href="/index.html">🏠 首页</a>
-                <a href="/about.html" class="active">📖 关于</a>
+                <a href="/about.html" class="active">📖 用户指南</a>
                 <a href="/admin.html" style="color:rgba(255,255,255,0.2);">⚙️ 管理</a>
             </div>
         </nav>
@@ -504,15 +581,49 @@
             你可以把它想象成一个 <span class="highlight">私密的数字庄园</span> ——
             只有志同道合的人才能进来，大家在这里：
         </p>
-        <ul>
-            <li>📤 浏览 <span class="highlight">上位者</span>（掌控者）的档案</li>
-            <li>📥 浏览 <span class="highlight">下位者</span>（臣服者）的档案</li>
-            <li>📖 阅读 <span class="highlight">科普文章</span>，学习安全知识</li>
-            <li>🎯 参与 <span class="highlight">成长任务</span>，提升自己</li>
-            <li>🎲 通过 <span class="highlight">随机匹配</span> 认识志趣相投的朋友</li>
-        </ul>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>功能板块</th><th>状态</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>📥 下位者档案馆（欲渊之庭）</td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td>浏览下位者档案，查看完整信息</td>
+                    </tr>
+                    <tr>
+                        <td>📤 上位者档案馆（欲主之殿）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                    <tr>
+                        <td>🌙 淫梦织境（故事/创作区）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                    <tr>
+                        <td>📚 欲识之海（科普中心）</td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td>浏览、发布 BDSM 科普文章</td>
+                    </tr>
+                    <tr>
+                        <td>🎯 欲炼之途（任务中心）</td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td>浏览、发布成长任务</td>
+                    </tr>
+                    <tr>
+                        <td>🎲 欲缘之遇（随机匹配）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <p>
-            简单来说，<span class="highlight">这是一个让你找到同类、探索自我、安全成长的地方。</span>
+            简单来说，这是一个让你 <span class="highlight">找到同类、探索自我、安全成长</span> 的地方。
         </p>
 
         <!-- ============================================================
@@ -532,15 +643,23 @@
 
         <h3>第二步：注册账号</h3>
         <p>注册时你需要填写：</p>
-        <ul>
-            <li>📧 <span class="highlight">邮箱</span> — 用于登录和找回密码</li>
-            <li>📛 <span class="highlight">昵称</span> — 你在圈内的称呼（可以自己取）</li>
-            <li>🔐 <span class="highlight">密码</span> — 至少 6 位，自己记住</li>
-            <li>🎯 <span class="highlight">身份</span> — 这是最重要的！</li>
-        </ul>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>字段</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>📧 邮箱</td><td>用于登录和找回密码</td></tr>
+                    <tr><td>📛 昵称</td><td>你在圈内的称呼（可以自己取）</td></tr>
+                    <tr><td>🔐 密码</td><td>至少 6 位，自己记住</td></tr>
+                    <tr><td>🎯 身份</td><td><span class="highlight">最重要！</span> 决定你的等级路径和定位</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <p>
-            <span class="highlight">身份</span> 决定了你的 <span class="highlight">等级路径</span> 和 <span class="highlight">在圈内的定位</span>。
-            你需要选择 <span class="highlight">一个主身份</span>（必选），还可以选择 <span class="highlight">多个副身份</span>（可选）。
+            <span class="highlight">身份选择</span>：你需要选择 <span class="highlight">一个主身份（必选）</span>，还可以选择 <span class="highlight">多个副身份（可选）</span>。
         </p>
 
         <div class="info-card">
@@ -548,7 +667,7 @@
             <div class="value">
                 <strong>主身份</strong> 是你最核心的定位，决定了你的成长路径。<br />
                 <strong>副身份</strong> 是你多元化的标签，展示你多面的属性。<br />
-                <span class="highlight-dim">如果不确定选什么，可以先选一个你觉得最接近的，后续可以调整。</span>
+                <span class="highlight-dim">如果不确定选什么，可以先选一个你觉得最接近的，后续可以联系管理员调整。</span>
             </div>
         </div>
 
@@ -574,40 +693,40 @@
         </p>
 
         <h3>🎯 12 种身份（等级路径）</h3>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <span class="icon">⚔️</span>
-                <span class="name">男S / 女S</span>
-                <span class="desc">掌控者</span>
+        <div class="identity-grid">
+            <div class="identity-item">
+                <span class="id-icon">⚔️</span>
+                <span class="id-label">男S / 女S</span>
+                <span class="id-type">掌控者</span>
             </div>
-            <div class="feature-card">
-                <span class="icon">🛡️</span>
-                <span class="name">男M / 女M</span>
-                <span class="desc">臣服者</span>
+            <div class="identity-item">
+                <span class="id-icon">🛡️</span>
+                <span class="id-label">男M / 女M</span>
+                <span class="id-type">臣服者</span>
             </div>
-            <div class="feature-card">
-                <span class="icon">🔮</span>
-                <span class="name">男Dom / 女Dom</span>
-                <span class="desc">支配者</span>
+            <div class="identity-item">
+                <span class="id-icon">🔮</span>
+                <span class="id-label">男Dom / 女Dom</span>
+                <span class="id-type">支配者</span>
             </div>
-            <div class="feature-card">
-                <span class="icon">🌊</span>
-                <span class="name">男Sub / 女Sub</span>
-                <span class="desc">跟随者</span>
+            <div class="identity-item">
+                <span class="id-icon">🌊</span>
+                <span class="id-label">男Sub / 女Sub</span>
+                <span class="id-type">跟随者</span>
             </div>
-            <div class="feature-card">
-                <span class="icon">🔥</span>
-                <span class="name">男Z / 女Z</span>
-                <span class="desc">召契者</span>
+            <div class="identity-item">
+                <span class="id-icon">🔥</span>
+                <span class="id-label">男Z / 女Z</span>
+                <span class="id-type">召契者</span>
             </div>
-            <div class="feature-card">
-                <span class="icon">💎</span>
-                <span class="name">男B / 女B</span>
-                <span class="desc">应契者</span>
+            <div class="identity-item">
+                <span class="id-icon">💎</span>
+                <span class="id-label">男B / 女B</span>
+                <span class="id-type">应契者</span>
             </div>
         </div>
         <p style="font-size:13px;color:rgba(255,255,255,0.3);text-align:center;">
-            💡 每个身份都有 8 个等级（Lv.0 ~ Lv.7），每级有不同的称呼，代表你在该路径上的成长阶段。
+            💡 每个身份都有 <span class="highlight">8 个等级（Lv.0 ~ Lv.7）</span>，每级有不同的称呼，代表你在该路径上的成长阶段。
         </p>
 
         <h3>👑 5 种角色（权限）</h3>
@@ -615,79 +734,124 @@
             <div class="role-card">
                 <div class="role-name">🧳 游客</div>
                 <div class="role-badge guest">guest</div>
-                <div class="role-desc">未登录用户，仅能浏览公开信息，无法查看隐私内容。</div>
+                <div class="role-desc">未登录用户，<span class="highlight">仅能访问</span> 引导页、关于页、登录页</div>
             </div>
             <div class="role-card">
                 <div class="role-name">🙋 普通用户</div>
                 <div class="role-badge self">self</div>
-                <div class="role-desc">已注册并登录，可浏览大部分内容，但不能查看联系方式等隐私字段。</div>
+                <div class="role-desc">已注册登录，可访问全部板块，<span class="highlight">无法查看联系方式</span></div>
             </div>
             <div class="role-card">
                 <div class="role-name">✅ 认证用户</div>
                 <div class="role-badge verified">verified</div>
-                <div class="role-desc">通过管理员认证，可查看联系方式等更多字段，信誉更高。</div>
+                <div class="role-desc">通过管理员认证，<span class="highlight">可查看联系方式</span>等更多字段</div>
             </div>
             <div class="role-card">
                 <div class="role-name">🛡️ 次级管理</div>
                 <div class="role-badge subadmin">subadmin</div>
-                <div class="role-desc">可管理档案显隐，但不能修改用户角色或认证用户。</div>
+                <div class="role-desc">可管理档案显隐，<span class="highlight">不可升级用户角色</span></div>
             </div>
             <div class="role-card" style="grid-column: 1 / -1;">
                 <div class="role-name">👑 根源管理</div>
                 <div class="role-badge admin">admin</div>
-                <div class="role-desc">最高权限，可管理用户角色、认证用户、修改积分、管理档案等一切操作。</div>
+                <div class="role-desc"><span class="highlight">最高权限</span>，可管理用户角色、认证用户、管理档案等一切操作</div>
             </div>
+        </div>
+
+        <h3>📌 权限速查表</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>角色</th><th>板块访问</th><th>知识区/任务区</th><th>档案馆隐私字段</th><th>管理后台</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🧳 游客</td>
+                        <td>❌ 仅 Landing/About/Auth</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>🙋 普通用户</td>
+                        <td>✅ 全部</td>
+                        <td>✅ 只读</td>
+                        <td>❌ 联系方式不可见</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>✅ 认证用户</td>
+                        <td>✅ 全部</td>
+                        <td>✅ 可发布文章/任务</td>
+                        <td>✅ 受隐私规则管控</td>
+                        <td>❌</td>
+                    </tr>
+                    <tr>
+                        <td>🛡️ 次级管理</td>
+                        <td>✅ 全部</td>
+                        <td>✅ 可发布/删除</td>
+                        <td>✅ 可管理隐私字段</td>
+                        <td>⚠️ 不可升级用户</td>
+                    </tr>
+                    <tr>
+                        <td>👑 根源管理</td>
+                        <td>✅ 全部</td>
+                        <td>✅ 全权限</td>
+                        <td>✅ 全权限</td>
+                        <td>✅ 全权限</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <!-- ============================================================
         四、功能板块
         ============================================================ -->
         <h2>🚀 四、功能板块</h2>
-        <p>主页的「探索」区域有 6 个板块入口，目前已经开放的有：</p>
+        <p>主页的「探索」区域有 6 个板块入口：</p>
 
-        <div class="feature-grid">
-            <div class="feature-card">
-                <span class="icon">📥</span>
-                <span class="name">欲渊之庭</span>
-                <span class="desc">下位者档案馆</span>
-                <span class="status-tag ready">✅ 已开放</span>
-            </div>
-            <div class="feature-card">
-                <span class="icon">📤</span>
-                <span class="name">欲主之殿</span>
-                <span class="desc">上位者档案馆</span>
-                <span class="status-tag coming">🚧 开发中</span>
-            </div>
-            <div class="feature-card">
-                <span class="icon">🌙</span>
-                <span class="name">淫梦织境</span>
-                <span class="desc">故事/创作区</span>
-                <span class="status-tag coming">🚧 开发中</span>
-            </div>
-            <div class="feature-card">
-                <span class="icon">📚</span>
-                <span class="name">欲识之海</span>
-                <span class="desc">科普中心</span>
-                <span class="status-tag coming">🚧 开发中</span>
-            </div>
-            <div class="feature-card">
-                <span class="icon">🎯</span>
-                <span class="name">欲炼之途</span>
-                <span class="desc">任务中心</span>
-                <span class="status-tag coming">🚧 开发中</span>
-            </div>
-            <div class="feature-card">
-                <span class="icon">🎲</span>
-                <span class="name">欲缘之遇</span>
-                <span class="desc">随机匹配</span>
-                <span class="status-tag coming">🚧 开发中</span>
-            </div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>板块</th><th>状态</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>📥 欲渊之庭（下位者档案馆）</td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td>浏览下位者档案，卡片式列表 + 详情页</td>
+                    </tr>
+                    <tr>
+                        <td>📤 欲主之殿（上位者档案馆）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                    <tr>
+                        <td>🌙 淫梦织境（故事/创作区）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                    <tr>
+                        <td>📚 <span class="highlight">欲识之海（科普中心）</span></td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td><span class="highlight">浏览 + 发布</span> BDSM 科普文章</td>
+                    </tr>
+                    <tr>
+                        <td>🎯 <span class="highlight">欲炼之途（任务中心）</span></td>
+                        <td><span class="tag tag-ready">✅ 已开放</span></td>
+                        <td><span class="highlight">浏览 + 发布</span> 成长任务</td>
+                    </tr>
+                    <tr>
+                        <td>🎲 欲缘之遇（随机匹配）</td>
+                        <td><span class="tag tag-dev">🚧 开发中</span></td>
+                        <td>暂未开放</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <h3>📥 下位者档案馆（欲渊之庭）</h3>
-        <p>
-            这是目前 <span class="highlight">唯一已开放的核心功能</span>。你可以在这里：
-        </p>
+        <p>这是最早开放的核心功能。你可以在这里：</p>
         <ul>
             <li>🔍 <span class="highlight">浏览</span> 所有下位者的档案（卡片式列表）</li>
             <li>🔎 <span class="highlight">搜索</span> 按姓名、职业、地区查找</li>
@@ -695,6 +859,60 @@
             <li>🔒 <span class="highlight">隐私保护</span> 联系方式、私密照片等字段受用户隐私开关控制</li>
             <li>🖼️ <span class="highlight">图片浏览</span> 点击图片可放大查看（Lightbox 大图）</li>
         </ul>
+
+        <h3>📚 欲识之海（科普中心）</h3>
+        <p>知识分享区，你可以在这里：</p>
+        <ul>
+            <li>📖 <span class="highlight">浏览文章</span> 查看所有已发布的 BDSM 科普文章</li>
+            <li>✍️ <span class="highlight">发布文章</span>（<span class="highlight">认证用户及以上</span>）
+                <ul>
+                    <li>填写标题、作者（自动填充当前用户昵称）、分类、摘要、封面图、正文</li>
+                    <li>支持 Markdown 格式编辑（EasyMDE 编辑器）</li>
+                    <li><span class="highlight-dim">无积分字段</span>（已移除）</li>
+                    <li>Slug 自动生成（无需手动填写）</li>
+                </ul>
+            </li>
+            <li>🗑️ <span class="highlight">删除文章</span>（作者本人或管理员）</li>
+            <li><span class="highlight-dim">无编辑功能</span>（发布后不可修改，确保内容严肃性）</li>
+        </ul>
+
+        <h3>🎯 欲炼之途（任务中心）</h3>
+        <p>任务发布与浏览区，你可以在这里：</p>
+        <ul>
+            <li>📋 <span class="highlight">浏览任务</span> 查看所有已发布的任务</li>
+            <li>✍️ <span class="highlight">发布任务</span>（<span class="highlight">认证用户及以上</span>）
+                <ul>
+                    <li>填写标题、作者（自动填充当前用户昵称）、分类、摘要、封面图、正文</li>
+                    <li>支持 Markdown 格式编辑</li>
+                    <li><span class="highlight-dim">无积分字段</span>（已移除）</li>
+                    <li>Slug 自动生成</li>
+                </ul>
+            </li>
+            <li>🗑️ <span class="highlight">删除任务</span>（作者本人或管理员）</li>
+            <li><span class="highlight-dim">无编辑功能</span>（与知识区一致）</li>
+        </ul>
+
+        <h3>💡 关于发布功能</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>操作</th><th>所需角色</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>浏览文章/任务</td><td>任意登录用户</td><td>全员可读</td></tr>
+                    <tr><td>发布文章/任务</td><td><span class="highlight">认证用户 +</span></td><td>发布后不可编辑</td></tr>
+                    <tr><td>删除自己的文章/任务</td><td>发布者本人</td><td>可删除</td></tr>
+                    <tr><td>删除他人的文章/任务</td><td><span class="highlight">次级管理 +</span></td><td>管理员可删除任意内容</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="info-card">
+            <div class="label">⚠️ 注意</div>
+            <div class="value">
+                发布后 <span class="highlight">不支持编辑</span>，请发布前仔细检查内容。如需修改，请删除后重新发布。
+            </div>
+        </div>
 
         <!-- ============================================================
         五、积分与等级
@@ -706,33 +924,64 @@
 
         <h3>📈 等级阶梯</h3>
         <p>
-            每个身份都有 8 个等级（Lv.0 ~ Lv.7），随着积分增加逐步晋升：
-        </p>
-        <ul>
-            <li><span class="highlight-dim">Lv.0</span> 初入局 — 刚入场，什么都不懂</li>
-            <li><span class="highlight-dim">Lv.1 ~ Lv.2</span> 试炼阶段 — 开始尝试、立规矩</li>
-            <li><span class="highlight-dim">Lv.3 ~ Lv.4</span> 成熟阶段 — 能掌事、能控局</li>
-            <li><span class="highlight-dim">Lv.5 ~ Lv.6</span> 有名阶段 — 圈内叫得上名</li>
-            <li><span class="highlight-gold">Lv.7</span> 归位阶段 — 不需要前缀，身份本身就是标签</li>
-        </ul>
-        <p style="font-size:13px;color:rgba(255,255,255,0.3);">
-            💡 积分阈值：Lv.0=0｜Lv.1=1｜Lv.2=11｜Lv.3=51｜Lv.4=101｜Lv.5=501｜Lv.6=1001｜Lv.7=5001
+            每个身份都有 <span class="highlight">8 个等级（Lv.0 ~ Lv.7）</span>，随着积分增加逐步晋升：
         </p>
 
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>等级</th><th>称号</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Lv.0</td><td>初入局</td><td>刚入场，什么都不懂</td></tr>
+                    <tr><td>Lv.1 ~ Lv.2</td><td>试炼阶段</td><td>开始尝试、立规矩</td></tr>
+                    <tr><td>Lv.3 ~ Lv.4</td><td>成熟阶段</td><td>能掌事、能控局</td></tr>
+                    <tr><td>Lv.5 ~ Lv.6</td><td>有名阶段</td><td>圈内叫得上名</td></tr>
+                    <tr><td><span class="highlight-gold">Lv.7</span></td><td><span class="highlight-gold">归位阶段</span></td><td>不需要前缀，身份本身就是标签</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>📊 积分阈值</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>等级</th><th>所需积分</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Lv.0</td><td>0</td></tr>
+                    <tr><td>Lv.1</td><td>1</td></tr>
+                    <tr><td>Lv.2</td><td>11</td></tr>
+                    <tr><td>Lv.3</td><td>51</td></tr>
+                    <tr><td>Lv.4</td><td>101</td></tr>
+                    <tr><td>Lv.5</td><td>501</td></tr>
+                    <tr><td>Lv.6</td><td>1001</td></tr>
+                    <tr><td><span class="highlight-gold">Lv.7</span></td><td><span class="highlight-gold">5001</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <h3>🏅 积分获取方式</h3>
-        <ul>
-            <li>📝 <span class="highlight">完善档案</span> — 首次完成 +5 分</li>
-            <li>📖 <span class="highlight">发布动态</span> — 每次 +2 分（每天限 3 次）</li>
-            <li>🎯 <span class="highlight">参与任务</span> — 按任务难度 +3~10 分</li>
-            <li>✅ <span class="highlight">获得认证</span> — 一次性 +10 分</li>
-            <li>📅 <span class="highlight">每日登录</span> — 每天 +1 分</li>
-        </ul>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>方式</th><th>积分</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>📝 完善档案</td><td>+5</td><td>首次完成</td></tr>
+                    <tr><td>📖 发布文章/任务</td><td>+2</td><td>每次发布（每日限 3 次）</td></tr>
+                    <tr><td>🎯 完成任务</td><td>+3~10</td><td>按任务难度</td></tr>
+                    <tr><td>✅ 获得认证</td><td>+10</td><td>一次性</td></tr>
+                    <tr><td>📅 每日登录</td><td>+1</td><td>每天</td></tr>
+                </tbody>
+            </table>
+        </div>
 
         <div class="info-card">
             <div class="label">💡 小白提示</div>
             <div class="value">
                 <span class="highlight">积分 = 活跃度，等级 = 荣誉。</span><br />
-                积分不会影响你的权限，只有 <span class="highlight">角色</span> 才会影响。
+                积分不会影响你的权限，只有 <span class="highlight">角色</span> 才会影响。<br />
                 所以不用担心积分低就“玩不了”，它只是你成长的记录。🎉
             </div>
         </div>
@@ -744,15 +993,66 @@
         <p>
             在 Foxsir，<span class="highlight">你的隐私由你控制</span>。每个用户都可以在档案中设置：
         </p>
-        <ul>
-            <li>📌 <span class="highlight">常住地址是否公开</span></li>
-            <li>📞 <span class="highlight">联系方式是否公开</span></li>
-            <li>📸 <span class="highlight">生活照片是否公开</span></li>
-            <li>🔞 <span class="highlight">私密影像是否公开</span></li>
-        </ul>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>字段</th><th>控制开关</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>📌 常住地址</td><td><code>f1s9DJg4oLc</code></td><td>控制「常住地址」字段的显示/隐藏</td></tr>
+                    <tr><td>📞 联系方式</td><td><code>fgHLgfGRzy8</code></td><td>控制「联系方式」字段的显示/隐藏</td></tr>
+                    <tr><td>📸 生活照片</td><td><code>fgtX9QmBAM5</code></td><td>控制全部生活照的显示/隐藏</td></tr>
+                    <tr><td>🔞 私密影像</td><td><code>fwEcZvqiGvm</code></td><td>控制全部私密影像的显示/隐藏</td></tr>
+                </tbody>
+            </table>
+        </div>
+
         <p>
             <span class="highlight">即使你是管理员，也无法查看用户主动隐藏的内容。</span>
             我们尊重每一个人的隐私选择。🤝
+        </p>
+
+        <h3>🔐 不同角色的可见范围</h3>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>字段分类</th><th>游客</th><th>普通用户</th><th>认证用户</th><th>次级管理</th><th>根源管理</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>基本信息（姓名、年龄等）</td>
+                        <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>情感/关系信息</td>
+                        <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>性经验信息</td>
+                        <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                    </tr>
+                    <tr>
+                        <td>常住地址</td>
+                        <td>❌</td><td>✅*</td><td>✅*</td><td>✅*</td><td>✅*</td>
+                    </tr>
+                    <tr>
+                        <td>生活照</td>
+                        <td>❌</td><td>✅*</td><td>✅*</td><td>✅*</td><td>✅*</td>
+                    </tr>
+                    <tr>
+                        <td>私密影像</td>
+                        <td>❌</td><td>✅*</td><td>✅*</td><td>✅*</td><td>✅*</td>
+                    </tr>
+                    <tr>
+                        <td>联系方式</td>
+                        <td>❌</td><td>❌</td><td>✅*</td><td>✅*</td><td>✅*</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.3);">
+            *带星号表示 <span class="highlight">受隐私开关控制</span>，用户可自行决定是否公开。
         </p>
 
         <!-- ============================================================
@@ -769,9 +1069,8 @@
 
         <h3>Q：我的积分为什么是 0？</h3>
         <p>
-            A：新注册用户积分从 0 开始。积分是通过 <span class="highlight">登录、任务、发动态</span> 等方式积累的。
-            如果你是老用户但没有主身份，积分可能显示为 0（因为系统还没识别你的身份路径）。
-            请联系管理员帮你设置主身份。
+            A：新注册用户积分从 0 开始。积分是通过 <span class="highlight">登录、任务、发布文章</span> 等方式积累的。
+            如果你是老用户但没有主身份，积分可能显示为 0。请联系管理员帮你设置主身份。
         </p>
 
         <h3>Q：角色和身份有什么区别？</h3>
@@ -797,7 +1096,7 @@
 
         <h3>Q：隐私开关在哪里设置？</h3>
         <p>
-            A：目前隐私开关需要 <span class="highlight">在 Fillout 表单中填写</span>。
+            A：目前隐私开关需要在 <span class="highlight">Fillout 表单</span> 中填写。
             当你提交档案时，会有相应的复选框让你选择是否公开地址、联系方式、照片等。
             后续我们会将隐私设置集成到网站中，方便随时修改。
         </p>
@@ -809,41 +1108,58 @@
             ② 该用户 <span class="highlight">关闭了隐私开关</span>，所以你看不到。
         </p>
 
+        <h3>Q：文章/任务发布后能修改吗？</h3>
+        <p>
+            A：<span class="highlight">不能。</span> 目前知识区和任务区的内容发布后 <span class="highlight">不支持编辑</span>。
+            请在发布前仔细检查内容。如需修改，请删除后重新发布。
+        </p>
+
+        <h3>Q：访客能看到什么？</h3>
+        <p>
+            A：未登录用户（游客）<span class="highlight">仅能访问</span> 引导页（<code>landing.html</code>）、关于页（<code>about.html</code>）和登录页（<code>auth.html</code>）。
+            尝试访问任何其他页面都会被自动跳转到引导页。
+        </p>
+
         <!-- ============================================================
         八、快速指引
         ============================================================ -->
         <h2>🧭 八、快速指引</h2>
 
-        <ol class="step-list">
-            <li>
-                <span class="step-title">打开网站</span>
-                <div class="step-desc">访问 <span class="highlight">foxsir.top</span>，你会看到引导页。</div>
-            </li>
-            <li>
-                <span class="step-title">注册或登录</span>
-                <div class="step-desc">填写邮箱、昵称、密码，选择一个主身份，完成注册。</div>
-            </li>
-            <li>
-                <span class="step-title">进入主界面</span>
-                <div class="step-desc">登录后进入欲研所，查看你的个人信息和功能入口。</div>
-            </li>
-            <li>
-                <span class="step-title">浏览档案馆</span>
-                <div class="step-desc">点击「下位者档案馆」，查看所有档案，点击卡片查看详情。</div>
-            </li>
-            <li>
-                <span class="step-title">完善你的档案</span>
-                <div class="step-desc">在 Fillout 表单中填写你的信息，记得设置隐私开关。</div>
-            </li>
-            <li>
-                <span class="step-title">积累积分</span>
-                <div class="step-desc">每天登录、发布动态、参与任务，积分会逐渐增加。</div>
-            </li>
-            <li>
-                <span class="step-title">探索更多</span>
-                <div class="step-desc">关注后续开放的板块：上位者档案馆、科普中心、任务中心等。</div>
-            </li>
-        </ol>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>步骤</th><th>操作</th><th>说明</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>打开网站</td><td>访问 <span class="highlight">foxsir.top</span>，你会看到引导页</td></tr>
+                    <tr><td>2</td><td>注册或登录</td><td>填写邮箱、昵称、密码，选择一个主身份，完成注册</td></tr>
+                    <tr><td>3</td><td>进入主界面</td><td>登录后进入欲研所，查看你的个人信息和功能入口</td></tr>
+                    <tr><td>4</td><td>浏览档案馆</td><td>点击「下位者档案馆」，查看所有档案，点击卡片查看详情</td></tr>
+                    <tr><td>5</td><td>阅读文章</td><td>点击「欲识之海」，浏览 BDSM 科普文章</td></tr>
+                    <tr><td>6</td><td>发布内容</td><td>认证用户可在知识区/任务区发布文章或任务</td></tr>
+                    <tr><td>7</td><td>完善档案</td><td>在 Fillout 表单中填写你的信息，记得设置隐私开关</td></tr>
+                    <tr><td>8</td><td>积累积分</td><td>每天登录、发布内容、参与任务，积分会逐渐增加</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ============================================================
+        九、版本信息
+        ============================================================ -->
+        <h2>📌 九、版本信息</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>项目</th><th>信息</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>当前版本</td><td><span class="highlight">v2.2</span></td></tr>
+                    <tr><td>发布日期</td><td>2026-07-20</td></tr>
+                    <tr><td>核心更新</td><td>深色主题全站统一、知识区/任务区发布功能、5 层权限体系、前端缓存优化</td></tr>
+                </tbody>
+            </table>
+        </div>
 
         <!-- ============================================================
         页脚
