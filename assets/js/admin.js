@@ -15,7 +15,7 @@ import {
 } from '/assets/pages/sub-archive/assets/js/api.js';
 
 // ============================================================
-// ★★★ 修复：内置 getFieldValue，不依赖 utils.js ★★★
+// 内置 getFieldValue
 // ============================================================
 function getFieldValue(record, fieldId) {
   if (!record) return undefined;
@@ -36,14 +36,13 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
 });
 
 // ============================================================
-// 2. 用户权限管理（R-04 增加昵称列 + 昵称搜索）
+// 2. 用户权限管理（仅 admin 可见和操作）
 // ============================================================
 
 const userTableContainer = document.getElementById('userTableContainer');
 const totalUsers = document.getElementById('totalUsers');
 const pushBtn = document.getElementById('pushBtn');
 const pushResult = document.getElementById('pushResult');
-// ===== R-04 新增：用户搜索框 =====
 const userSearchInput = document.getElementById('userSearchInput');
 
 let allUsers = [];
@@ -58,14 +57,12 @@ const ROLE_MAP = {
 };
 const ROLE_VALUES = ['self', 'verified', 'subadmin', 'admin'];
 
-// ===== R-04 新增：获取用户昵称（兼容多种字段名） =====
 function getUserNickname(user) {
   if (!user) return '';
   const meta = user.raw_user_meta_data || user.user_metadata || {};
   return meta.nickname || '';
 }
 
-// ===== R-04 新增：获取用户显示名称 =====
 function getUserDisplayName(user) {
   if (!user) return '未知用户';
   const nickname = getUserNickname(user);
@@ -88,7 +85,6 @@ async function loadUsers() {
   }
 }
 
-// ===== R-04 修改：渲染用户表格（增加昵称列） =====
 function renderUserTable() {
   const users = filteredUsers.length ? filteredUsers : allUsers;
   if (!users.length) {
@@ -134,7 +130,6 @@ function renderUserTable() {
   pushBtn.disabled = true;
 }
 
-// ===== R-04 新增：用户搜索过滤（按昵称或邮箱） =====
 function filterUsers(keyword) {
   if (!keyword || keyword.trim() === '') {
     filteredUsers = allUsers;
@@ -147,9 +142,7 @@ function filterUsers(keyword) {
     });
   }
   renderUserTable();
-  // 更新计数
   totalUsers.textContent = allUsers.length;
-  // 显示过滤后的数量
   const statsLabel = document.querySelector('#pane-userPerm .stats-label');
   if (statsLabel && filteredUsers.length !== allUsers.length) {
     statsLabel.innerHTML = `共 <strong>${allUsers.length}</strong> 位用户（筛选后 <strong>${filteredUsers.length}</strong> 位）`;
@@ -158,7 +151,6 @@ function filterUsers(keyword) {
   }
 }
 
-// ===== R-04 新增：绑定搜索事件 =====
 if (userSearchInput) {
   userSearchInput.addEventListener('input', function () {
     filterUsers(this.value);
@@ -177,8 +169,7 @@ async function pushChanges() {
   pushResult.className = 'push-result';
   pushResult.textContent = '';
 
-  let successCount = 0,
-    failCount = 0;
+  let successCount = 0, failCount = 0;
   for (const [email, newRole] of changes) {
     try {
       const { data, error } = await supabase.rpc('update_user_role', {
@@ -216,14 +207,13 @@ async function pushChanges() {
 }
 
 // ============================================================
-// 3. 下位档案管理（R-06 已修复：搜索使用字段ID）
+// 3. 下位档案管理（subadmin + admin 均可操作）
 // ============================================================
 
 const subRecordsContainer = document.getElementById('subRecordsContainer');
 const subTotalCount = document.getElementById('subTotalCount');
 const subSearchInput = document.getElementById('subSearchInput');
 
-// 下位档案的待保存变更
 let pendingSubChanges = {};
 
 const SUB_EDITABLE_FIELDS = [
@@ -238,7 +228,6 @@ const SUB_EDITABLE_FIELDS = [
 let subRecords = [];
 let filteredSubRecords = [];
 
-// 下位档案的 Push 按钮
 const pushSubBtn = document.createElement('button');
 pushSubBtn.className = 'btn btn-gold';
 pushSubBtn.textContent = '📤 Push 下位档案变更';
@@ -276,7 +265,6 @@ function renderSubTable() {
   html += `<th>状态</th></tr></thead><tbody>`;
 
   filteredSubRecords.forEach((record) => {
-    // ===== R-06 确认：使用字段ID 'fqidTsBW5js' 获取姓名 =====
     const name = getFieldValue(record, 'fqidTsBW5js') || '未命名';
     const id = record.id;
     html += `<tr data-record-id="${id}"><td><strong>${name}</strong></td>`;
@@ -331,8 +319,7 @@ async function pushSubChanges() {
   pushSubBtn.disabled = true;
   pushSubBtn.textContent = '提交中...';
 
-  let successCount = 0,
-    failCount = 0;
+  let successCount = 0, failCount = 0;
 
   for (const [recordId, fields] of changes) {
     try {
@@ -368,7 +355,6 @@ async function pushSubChanges() {
 
 pushSubBtn.addEventListener('click', pushSubChanges);
 
-// ===== R-06 确认：搜索使用字段ID 'fqidTsBW5js'（姓名），已修复 =====
 subSearchInput.addEventListener('input', function () {
   const keyword = this.value.trim().toLowerCase();
   if (!keyword) {
@@ -376,9 +362,7 @@ subSearchInput.addEventListener('input', function () {
   } else {
     filteredSubRecords = subRecords.filter((r) => {
       const name = (getFieldValue(r, 'fqidTsBW5js') || '').toLowerCase();
-      // 同时也搜索职业（如果存在）
       const profession = (getFieldValue(r, 'fI5zGTDkg2W') || '').toLowerCase();
-      // 同时也搜索地区（如果存在）
       const region = (getFieldValue(r, 'fF9i8Q5CgBe') || '').toLowerCase();
       return name.includes(keyword) || profession.includes(keyword) || region.includes(keyword);
     });
@@ -388,15 +372,17 @@ subSearchInput.addEventListener('input', function () {
 });
 
 // ============================================================
-// 4. 初始化与权限控制
+// 4. 初始化与权限控制（区分 admin 和 subadmin）
 // ============================================================
 
 const adminUserInfo = document.getElementById('adminUserInfo');
 const adminLogoutBtn = document.getElementById('adminLogoutBtn');
+const tabUserPerm = document.getElementById('tabUserPerm');
 
 async function initAdmin() {
   const user = await getCurrentUser();
   const role = await getUserRole();
+
   if (!user || !['admin', 'subadmin'].includes(role)) {
     showToast('权限不足，请使用管理员账号登录', 'error');
     setTimeout(() => {
@@ -408,7 +394,38 @@ async function initAdmin() {
   const displayRole = ROLE_MAP[role] || role;
   adminUserInfo.textContent = `${user.email} (${displayRole})`;
 
-  await loadUsers();
+  // ★★★ 关键权限控制 ★★★
+  const isAdmin = role === 'admin';
+
+  // ★ 仅 admin 可管理用户权限 ★
+  if (!isAdmin) {
+    // 隐藏用户权限 Tab
+    const userPermTab = document.querySelector('.tab-btn[data-tab="userPerm"]');
+    if (userPermTab) {
+      userPermTab.style.display = 'none';
+    }
+    // 如果用户权限面板当前激活，切换到下位档案
+    const userPermPane = document.getElementById('pane-userPerm');
+    if (userPermPane && userPermPane.classList.contains('active')) {
+      const subArchiveTab = document.querySelector('.tab-btn[data-tab="subArchive"]');
+      if (subArchiveTab) subArchiveTab.click();
+    }
+    // 隐藏用户权限面板内容
+    if (userPermPane) {
+      userPermPane.innerHTML = `
+        <div class="coming-soon" style="padding:40px 20px;text-align:center;">
+          <div class="placeholder-icon">🔒</div>
+          <p style="color:rgba(255,255,255,0.3);">用户权限管理仅限根源管理</p>
+          <p style="color:rgba(255,255,255,0.1);font-size:13px;">请联系根源管理员进行角色升级</p>
+        </div>
+      `;
+    }
+  } else {
+    // admin：加载用户列表
+    await loadUsers();
+  }
+
+  // ★ subadmin 和 admin 均可管理下位档案 ★
   await loadSubRecords();
 }
 

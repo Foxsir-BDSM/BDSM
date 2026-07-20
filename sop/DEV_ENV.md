@@ -1,11 +1,9 @@
-# 📄 文件 3：`sop/DEV_ENV.md`
-
-```markdown
 # 项目开发环境说明文档 (Development Environment Spec)
 
 > **适用项目**：纯静态前端（HTML + CSS + JavaScript）  
 > **核心工具**：Visual Studio Code (VS Code)  
-> **文档版本**：v1.0
+> **项目版本**：v2.2  
+> **文档版本**：v2.0
 
 
 ## 一、插件矩阵总览
@@ -27,7 +25,23 @@
 | **🌐 界面语言** | **Chinese (Simplified) Language Pack** | 将VS Code界面完全汉化为简体中文 | ★★★☆☆ (新手推荐) | 安装后需 `Ctrl+Shift+P` → 输入 `Configure Display Language` 切换 |
 
 
-## 二、核心配置推荐 (settings.json)
+## 二、项目技术栈（v2.2）
+
+| 类别 | 技术 | 版本/说明 |
+| :--- | :--- | :--- |
+| 前端框架 | 原生 HTML5 + CSS3 + JavaScript ES Module | — |
+| 构建工具 | Vite | v5.4.21 |
+| 包管理器 | npm | — |
+| 认证服务 | Supabase Auth | — |
+| 数据库 | Supabase PostgreSQL | 用户表 + RLS + RPC |
+| 内容存储 | GitHub (foxsir-content) | Markdown 文件 |
+| 档案数据 | Fillout API | 下位者档案馆 |
+| 部署平台 | Vercel | Hobby 计划 |
+| 域名 | foxsir.top | 已绑定 |
+| API 加速 | Cloudflare Workers | 待配置 |
+
+
+## 三、核心配置推荐 (settings.json)
 
 为了让上述插件协同工作，建议在项目根目录新建 `.vscode/settings.json` 并写入以下配置（矩阵中的必装插件将按此规则运行）：
 
@@ -55,30 +69,25 @@
   // ----- 路径补全忽略后缀（写HTML时更流畅） -----
   "path-intellisense.extensionOnImport": false
 }
-```
-
-
-## 三、开发工作流速查（矩阵式流程）
-
-| 开发阶段 | 使用的插件 | 标准操作 |
-| :--- | :--- | :--- |
-| **1. 写结构 (HTML)** | Auto Rename Tag + HTML CSS Support | 输入 `<div` 自动补全，改标签名自动改闭合 |
-| **2. 写样式 (CSS)** | CSS Peek | 按住 `Ctrl` 点类名跳去改样式，改完 `Ctrl+Tab` 切回HTML |
-| **3. 写逻辑 (JS)** | ESLint + Error Lens | 写错变量名或漏分号，行尾直接飘红提醒 |
-| **4. 查错/调试** | HTML-JS-CSS Analyzer | 手动运行一次（或装插件后自动检查）未被使用的样式 |
-| **5. 预览/运行** | Live Server | 右键HTML → `Open with Live Server`，浏览器自动打开 `http://127.0.0.1:5500` |
-| **6. 提交代码前** | Prettier + ESLint | `Ctrl+S` 自动格式化，保存时ESLint自动修复简单错误 |
-
-
-## 四、常见问题排错（矩阵式）
-
-| 报错现象 | 可能原因 | 解决方案（插件矩阵对应操作） |
-| :--- | :--- | :--- |
-| 右键HTML没有 `Open with Live Server` | 未以文件夹形式打开项目 | 关闭文件，点击 `文件` → `打开文件夹` 重新导入 |
-| ESLint飘红但代码没错 | 缺少 `.eslintrc.js` 配置文件 | 在项目根目录新建该文件，写入 `module.exports = { extends: "eslint:recommended" };` |
-| Prettier保存后格式乱掉 | 与其他格式化插件冲突 | 在设置中搜索 `Default Formatter`，强制选为 `Prettier` |
-| CSS Peek无法跳转 | HTML中类名与CSS文件未关联 | 确保CSS文件已在编辑器中打开，或项目已保存 |
-
-
-**使用建议**：将此文档保存为项目根目录下的 `DEV_ENV.md`，每次新开项目时第一个创建并输出它。后续开发中遇到环境疑问，直接回看此矩阵即可。祝你编码顺利！ 🚀
-```
+四、开发工作流速查（矩阵式流程）
+开发阶段	使用的插件	标准操作
+1. 写结构 (HTML)	Auto Rename Tag + HTML CSS Support	输入 <div 自动补全，改标签名自动改闭合
+2. 写样式 (CSS)	CSS Peek	按住 Ctrl 点类名跳去改样式，改完 Ctrl+Tab 切回HTML
+3. 写逻辑 (JS)	ESLint + Error Lens	写错变量名或漏分号，行尾直接飘红提醒
+4. 查错/调试	HTML-JS-CSS Analyzer	手动运行一次（或装插件后自动检查）未被使用的样式
+5. 预览/运行	Live Server	右键HTML → Open with Live Server，浏览器自动打开 http://127.0.0.1:5500
+6. 提交代码前	Prettier + ESLint	Ctrl+S 自动格式化，保存时ESLint自动修复简单错误
+7. 构建部署	Vite + Vercel	npm run build → git push → Vercel 自动部署
+五、常见问题排错（矩阵式）
+报错现象	可能原因	解决方案（插件矩阵对应操作）
+右键HTML没有 Open with Live Server	未以文件夹形式打开项目	关闭文件，点击 文件 → 打开文件夹 重新导入
+ESLint飘红但代码没错	缺少 .eslintrc.js 配置文件	在项目根目录新建该文件，写入 module.exports = { extends: "eslint:recommended" };
+Prettier保存后格式乱掉	与其他格式化插件冲突	在设置中搜索 Default Formatter，强制选为 Prettier
+CSS Peek无法跳转	HTML中类名与CSS文件未关联	确保CSS文件已在编辑器中打开，或项目已保存
+Vercel 部署后 401	GitHub Token 未配置环境变量	在 Vercel 后台添加 VITE_GITHUB_TOKEN 环境变量
+六、v2.2 新增注意事项
+项目	说明
+Vite 构建	使用 npm run build 构建，产物在 dist/ 目录
+环境变量	需在 Vercel 后台配置 VITE_GITHUB_TOKEN
+缓存机制	localStorage 永久缓存，管理员操作时自动清除
+权限体系	5 层角色，详见 FIELD_MAINTENANCE_SOP.md

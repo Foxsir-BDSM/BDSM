@@ -73,15 +73,15 @@
     </div>
   </div>
 
-  <!-- ===== Tab 导航 ===== -->
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="userPerm">
+  <!-- ===== Tab 导航（动态控制：仅 admin 可见用户权限） ===== -->
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="userPerm" id="tabUserPerm">
       👤 用户权限 <span class="badge ready">已就绪</span>
     </button>
     <button class="tab-btn" data-tab="domArchive">
       📤 上位档案 <span class="badge coming">开发中</span>
     </button>
-    <button class="tab-btn" data-tab="subArchive">
+    <button class="tab-btn" data-tab="subArchive" id="tabSubArchive">
       📥 下位档案 <span class="badge ready">已就绪</span>
     </button>
   </nav>
@@ -89,7 +89,7 @@
   <!-- ===== Tab 内容 ===== -->
   <div class="tab-content">
 
-    <!-- 面板一：用户权限 -->
+    <!-- 面板一：用户权限（仅 admin 可见） -->
     <div class="tab-pane active" id="pane-userPerm">
       <div class="toolbar">
         <div class="left">
@@ -113,7 +113,7 @@
       </div>
     </div>
 
-    <!-- 面板三：下位档案 -->
+    <!-- 面板三：下位档案（subadmin + admin 可见） -->
     <div class="tab-pane" id="pane-subArchive">
       <div class="toolbar">
         <div class="left">

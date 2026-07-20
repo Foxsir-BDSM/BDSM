@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* 深色覆盖 + 基础样式（与 knowledge 类似，省略重复） */
+        /* 深色覆盖 + 基础样式（与 knowledge 类似） */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .task-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
         .task-card h3 { color: #fffffe !important; }
@@ -374,13 +374,11 @@
         <input type="hidden" id="editMode" value="create" />
         <input type="hidden" id="modalSlug" />
 
-        <!-- 第一行：标题 -->
         <div class="form-group">
             <label>标题 *</label>
             <input type="text" id="modalTitleInput" placeholder="任务标题" />
         </div>
 
-        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
             <div class="form-group">
                 <label>作者</label>
@@ -395,19 +393,16 @@
             </div>
         </div>
 
-        <!-- 第三行：摘要 -->
         <div class="form-group">
             <label>摘要</label>
             <input type="text" id="modalSummary" placeholder="简短描述（可选）" />
         </div>
 
-        <!-- 第四行：封面图 URL -->
         <div class="form-group">
             <label>封面图 URL</label>
             <input type="text" id="modalCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
-        <!-- 第五行：正文 -->
         <div class="form-group">
             <label>正文</label>
             <textarea id="modalEditorTextarea" placeholder="支持 Markdown 语法"></textarea>
@@ -482,20 +477,43 @@
     var currentUserRole = null;
     var pendingContent = '';
 
-    async function checkAdmin() {
+    // ===== ★★★ 权限控制（分层） ★★★ =====
+    async function checkPermissions() {
         var user = await getCurrentUser();
         var role = await getUserRole();
         currentUserRole = role;
-        if (user && ['admin', 'subadmin'].includes(role)) {
+
+        if (!user) {
+            publishBtn.style.display = 'none';
+            manageBtn.style.display = 'none';
+            return false;
+        }
+
+        // 普通用户 (self)：只读，无任何按钮
+        if (role === 'self') {
+            publishBtn.style.display = 'none';
+            manageBtn.style.display = 'none';
+            return false;
+        }
+
+        // 认证用户 (verified)：仅可发布，不可管理
+        if (role === 'verified') {
+            publishBtn.style.display = 'inline-block';
+            manageBtn.style.display = 'none';
+            return true;
+        }
+
+        // 次级管理 (subadmin) + 根源管理 (admin)：可发布 + 可管理（删除）
+        if (role === 'subadmin' || role === 'admin') {
             publishBtn.style.display = 'inline-block';
             manageBtn.style.display = 'inline-block';
             return true;
         }
-        publishBtn.style.display = 'none';
-        manageBtn.style.display = 'none';
+
         return false;
     }
 
+    // ===== 获取任务列表 =====
     async function fetchTasks() {
         if (window.__foxsir_token) {}
         var files = await fetchContentList(BRANCH, PATH);
@@ -514,6 +532,7 @@
         return tasks.filter(function(t) { return t !== null; });
     }
 
+    // ===== 渲染任务 =====
     async function renderTasks(category) {
         if (category === undefined) category = 'all';
         showLoading('加载任务', '欲渊之庭…');
@@ -571,6 +590,7 @@
         }
     }
 
+    // ===== 管理模式切换 =====
     manageBtn.addEventListener('click', function() {
         isManageMode = !isManageMode;
         manageBtn.classList.toggle('active', isManageMode);
@@ -578,6 +598,7 @@
         renderTasks(currentCategory);
     });
 
+    // ===== 筛选 =====
     filterBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
             filterBtns.forEach(function(b) { b.classList.remove('active'); });
@@ -757,7 +778,7 @@
     publishBtn.addEventListener('click', openEditor);
 
     (async function init() {
-        await checkAdmin();
+        await checkPermissions();  // ★ 使用新的权限控制
         await renderTasks('all');
     })();
 </script>

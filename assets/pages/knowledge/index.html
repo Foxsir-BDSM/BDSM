@@ -374,16 +374,13 @@
         <div class="modal-title" id="modalTitle">📝 发布新文章</div>
 
         <input type="hidden" id="editMode" value="create" />
-        <!-- Slug 隐藏，由 JS 自动生成 -->
         <input type="hidden" id="modalSlug" />
 
-        <!-- 第一行：标题 -->
         <div class="form-group">
             <label>标题 *</label>
             <input type="text" id="modalTitleInput" placeholder="文章标题" />
         </div>
 
-        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
             <div class="form-group">
                 <label>作者</label>
@@ -400,19 +397,16 @@
             </div>
         </div>
 
-        <!-- 第三行：摘要 -->
         <div class="form-group">
             <label>摘要</label>
             <input type="text" id="modalSummary" placeholder="简短描述（可选）" />
         </div>
 
-        <!-- 第四行：封面图 URL -->
         <div class="form-group">
             <label>封面图 URL</label>
             <input type="text" id="modalCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
-        <!-- 第五行：正文 -->
         <div class="form-group">
             <label>正文</label>
             <textarea id="modalEditorTextarea" placeholder="支持 Markdown 语法"></textarea>
@@ -487,20 +481,43 @@
     var currentUserRole = null;
     var pendingContent = '';
 
-    async function checkAdmin() {
+    // ===== ★★★ 权限控制（分层） ★★★ =====
+    async function checkPermissions() {
         var user = await getCurrentUser();
         var role = await getUserRole();
         currentUserRole = role;
-        if (user && ['admin', 'subadmin'].includes(role)) {
+
+        if (!user) {
+            publishBtn.style.display = 'none';
+            manageBtn.style.display = 'none';
+            return false;
+        }
+
+        // 普通用户 (self)：只读，无任何按钮
+        if (role === 'self') {
+            publishBtn.style.display = 'none';
+            manageBtn.style.display = 'none';
+            return false;
+        }
+
+        // 认证用户 (verified)：仅可发布，不可管理
+        if (role === 'verified') {
+            publishBtn.style.display = 'inline-block';
+            manageBtn.style.display = 'none';
+            return true;
+        }
+
+        // 次级管理 (subadmin) + 根源管理 (admin)：可发布 + 可管理（删除）
+        if (role === 'subadmin' || role === 'admin') {
             publishBtn.style.display = 'inline-block';
             manageBtn.style.display = 'inline-block';
             return true;
         }
-        publishBtn.style.display = 'none';
-        manageBtn.style.display = 'none';
+
         return false;
     }
 
+    // ===== 获取文章列表 =====
     async function fetchArticles() {
         if (window.__foxsir_token) {}
         var files = await fetchContentList(BRANCH, PATH);
@@ -519,6 +536,7 @@
         return articles.filter(function(a) { return a !== null; });
     }
 
+    // ===== 渲染文章 =====
     async function renderArticles(category) {
         if (category === undefined) category = 'all';
         showLoading('加载文章', '欲识之海…');
@@ -576,6 +594,7 @@
         }
     }
 
+    // ===== 管理模式切换 =====
     manageBtn.addEventListener('click', function() {
         isManageMode = !isManageMode;
         manageBtn.classList.toggle('active', isManageMode);
@@ -583,6 +602,7 @@
         renderArticles(currentCategory);
     });
 
+    // ===== 筛选 =====
     filterBtns.forEach(function(btn) {
         btn.addEventListener('click', function() {
             filterBtns.forEach(function(b) { b.classList.remove('active'); });
@@ -615,7 +635,6 @@
         modalCover.value = '';
         pendingContent = '';
 
-        // 自动填充作者
         getCurrentUser().then(function(user) {
             if (user && user.user_metadata && user.user_metadata.nickname) {
                 modalAuthor.value = user.user_metadata.nickname;
@@ -698,7 +717,6 @@
         if (!slug) { slug = generateSlug(title); modalSlug.value = slug; }
         if (!content) { showStatus('请输入正文内容', 'error'); return; }
 
-        // 积分固定为 0
         var fullContent = buildFullContent(title, slug, category, 0, summary, cover, content);
         var filePath = PATH + '/' + slug + '.md';
 
@@ -768,7 +786,7 @@
     publishBtn.addEventListener('click', openEditor);
 
     (async function init() {
-        await checkAdmin();
+        await checkPermissions();  // ★ 使用新的权限控制
         await renderArticles('all');
     })();
 </script>
