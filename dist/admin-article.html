@@ -274,7 +274,7 @@
     }
 }
 </script>
-  <script type="module" crossorigin src="/assets/admin-article-DtkYZey8.js"></script>
+  <script type="module" crossorigin src="/assets/admin-article-Rjc621Kz.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/easymde-kqwopcDm.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
@@ -314,17 +314,18 @@
             </button>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>标题 *</label>
-                <input type="text" id="editTitle" placeholder="文章标题" />
-            </div>
-            <div class="form-group">
-                <label>Slug（URL 标识）*</label>
-                <input type="text" id="editSlug" placeholder="my-article-slug" />
-            </div>
+        <!-- 第一行：标题 -->
+        <div class="form-group">
+            <label>标题 *</label>
+            <input type="text" id="editTitle" placeholder="文章标题" />
         </div>
+
+        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
+            <div class="form-group">
+                <label>作者</label>
+                <input type="text" id="editAuthor" placeholder="作者名称" />
+            </div>
             <div class="form-group">
                 <label>分类</label>
                 <select id="editCategory">
@@ -336,20 +337,21 @@
                     <option value="挑战任务">挑战任务</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>阅读积分</label>
-                <input type="number" id="editPoints" value="5" min="0" />
-            </div>
         </div>
+
+        <!-- 第三行：摘要 -->
         <div class="form-group">
             <label>摘要</label>
             <input type="text" id="editSummary" placeholder="简短描述（可选）" />
         </div>
+
+        <!-- 第四行：封面 -->
         <div class="form-group">
             <label>封面图 URL</label>
             <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
+        <!-- 第五行：正文 -->
         <div class="form-group">
             <label>正文</label>
             <div id="editorContainer"></div>

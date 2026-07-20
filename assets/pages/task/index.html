@@ -8,14 +8,13 @@
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ★ 强制深色覆盖 ★ */
+        /* 深色覆盖 + 基础样式（与 knowledge 类似，省略重复） */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .task-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
         .task-card h3 { color: #fffffe !important; }
         .task-card p { color: rgba(255,255,255,0.5) !important; }
         .task-card .meta { color: rgba(255,255,255,0.2) !important; }
         .task-card .footer { color: rgba(255,255,255,0.1) !important; border-top-color: rgba(255,255,255,0.04) !important; }
-
         .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
         .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
         .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
@@ -23,20 +22,9 @@
         .editor-preview * { color: #d4d0c8 !important; }
         .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
         .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
-
-        select {
-            background: rgba(255,255,255,0.02) !important;
-            color: #fffffe !important;
-            border: 1px solid rgba(255,255,255,0.04) !important;
-        }
-        select option {
-            background: #1a1a1a !important;
-            color: #fffffe !important;
-        }
-        select:focus {
-            outline: none;
-            border-color: rgba(212,165,116,0.2) !important;
-        }
+        select { background: rgba(255,255,255,0.02) !important; color: #fffffe !important; border: 1px solid rgba(255,255,255,0.04) !important; }
+        select option { background: #1a1a1a !important; color: #fffffe !important; }
+        select:focus { outline: none; border-color: rgba(212,165,116,0.2) !important; }
 
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -377,18 +365,26 @@
     </div>
 </div>
 
-<!-- ===== Modal（仅发布/新增） ===== -->
+<!-- ===== Modal（发布面板 - 新布局） ===== -->
 <div class="modal-overlay" id="editorModal">
     <div class="modal-box">
         <button class="modal-close" id="modalCloseBtn">✕</button>
         <div class="modal-title" id="modalTitle">📝 发布新任务</div>
 
         <input type="hidden" id="editMode" value="create" />
+        <input type="hidden" id="modalSlug" />
 
+        <!-- 第一行：标题 -->
+        <div class="form-group">
+            <label>标题 *</label>
+            <input type="text" id="modalTitleInput" placeholder="任务标题" />
+        </div>
+
+        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
             <div class="form-group">
-                <label>标题 *</label>
-                <input type="text" id="modalTitleInput" placeholder="任务标题" />
+                <label>作者</label>
+                <input type="text" id="modalAuthor" placeholder="作者名称" />
             </div>
             <div class="form-group">
                 <label>分类</label>
@@ -398,24 +394,20 @@
                 </select>
             </div>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Slug（自动生成）</label>
-                <input type="text" id="modalSlug" placeholder="自动生成" readonly style="opacity:0.5;" />
-            </div>
-            <div class="form-group">
-                <label>完成积分</label>
-                <input type="number" id="modalPoints" value="5" min="0" />
-            </div>
-        </div>
+
+        <!-- 第三行：摘要 -->
         <div class="form-group">
             <label>摘要</label>
             <input type="text" id="modalSummary" placeholder="简短描述（可选）" />
         </div>
+
+        <!-- 第四行：封面图 URL -->
         <div class="form-group">
             <label>封面图 URL</label>
             <input type="text" id="modalCover" placeholder="https://example.com/cover.jpg" />
         </div>
+
+        <!-- 第五行：正文 -->
         <div class="form-group">
             <label>正文</label>
             <textarea id="modalEditorTextarea" placeholder="支持 Markdown 语法"></textarea>
@@ -476,7 +468,7 @@
     var modalTitleInput = document.getElementById('modalTitleInput');
     var modalSlug = document.getElementById('modalSlug');
     var modalCategory = document.getElementById('modalCategory');
-    var modalPoints = document.getElementById('modalPoints');
+    var modalAuthor = document.getElementById('modalAuthor');
     var modalSummary = document.getElementById('modalSummary');
     var modalCover = document.getElementById('modalCover');
     var modalEditorTextarea = document.getElementById('modalEditorTextarea');
@@ -562,7 +554,6 @@
                     '</div></div>';
             }).join('');
 
-            // ★ 只绑定删除事件 ★
             document.querySelectorAll('.btn-delete').forEach(function(btn) {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -596,7 +587,7 @@
         });
     });
 
-    // ===== 发布弹窗（仅新增） =====
+    // ===== 发布弹窗 =====
     function showStatus(text, type) {
         if (type === undefined) type = 'loading';
         modalStatus.textContent = text;
@@ -613,10 +604,19 @@
         modalTitleInput.value = '';
         modalSlug.value = '';
         modalCategory.value = '日常任务';
-        modalPoints.value = 5;
         modalSummary.value = '';
         modalCover.value = '';
         pendingContent = '';
+
+        getCurrentUser().then(function(user) {
+            if (user && user.user_metadata && user.user_metadata.nickname) {
+                modalAuthor.value = user.user_metadata.nickname;
+            } else if (user && user.email) {
+                modalAuthor.value = user.email.split('@')[0];
+            } else {
+                modalAuthor.value = '';
+            }
+        });
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -678,8 +678,8 @@
     modalSubmitBtn.addEventListener('click', async function() {
         var title = modalTitleInput.value.trim();
         var slug = modalSlug.value.trim();
+        var author = modalAuthor.value.trim() || '未知';
         var category = modalCategory.value;
-        var points = parseInt(modalPoints.value) || 0;
         var summary = modalSummary.value.trim();
         var cover = modalCover.value.trim();
         var content = editorInstance ? editorInstance.value() : modalEditorTextarea.value;
@@ -688,9 +688,8 @@
         if (!slug) { slug = generateSlug(title); modalSlug.value = slug; }
         if (!content) { showStatus('请输入正文内容', 'error'); return; }
 
-        var fullContent = buildFullContent(title, slug, category, points, summary, cover, content);
+        var fullContent = buildFullContent(title, slug, category, 0, summary, cover, content);
         var filePath = PATH + '/' + slug + '.md';
-        var mode = editMode.value;
 
         showStatus('⏳ 发布中…', 'loading');
         modalSubmitBtn.disabled = true;
@@ -703,9 +702,7 @@
                 '📝 发布: ' + title + ' (' + TARGET_NAME + ')'
             );
 
-            // ★ 清除列表缓存 ★
             clearCache('list_' + BRANCH + '_' + PATH);
-            // ★ 清除所有详情缓存 ★
             var keys = Object.keys(localStorage);
             for (var i = 0; i < keys.length; i++) {
                 if (keys[i].startsWith('foxsir_detail_tasks_')) {

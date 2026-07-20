@@ -297,17 +297,18 @@
             </button>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label>标题 *</label>
-                <input type="text" id="editTitle" placeholder="文章标题" />
-            </div>
-            <div class="form-group">
-                <label>Slug（URL 标识）*</label>
-                <input type="text" id="editSlug" placeholder="my-article-slug" />
-            </div>
+        <!-- 第一行：标题 -->
+        <div class="form-group">
+            <label>标题 *</label>
+            <input type="text" id="editTitle" placeholder="文章标题" />
         </div>
+
+        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
+            <div class="form-group">
+                <label>作者</label>
+                <input type="text" id="editAuthor" placeholder="作者名称" />
+            </div>
             <div class="form-group">
                 <label>分类</label>
                 <select id="editCategory">
@@ -319,20 +320,21 @@
                     <option value="挑战任务">挑战任务</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>阅读积分</label>
-                <input type="number" id="editPoints" value="5" min="0" />
-            </div>
         </div>
+
+        <!-- 第三行：摘要 -->
         <div class="form-group">
             <label>摘要</label>
             <input type="text" id="editSummary" placeholder="简短描述（可选）" />
         </div>
+
+        <!-- 第四行：封面 -->
         <div class="form-group">
             <label>封面图 URL</label>
             <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
+        <!-- 第五行：正文 -->
         <div class="form-group">
             <label>正文</label>
             <div id="editorContainer"></div>
@@ -374,9 +376,8 @@
     var tokenStatus = document.getElementById('tokenStatus');
     var targetBtns = document.querySelectorAll('.target-btn');
     var editTitle = document.getElementById('editTitle');
-    var editSlug = document.getElementById('editSlug');
+    var editAuthor = document.getElementById('editAuthor');
     var editCategory = document.getElementById('editCategory');
-    var editPoints = document.getElementById('editPoints');
     var editSummary = document.getElementById('editSummary');
     var editCover = document.getElementById('editCover');
     var publishBtn = document.getElementById('publishBtn');
@@ -475,6 +476,12 @@
             window.location.href = '/index.html';
             return false;
         }
+        // 自动填充作者
+        if (user && user.user_metadata && user.user_metadata.nickname) {
+            editAuthor.value = user.user_metadata.nickname;
+        } else if (user && user.email) {
+            editAuthor.value = user.email.split('@')[0];
+        }
         return true;
     }
 
@@ -528,18 +535,17 @@
         if (!token) { showStatus('⚠️ 请先配置 GitHub Token', 'error'); return; }
 
         var title = editTitle.value.trim();
-        var slug = editSlug.value.trim();
+        var author = editAuthor.value.trim() || '未知';
         var category = editCategory.value;
-        var points = parseInt(editPoints.value) || 0;
         var summary = editSummary.value.trim();
         var cover = editCover.value.trim();
         var content = editor.value();
 
         if (!title) { showStatus('⚠️ 请输入标题', 'error'); return; }
-        if (!slug) { slug = generateSlug(title); editSlug.value = slug; }
         if (!content) { showStatus('⚠️ 请输入正文内容', 'error'); return; }
 
-        var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: ' + points + '\nsummary: ' + (summary || '') + '\ncover_url: ' + (cover || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
+        var slug = generateSlug(title);
+        var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: 0\nsummary: ' + (summary || '') + '\ncover_url: ' + (cover || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
         var fullContent = frontmatter + content;
         var fileName = slug + '.md';
         var path = CONTENT_CONFIG.paths[currentTarget] + '/' + fileName;
@@ -605,11 +611,11 @@
 
             showStatus('✅ 发布成功！', 'success');
             await loadList();
-            editSlug.value = '';
+            editTitle.value = '';
+            editAuthor.value = '';
             editSummary.value = '';
             editCover.value = '';
             editor.value('');
-            editTitle.value = '';
 
         } catch (err) {
             console.error('发布失败:', err);
@@ -622,7 +628,7 @@
     function clearForm() {
         if (editor) editor.value('');
         editTitle.value = '';
-        editSlug.value = '';
+        editAuthor.value = '';
         editSummary.value = '';
         editCover.value = '';
         hideStatus();
@@ -630,12 +636,6 @@
 
     publishBtn.addEventListener('click', publishArticle);
     clearBtn.addEventListener('click', clearForm);
-
-    editTitle.addEventListener('blur', function() {
-        if (!editSlug.value.trim()) {
-            editSlug.value = generateSlug(editTitle.value);
-        }
-    });
 
     (async function init() {
         var ok = await checkAuth();

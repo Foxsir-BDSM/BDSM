@@ -90,12 +90,21 @@
             <button class="tab active" data-target="knowledge">📚 知识区</button>
             <button class="tab" data-target="tasks">🎯 任务区</button>
         </div>
-        <div class="form-row">
-            <div class="form-group"><label>标题 *</label><input type="text" id="title" placeholder="文章标题"></div>
-            <div class="form-group"><label>Slug *</label><input type="text" id="slug" placeholder="my-article"></div>
+
+        <!-- 第一行：标题 -->
+        <div class="form-group">
+            <label>标题 *</label>
+            <input type="text" id="title" placeholder="文章标题" />
         </div>
+
+        <!-- 第二行：作者 + 分类 -->
         <div class="form-row">
-            <div class="form-group"><label>分类</label>
+            <div class="form-group">
+                <label>作者</label>
+                <input type="text" id="author" placeholder="作者名称" />
+            </div>
+            <div class="form-group">
+                <label>分类</label>
                 <select id="category">
                     <option value="入门指南">入门指南</option>
                     <option value="安全知识">安全知识</option>
@@ -105,13 +114,26 @@
                     <option value="挑战任务">挑战任务</option>
                 </select>
             </div>
-            <div class="form-group"><label>积分</label><input type="number" id="points" value="5" min="0"></div>
         </div>
-        <div class="form-group"><label>摘要</label><input type="text" id="summary" placeholder="简短描述"></div>
-        <div class="form-group"><label>封面图 URL</label><input type="text" id="cover" placeholder="https://example.com/cover.jpg"></div>
-        <div class="form-group"><label>正文</label>
+
+        <!-- 第三行：摘要 -->
+        <div class="form-group">
+            <label>摘要</label>
+            <input type="text" id="summary" placeholder="简短描述" />
+        </div>
+
+        <!-- 第四行：封面 -->
+        <div class="form-group">
+            <label>封面图 URL</label>
+            <input type="text" id="cover" placeholder="https://example.com/cover.jpg" />
+        </div>
+
+        <!-- 第五行：正文 -->
+        <div class="form-group">
+            <label>正文</label>
             <textarea id="editorTextarea" placeholder="支持 Markdown 语法"></textarea>
         </div>
+
         <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
             <button class="btn btn-primary" id="publishBtn">🚀 发布</button>
             <button class="btn btn-secondary" id="clearBtn">清空</button>
@@ -142,9 +164,8 @@
     var tokenStatus = document.getElementById('tokenStatus');
     var tabs = document.querySelectorAll('.tab');
     var titleEl = document.getElementById('title');
-    var slugEl = document.getElementById('slug');
+    var authorEl = document.getElementById('author');
     var categoryEl = document.getElementById('category');
-    var pointsEl = document.getElementById('points');
     var summaryEl = document.getElementById('summary');
     var coverEl = document.getElementById('cover');
     var publishBtn = document.getElementById('publishBtn');
@@ -305,19 +326,17 @@
         if (!token) { showStatus('请先配置 GitHub Token', 'error'); return; }
 
         var title = titleEl.value.trim();
-        var slug = slugEl.value.trim();
         if (!title) { showStatus('请输入标题', 'error'); return; }
-        if (!slug) { slug = generateSlug(title); slugEl.value = slug; }
 
-        var content;
-        if (editor) {
-            content = editor.value();
-        } else {
-            content = textarea.value;
-        }
+        var author = authorEl.value.trim() || '未知';
+        var category = categoryEl.value;
+        var summary = summaryEl.value.trim();
+        var cover = coverEl.value.trim();
+        var content = editor ? editor.value() : textarea.value;
         if (!content) { showStatus('请输入正文', 'error'); return; }
 
-        var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + categoryEl.value + '\nreading_points: ' + (parseInt(pointsEl.value) || 0) + '\nsummary: ' + (summaryEl.value.trim() || '') + '\ncover_url: ' + (coverEl.value.trim() || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
+        var slug = generateSlug(title);
+        var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: 0\nsummary: ' + (summary || '') + '\ncover_url: ' + (cover || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
         var fullContent = frontmatter + content;
         var path = CONFIG.paths[currentTarget] + '/' + slug + '.md';
         var branch = CONFIG.branches[currentTarget];
@@ -371,18 +390,34 @@
 
             showStatus('✅ 发布成功！已推送到 ' + currentTarget, 'success');
             await loadList();
-            slugEl.value = '';
+            titleEl.value = '';
+            authorEl.value = '';
             summaryEl.value = '';
             coverEl.value = '';
             if (editor) editor.value('');
             else textarea.value = '';
-            titleEl.value = '';
+
         } catch (err) {
             console.error('发布失败:', err);
             showStatus('❌ 失败: ' + err.message, 'error');
         } finally {
             publishBtn.disabled = false;
         }
+    }
+
+    function loadUserInfo() {
+        // 简化版：从 localStorage 读取用户信息（如果有）
+        try {
+            var session = localStorage.getItem('foxsir_session');
+            if (session) {
+                var parsed = JSON.parse(session);
+                if (parsed && parsed.user && parsed.user.user_metadata && parsed.user.user_metadata.nickname) {
+                    authorEl.value = parsed.user.user_metadata.nickname;
+                } else if (parsed && parsed.user && parsed.user.email) {
+                    authorEl.value = parsed.user.email.split('@')[0];
+                }
+            }
+        } catch (_) {}
     }
 
     tabs.forEach(function(tab) {
@@ -399,18 +434,16 @@
         if (editor) editor.value('');
         else textarea.value = '';
         titleEl.value = '';
-        slugEl.value = '';
+        authorEl.value = '';
         summaryEl.value = '';
         coverEl.value = '';
         hideStatus();
-    });
-    titleEl.addEventListener('blur', function() {
-        if (!slugEl.value.trim()) slugEl.value = generateSlug(titleEl.value);
     });
 
     document.addEventListener('DOMContentLoaded', function() {
         console.log('🚀 DOM 已加载，初始化…');
         loadToken();
+        loadUserInfo();
         initEditor();
         loadList();
     });
@@ -418,6 +451,7 @@
     if (document.readyState === 'complete' || document.readyState === 'interactive') {
         console.log('🚀 DOM 已就绪，立即初始化…');
         loadToken();
+        loadUserInfo();
         setTimeout(function() {
             initEditor();
             loadList();
