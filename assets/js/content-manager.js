@@ -4,6 +4,7 @@
 // ================================================================
 
 import { CONTENT_CONFIG } from './content-config.js';
+import { getCache, setCache, clearCache } from './cache.js';
 
 // ===== 获取 Token =====
 export function getToken() {
@@ -21,40 +22,65 @@ export function getToken() {
     return null;
 }
 
-// ===== 获取文件列表（★ 添加时间戳破坏缓存 ★） =====
+// ===== 获取文件列表（优先读取缓存，永不过期） =====
 export async function fetchContentList(branch, path) {
+    const cacheKey = 'list_' + branch + '_' + path;
+
+    // ★ 优先读取缓存 ★
+    const cached = getCache(cacheKey);
+    if (cached) {
+        console.log('📦 命中缓存:', cacheKey);
+        return cached;
+    }
+
+    console.log('📡 未命中缓存，从 GitHub 拉取:', cacheKey);
+
     const token = getToken();
     if (!token) {
         console.error('❌ 未配置 GitHub Token');
         return [];
     }
-    // ★ 添加时间戳强制刷新 ★
-    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`;
+
+    const url = 'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path + '?ref=' + branch + '&t=' + Date.now();
+
     try {
         const response = await fetch(url, {
-            headers: { 'Authorization': `token ${token}` }
+            headers: { 'Authorization': 'token ' + token }
         });
         if (!response.ok) {
             if (response.status === 404) return [];
-            throw new Error(`HTTP ${response.status}`);
+            throw new Error('HTTP ' + response.status);
         }
         const data = await response.json();
-        if (!Array.isArray(data)) return [];
-        return data.filter(f => f && f.name && f.name.endsWith('.md'));
+        const files = Array.isArray(data) ? data.filter(function(f) { return f && f.name && f.name.endsWith('.md'); }) : [];
+
+        // ★ 存入缓存（永久有效） ★
+        setCache(cacheKey, files);
+        console.log('✅ 缓存已写入:', cacheKey, files.length, '个文件');
+
+        return files;
     } catch (err) {
         console.error('获取列表失败:', err);
         return [];
     }
 }
 
+// ===== 强制刷新列表（忽略缓存） =====
+export async function fetchContentListForce(branch, path) {
+    const cacheKey = 'list_' + branch + '_' + path;
+    clearCache(cacheKey);
+    console.log('🔄 强制刷新，已清除缓存:', cacheKey);
+    return fetchContentList(branch, path);
+}
+
 // ===== 获取文件 SHA（用于更新/删除） =====
 export async function getFileSha(branch, path) {
     const token = getToken();
     if (!token) return null;
-    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`;
+    const url = 'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path + '?ref=' + branch + '&t=' + Date.now();
     try {
         const response = await fetch(url, {
-            headers: { 'Authorization': `token ${token}` }
+            headers: { 'Authorization': 'token ' + token }
         });
         if (!response.ok) return null;
         const data = await response.json();
@@ -68,18 +94,18 @@ export async function getFileSha(branch, path) {
 export async function createOrUpdateContent(branch, path, content, message) {
     const token = getToken();
     if (!token) throw new Error('未配置 GitHub Token');
-    
+
     const encoder = new TextEncoder();
     const data = encoder.encode(content);
     let binary = '';
-    data.forEach(byte => binary += String.fromCharCode(byte));
+    data.forEach(function(byte) { binary += String.fromCharCode(byte); });
     const contentBase64 = btoa(binary);
 
     let sha = null;
     try {
         const check = await fetch(
-            `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`,
-            { headers: { 'Authorization': `token ${token}` } }
+            'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path + '?ref=' + branch + '&t=' + Date.now(),
+            { headers: { 'Authorization': 'token ' + token } }
         );
         if (check.ok) {
             const existing = await check.json();
@@ -87,29 +113,29 @@ export async function createOrUpdateContent(branch, path, content, message) {
         }
     } catch (_) {}
 
-    const payload = {
-        message: message || `📝 更新内容: ${path}`,
+    var payload = {
+        message: message || '📝 更新内容: ' + path,
         content: contentBase64,
-        branch: branch,
+        branch: branch
     };
     if (sha) payload.sha = sha;
 
     const response = await fetch(
-        `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}`,
+        'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path,
         {
             method: 'PUT',
             headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(payload)
         }
     );
 
     if (!response.ok) {
-        const text = await response.text();
-        let errMsg = text;
-        try { const j = JSON.parse(text); errMsg = j.message || errMsg; } catch (_) {}
+        var text = await response.text();
+        var errMsg = text;
+        try { var j = JSON.parse(text); errMsg = j.message || errMsg; } catch (_) {}
         throw new Error(errMsg);
     }
     return await response.json();
@@ -123,25 +149,25 @@ export async function deleteContent(branch, path) {
     if (!sha) throw new Error('文件不存在');
 
     const response = await fetch(
-        `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}`,
+        'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path,
         {
             method: 'DELETE',
             headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': 'token ' + token,
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                message: `🗑️ 删除: ${path}`,
+                message: '🗑️ 删除: ' + path,
                 sha: sha,
-                branch: branch,
-            }),
+                branch: branch
+            })
         }
     );
 
     if (!response.ok) {
-        const text = await response.text();
-        let errMsg = text;
-        try { const j = JSON.parse(text); errMsg = j.message || errMsg; } catch (_) {}
+        var text = await response.text();
+        var errMsg = text;
+        try { var j = JSON.parse(text); errMsg = j.message || errMsg; } catch (_) {}
         throw new Error(errMsg);
     }
     return await response.json();
@@ -149,8 +175,8 @@ export async function deleteContent(branch, path) {
 
 // ===== 解析 Frontmatter =====
 export function parseFrontmatter(raw, filename) {
-    const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
-    const match = raw.match(frontmatterRegex);
+    var frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
+    var match = raw.match(frontmatterRegex);
 
     if (!match) {
         return {
@@ -166,24 +192,23 @@ export function parseFrontmatter(raw, filename) {
         };
     }
 
-    const frontmatterStr = match[1];
-    const content = match[2].trim();
+    var frontmatterStr = match[1];
+    var content = match[2].trim();
+    var lines = frontmatterStr.split('\n');
+    var data = {};
+    var currentKey = '';
+    var currentValue = '';
 
-    const lines = frontmatterStr.split('\n');
-    const data = {};
-    let currentKey = '';
-    let currentValue = '';
-
-    for (const line of lines) {
-        const trimmed = line.trim();
+    for (var i = 0; i < lines.length; i++) {
+        var trimmed = lines[i].trim();
         if (!trimmed) continue;
-        const colonIndex = trimmed.indexOf(':');
+        var colonIndex = trimmed.indexOf(':');
         if (colonIndex === -1) {
             if (currentKey) currentValue += '\n' + trimmed;
             continue;
         }
-        const key = trimmed.substring(0, colonIndex).trim();
-        let value = trimmed.substring(colonIndex + 1).trim();
+        var key = trimmed.substring(0, colonIndex).trim();
+        var value = trimmed.substring(colonIndex + 1).trim();
         if (value === '|' || value === '>') {
             currentKey = key;
             currentValue = '';
@@ -223,6 +248,6 @@ export function generateSlug(title) {
 
 // ===== 构建 Frontmatter 内容 =====
 export function buildFullContent(title, slug, category, points, summary, cover, content) {
-    const frontmatter = `---\ntitle: ${title}\nslug: ${slug}\ncategory: ${category}\nreading_points: ${parseInt(points) || 0}\nsummary: ${summary.trim() || ''}\ncover_url: ${cover.trim() || ''}\nis_public: true\ncreated_at: ${new Date().toISOString()}\n---\n\n`;
+    var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: ' + (parseInt(points) || 0) + '\nsummary: ' + (summary.trim() || '') + '\ncover_url: ' + (cover.trim() || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
     return frontmatter + content;
 }

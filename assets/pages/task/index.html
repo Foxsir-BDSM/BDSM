@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ★ 强制深色覆盖（修复视觉空白） ★ */
+        /* ★ 强制深色覆盖 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .task-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
         .task-card h3 { color: #fffffe !important; }
@@ -16,7 +16,6 @@
         .task-card .meta { color: rgba(255,255,255,0.2) !important; }
         .task-card .footer { color: rgba(255,255,255,0.1) !important; border-top-color: rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
         .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
         .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
         .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
@@ -25,7 +24,6 @@
         .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
         .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
         select {
             background: rgba(255,255,255,0.02) !important;
             color: #fffffe !important;
@@ -40,7 +38,6 @@
             border-color: rgba(212,165,116,0.2) !important;
         }
 
-        /* ===== 原有样式（保留完整布局） ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -88,9 +85,7 @@
             color: #d4a574;
             border: 1px solid rgba(212,165,116,0.08);
         }
-        .header .right-actions .btn-admin:hover {
-            background: rgba(212,165,116,0.12);
-        }
+        .header .right-actions .btn-admin:hover { background: rgba(212,165,116,0.12); }
         .header .right-actions .btn-admin.active {
             background: rgba(212,165,116,0.15);
             border-color: rgba(212,165,116,0.2);
@@ -133,9 +128,7 @@
             border-color: rgba(212,165,116,0.12);
             color: #d4a574;
         }
-        .filters .filter-btn:hover:not(.active) {
-            color: rgba(255,255,255,0.6);
-        }
+        .filters .filter-btn:hover:not(.active) { color: rgba(255,255,255,0.6); }
         .task-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -216,11 +209,6 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-        .task-card .card-actions .btn-edit {
-            background: rgba(212,165,116,0.06);
-            color: #d4a574;
-        }
-        .task-card .card-actions .btn-edit:hover { background: rgba(212,165,116,0.12); }
         .task-card .card-actions .btn-delete {
             background: rgba(239,68,68,0.06);
             color: #f87171;
@@ -389,13 +377,12 @@
     </div>
 </div>
 
-<!-- ===== Modal ===== -->
+<!-- ===== Modal（仅发布/新增） ===== -->
 <div class="modal-overlay" id="editorModal">
     <div class="modal-box">
         <button class="modal-close" id="modalCloseBtn">✕</button>
         <div class="modal-title" id="modalTitle">📝 发布新任务</div>
 
-        <input type="hidden" id="editSlug" />
         <input type="hidden" id="editMode" value="create" />
 
         <div class="form-row">
@@ -466,47 +453,46 @@
         generateSlug,
         buildFullContent
     } from '@/js/content-manager.js';
+    import { clearCache } from '@/js/cache.js';
     import EasyMDE from 'easymde';
 
-    // ★ 强制保留 getToken 的引用，防止被树摇删除 ★
-    const token = getToken();
+    var token = getToken();
     window.__foxsir_token = token;
     console.log('🔑 getToken 返回值:', token ? token.substring(0, 10) + '…' : 'null');
 
-    const BRANCH = CONTENT_CONFIG.branches.tasks;
-    const PATH = CONTENT_CONFIG.paths.tasks;
-    const TARGET_NAME = '任务区';
+    var BRANCH = CONTENT_CONFIG.branches.tasks;
+    var PATH = CONTENT_CONFIG.paths.tasks;
+    var TARGET_NAME = '任务区';
 
-    const grid = document.getElementById('taskGrid');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const publishBtn = document.getElementById('publishBtn');
-    const manageBtn = document.getElementById('manageBtn');
-    const modal = document.getElementById('editorModal');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-    const modalCancelBtn = document.getElementById('modalCancelBtn');
-    const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalTitleInput = document.getElementById('modalTitleInput');
-    const modalSlug = document.getElementById('modalSlug');
-    const modalCategory = document.getElementById('modalCategory');
-    const modalPoints = document.getElementById('modalPoints');
-    const modalSummary = document.getElementById('modalSummary');
-    const modalCover = document.getElementById('modalCover');
-    const modalEditorTextarea = document.getElementById('modalEditorTextarea');
-    const modalStatus = document.getElementById('modalStatus');
-    const editSlug = document.getElementById('editSlug');
-    const editMode = document.getElementById('editMode');
+    var grid = document.getElementById('taskGrid');
+    var filterBtns = document.querySelectorAll('.filter-btn');
+    var publishBtn = document.getElementById('publishBtn');
+    var manageBtn = document.getElementById('manageBtn');
+    var modal = document.getElementById('editorModal');
+    var modalCloseBtn = document.getElementById('modalCloseBtn');
+    var modalCancelBtn = document.getElementById('modalCancelBtn');
+    var modalSubmitBtn = document.getElementById('modalSubmitBtn');
+    var modalTitle = document.getElementById('modalTitle');
+    var modalTitleInput = document.getElementById('modalTitleInput');
+    var modalSlug = document.getElementById('modalSlug');
+    var modalCategory = document.getElementById('modalCategory');
+    var modalPoints = document.getElementById('modalPoints');
+    var modalSummary = document.getElementById('modalSummary');
+    var modalCover = document.getElementById('modalCover');
+    var modalEditorTextarea = document.getElementById('modalEditorTextarea');
+    var modalStatus = document.getElementById('modalStatus');
+    var editMode = document.getElementById('editMode');
 
-    let currentCategory = 'all';
-    let allTasks = [];
-    let isManageMode = false;
-    let editorInstance = null;
-    let currentUserRole = null;
-    let pendingContent = '';   // 暂存编辑器内容
+    var currentCategory = 'all';
+    var allTasks = [];
+    var isManageMode = false;
+    var editorInstance = null;
+    var currentUserRole = null;
+    var pendingContent = '';
 
     async function checkAdmin() {
-        const user = await getCurrentUser();
-        const role = await getUserRole();
+        var user = await getCurrentUser();
+        var role = await getUserRole();
         currentUserRole = role;
         if (user && ['admin', 'subadmin'].includes(role)) {
             publishBtn.style.display = 'inline-block';
@@ -518,123 +504,101 @@
         return false;
     }
 
-    // ===== 获取任务列表（实时，带缓存破坏） =====
     async function fetchTasks() {
-        // 强制引用 token，确保 getToken 不被优化
-        if (window.__foxsir_token) {
-            // 仅引用，不做任何操作
-        }
-        const files = await fetchContentList(BRANCH, PATH);
-        const tasks = await Promise.all(
-            files.map(async (file) => {
+        if (window.__foxsir_token) {}
+        var files = await fetchContentList(BRANCH, PATH);
+        var tasks = await Promise.all(
+            files.map(async function(file) {
                 try {
-                    const url = file.download_url + '?t=' + Date.now();
-                    const res = await fetch(url);
-                    const raw = await res.text();
+                    var url = file.download_url + '?t=' + Date.now();
+                    var res = await fetch(url);
+                    var raw = await res.text();
                     return parseFrontmatter(raw, file.name);
                 } catch {
                     return null;
                 }
             })
         );
-        return tasks.filter(t => t !== null);
+        return tasks.filter(function(t) { return t !== null; });
     }
 
-    async function renderTasks(category = 'all') {
+    async function renderTasks(category) {
+        if (category === undefined) category = 'all';
         showLoading('加载任务', '欲渊之庭…');
         try {
-            const user = await getCurrentUser();
-            let tasks = await fetchTasks();
+            var user = await getCurrentUser();
+            var tasks = await fetchTasks();
             allTasks = tasks;
 
             if (category !== 'all') {
-                tasks = tasks.filter(t => t.category === category);
+                tasks = tasks.filter(function(t) { return t.category === category; });
             }
 
             if (!user) {
-                tasks = tasks.filter(t => t.is_public);
+                tasks = tasks.filter(function(t) { return t.is_public; });
             }
 
             if (tasks.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="icon">📭</div><p>暂无任务，敬请期待</p></div>`;
+                grid.innerHTML = '<div class="empty-state"><div class="icon">📭</div><p>暂无任务，敬请期待</p></div>';
                 return;
             }
 
-            grid.innerHTML = tasks.map(task => {
-                const coverStyle = task.cover_url
-                    ? `background-image: url(${task.cover_url});`
-                    : `background: linear-gradient(135deg, rgba(212,165,116,0.05), rgba(212,165,116,0.01));`;
-                const isLocked = !user && !task.is_public;
+            grid.innerHTML = tasks.map(function(task) {
+                var coverStyle = task.cover_url
+                    ? 'background-image: url(' + task.cover_url + ');'
+                    : 'background: linear-gradient(135deg, rgba(212,165,116,0.05), rgba(212,165,116,0.01));';
+                var isLocked = !user && !task.is_public;
 
-                return `
-                    <div class="task-card" data-slug="${task.slug}">
-                        <a href="/assets/pages/task/detail.html?slug=${task.slug}" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">
-                            <div class="cover" style="${coverStyle}"></div>
-                            <div class="meta">
-                                <span class="category">${task.category}</span>
-                                <span>${new Date(task.created_at).toLocaleDateString('zh-CN')}</span>
-                            </div>
-                            <h3>${task.title}</h3>
-                            <p>${task.summary || '点击查看详情…'}</p>
-                            <div class="footer">
-                                <span>${isLocked ? '🔒 登录后解锁' : '🎯 查看任务'}</span>
-                                <span class="badge">${task.is_public ? '公开' : '私密'}</span>
-                            </div>
-                        </a>
-                        <div class="card-actions ${isManageMode ? 'visible' : ''}">
-                            <button class="btn-sm btn-edit" data-slug="${task.slug}">✏️ 编辑</button>
-                            <button class="btn-sm btn-delete" data-slug="${task.slug}">🗑️ 删除</button>
-                        </div>
-                    </div>
-                `;
+                return '<div class="task-card" data-slug="' + task.slug + '">' +
+                    '<a href="/assets/pages/task/detail.html?slug=' + task.slug + '" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">' +
+                    '<div class="cover" style="' + coverStyle + '"></div>' +
+                    '<div class="meta"><span class="category">' + task.category + '</span><span>' + new Date(task.created_at).toLocaleDateString('zh-CN') + '</span></div>' +
+                    '<h3>' + task.title + '</h3>' +
+                    '<p>' + (task.summary || '点击查看详情…') + '</p>' +
+                    '<div class="footer"><span>' + (isLocked ? '🔒 登录后解锁' : '🎯 查看任务') + '</span><span class="badge">' + (task.is_public ? '公开' : '私密') + '</span></div>' +
+                    '</a>' +
+                    '<div class="card-actions ' + (isManageMode ? 'visible' : '') + '">' +
+                    '<button class="btn-sm btn-delete" data-slug="' + task.slug + '">🗑️ 删除</button>' +
+                    '</div></div>';
             }).join('');
 
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', (e) => {
+            // ★ 只绑定删除事件 ★
+            document.querySelectorAll('.btn-delete').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    const slug = btn.dataset.slug;
-                    const task = allTasks.find(t => t.slug === slug);
-                    if (task) openEditor('edit', task);
-                });
-            });
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const slug = btn.dataset.slug;
-                    const task = allTasks.find(t => t.slug === slug);
+                    var slug = btn.dataset.slug;
+                    var task = allTasks.find(function(t) { return t.slug === slug; });
                     if (task) confirmDelete(task);
                 });
             });
 
         } catch (err) {
             console.error('渲染失败:', err);
-            grid.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>加载失败，请稍后重试</p></div>`;
+            grid.innerHTML = '<div class="empty-state"><div class="icon">⚠️</div><p>加载失败，请稍后重试</p></div>';
         } finally {
             hideLoading(false);
         }
     }
 
-    manageBtn.addEventListener('click', () => {
+    manageBtn.addEventListener('click', function() {
         isManageMode = !isManageMode;
         manageBtn.classList.toggle('active', isManageMode);
         manageBtn.textContent = isManageMode ? '✕ 退出管理' : '⚙️ 管理';
         renderTasks(currentCategory);
     });
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
+    filterBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
             currentCategory = btn.dataset.category;
             renderTasks(currentCategory);
         });
     });
 
-    // ================================================================
-    // 编辑器弹窗（修复内容填充 + 缓存破坏）
-    // ================================================================
-
-    function showStatus(text, type = 'loading') {
+    // ===== 发布弹窗（仅新增） =====
+    function showStatus(text, type) {
+        if (type === undefined) type = 'loading';
         modalStatus.textContent = text;
         modalStatus.className = type;
         modalStatus.style.display = 'block';
@@ -642,41 +606,26 @@
 
     function hideStatus() { modalStatus.style.display = 'none'; }
 
-    function openEditor(mode, data = null) {
-        editMode.value = mode;
-
-        if (mode === 'create') {
-            modalTitle.textContent = '📝 发布新任务';
-            modalSubmitBtn.textContent = '🚀 发布';
-            modalTitleInput.value = '';
-            modalSlug.value = '';
-            editSlug.value = '';
-            modalCategory.value = '日常任务';
-            modalPoints.value = 5;
-            modalSummary.value = '';
-            modalCover.value = '';
-            pendingContent = '';
-        } else if (mode === 'edit' && data) {
-            modalTitle.textContent = `✏️ 编辑：${data.title}`;
-            modalSubmitBtn.textContent = '💾 更新';
-            modalTitleInput.value = data.title;
-            modalSlug.value = data.slug;
-            editSlug.value = data.slug;
-            modalCategory.value = data.category || '日常任务';
-            modalPoints.value = data.reading_points || 5;
-            modalSummary.value = data.summary || '';
-            modalCover.value = data.cover_url || '';
-            pendingContent = data.content || '';
-        }
+    function openEditor() {
+        editMode.value = 'create';
+        modalTitle.textContent = '📝 发布新任务';
+        modalSubmitBtn.textContent = '🚀 发布';
+        modalTitleInput.value = '';
+        modalSlug.value = '';
+        modalCategory.value = '日常任务';
+        modalPoints.value = 5;
+        modalSummary.value = '';
+        modalCover.value = '';
+        pendingContent = '';
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
         hideStatus();
 
-        setTimeout(() => {
+        setTimeout(function() {
             initEditor();
             if (editorInstance) {
-                editorInstance.value(pendingContent || '');
+                editorInstance.value('');
             }
         }, 150);
     }
@@ -718,31 +667,32 @@
         }
     }
 
-    modalTitleInput.addEventListener('input', () => {
-        const title = modalTitleInput.value.trim();
-        if (title && !editSlug.value) {
+    modalTitleInput.addEventListener('input', function() {
+        var title = modalTitleInput.value.trim();
+        if (title) {
             modalSlug.value = generateSlug(title);
         }
     });
 
-    modalSubmitBtn.addEventListener('click', async () => {
-        const title = modalTitleInput.value.trim();
-        let slug = modalSlug.value.trim() || editSlug.value;
-        const category = modalCategory.value;
-        const points = parseInt(modalPoints.value) || 0;
-        const summary = modalSummary.value.trim();
-        const cover = modalCover.value.trim();
-        const content = editorInstance ? editorInstance.value() : modalEditorTextarea.value;
+    // ===== 提交发布 =====
+    modalSubmitBtn.addEventListener('click', async function() {
+        var title = modalTitleInput.value.trim();
+        var slug = modalSlug.value.trim();
+        var category = modalCategory.value;
+        var points = parseInt(modalPoints.value) || 0;
+        var summary = modalSummary.value.trim();
+        var cover = modalCover.value.trim();
+        var content = editorInstance ? editorInstance.value() : modalEditorTextarea.value;
 
         if (!title) { showStatus('请输入标题', 'error'); return; }
         if (!slug) { slug = generateSlug(title); modalSlug.value = slug; }
         if (!content) { showStatus('请输入正文内容', 'error'); return; }
 
-        const fullContent = buildFullContent(title, slug, category, points, summary, cover, content);
-        const filePath = `${PATH}/${slug}.md`;
-        const mode = editMode.value;
+        var fullContent = buildFullContent(title, slug, category, points, summary, cover, content);
+        var filePath = PATH + '/' + slug + '.md';
+        var mode = editMode.value;
 
-        showStatus(mode === 'create' ? '⏳ 发布中…' : '⏳ 更新中…', 'loading');
+        showStatus('⏳ 发布中…', 'loading');
         modalSubmitBtn.disabled = true;
 
         try {
@@ -750,28 +700,44 @@
                 BRANCH,
                 filePath,
                 fullContent,
-                mode === 'create' ? `📝 发布: ${title} (${TARGET_NAME})` : `✏️ 更新: ${title} (${TARGET_NAME})`
+                '📝 发布: ' + title + ' (' + TARGET_NAME + ')'
             );
-            showStatus(`✅ ${mode === 'create' ? '发布' : '更新'}成功！`, 'success');
-            setTimeout(() => {
+
+            // ★ 清除列表缓存 ★
+            clearCache('list_' + BRANCH + '_' + PATH);
+            // ★ 清除所有详情缓存 ★
+            var keys = Object.keys(localStorage);
+            for (var i = 0; i < keys.length; i++) {
+                if (keys[i].startsWith('foxsir_detail_tasks_')) {
+                    localStorage.removeItem(keys[i]);
+                }
+            }
+
+            showStatus('✅ 发布成功！', 'success');
+            setTimeout(function() {
                 closeEditor();
                 renderTasks(currentCategory);
             }, 600);
         } catch (err) {
             console.error('提交失败:', err);
-            showStatus(`❌ 失败: ${err.message}`, 'error');
+            showStatus('❌ 失败: ' + err.message, 'error');
         } finally {
             modalSubmitBtn.disabled = false;
         }
     });
 
+    // ===== 删除 =====
     async function confirmDelete(task) {
-        if (!confirm(`确定要删除「${task.title}」吗？此操作不可撤销。`)) return;
+        if (!confirm('确定要删除「' + task.title + '」吗？此操作不可撤销。')) return;
 
         showLoading('删除中…', '');
         try {
-            const filePath = `${PATH}/${task.slug}.md`;
+            var filePath = PATH + '/' + task.slug + '.md';
             await deleteContent(BRANCH, filePath);
+
+            clearCache('list_' + BRANCH + '_' + PATH);
+            clearCache('detail_tasks_' + task.slug);
+
             alert('✅ 删除成功！');
             renderTasks(currentCategory);
         } catch (err) {
@@ -784,20 +750,14 @@
 
     modalCloseBtn.addEventListener('click', closeEditor);
     modalCancelBtn.addEventListener('click', closeEditor);
-    modal.addEventListener('click', (e) => {
+    modal.addEventListener('click', function(e) {
         if (e.target === modal) closeEditor();
     });
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.classList.contains('active')) closeEditor();
     });
 
-    publishBtn.addEventListener('click', () => {
-        openEditor('create');
-    });
-
-    // ================================================================
-    // 初始化
-    // ================================================================
+    publishBtn.addEventListener('click', openEditor);
 
     (async function init() {
         await checkAdmin();

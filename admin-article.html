@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>内容管理 · Foxsir</title>
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
-    <!-- ===== EasyMDE 编辑器（可视化 Markdown） ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -238,7 +237,6 @@
             .panel { padding: 16px; }
         }
 
-        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
         .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
         .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
         .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
@@ -247,7 +245,6 @@
         .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
         .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
         select {
             background: rgba(255,255,255,0.02) !important;
             color: #fffffe !important;
@@ -262,7 +259,6 @@
             border-color: rgba(212,165,116,0.2) !important;
         }
 
-        /* ★ 修复管理后台白背景 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .admin-container, .panel, .token-section { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.04) !important; }
         .header h1 { color: #fffffe !important; }
@@ -275,29 +271,23 @@
 <body>
 
 <div class="admin-container">
-    <!-- ===== 顶栏 ===== -->
     <div class="header">
         <h1>📝 内容管理</h1>
         <a href="/index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <!-- ===== Token 配置区 ===== -->
     <div class="token-section" id="tokenSection">
         <div class="token-row">
             <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="" />
             <button class="btn" id="saveTokenBtn">保存 Token</button>
             <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
         </div>
-        <div class="hint">
-            💡 请从 Vercel 环境变量或手动输入 Token。硬编码已移除。
-        </div>
+        <div class="hint">💡 请从 Vercel 环境变量或手动输入 Token。</div>
     </div>
 
-    <!-- ===== 编辑器面板 ===== -->
     <div class="panel">
-        <h2>✏️ 编写内容</h2>
+        <h2>✏️ 发布内容</h2>
 
-        <!-- 发布目标选择 -->
         <div class="publish-target" id="targetSelector">
             <button class="target-btn active" data-target="knowledge">
                 <span class="icon">📚</span> 知识区
@@ -307,7 +297,6 @@
             </button>
         </div>
 
-        <!-- 表单 -->
         <div class="form-row">
             <div class="form-group">
                 <label>标题 *</label>
@@ -344,7 +333,6 @@
             <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
-        <!-- 可视化编辑器 -->
         <div class="form-group">
             <label>正文</label>
             <div id="editorContainer"></div>
@@ -357,7 +345,6 @@
         <div id="statusMsg"></div>
     </div>
 
-    <!-- ===== 已发布内容列表 ===== -->
     <div class="panel">
         <h2>📋 已发布内容</h2>
         <div id="listContainer">
@@ -366,7 +353,6 @@
     </div>
 </div>
 
-<!-- ===== Import Map ===== -->
 <script type="importmap">
 {
     "imports": {
@@ -375,36 +361,33 @@
 }
 </script>
 
-<!-- ===== 主逻辑 ===== -->
 <script type="module">
     import EasyMDE from 'easymde';
     import { CONTENT_CONFIG } from '@/js/content-config.js';
     import { getCurrentUser } from '@/js/auth.js';
     import { getUserRole } from '@/js/identity.js';
     import { showLoading, hideLoading } from '@/js/loading.js';
+    import { clearKnowledgeCache, clearTaskCache } from '@/js/cache.js';
 
-    // ===== DOM 引用 =====
-    const tokenInput = document.getElementById('githubToken');
-    const saveTokenBtn = document.getElementById('saveTokenBtn');
-    const tokenStatus = document.getElementById('tokenStatus');
-    const targetBtns = document.querySelectorAll('.target-btn');
-    const editTitle = document.getElementById('editTitle');
-    const editSlug = document.getElementById('editSlug');
-    const editCategory = document.getElementById('editCategory');
-    const editPoints = document.getElementById('editPoints');
-    const editSummary = document.getElementById('editSummary');
-    const editCover = document.getElementById('editCover');
-    const publishBtn = document.getElementById('publishBtn');
-    const clearBtn = document.getElementById('clearBtn');
-    const statusMsg = document.getElementById('statusMsg');
-    const listContainer = document.getElementById('listContainer');
+    var tokenInput = document.getElementById('githubToken');
+    var saveTokenBtn = document.getElementById('saveTokenBtn');
+    var tokenStatus = document.getElementById('tokenStatus');
+    var targetBtns = document.querySelectorAll('.target-btn');
+    var editTitle = document.getElementById('editTitle');
+    var editSlug = document.getElementById('editSlug');
+    var editCategory = document.getElementById('editCategory');
+    var editPoints = document.getElementById('editPoints');
+    var editSummary = document.getElementById('editSummary');
+    var editCover = document.getElementById('editCover');
+    var publishBtn = document.getElementById('publishBtn');
+    var clearBtn = document.getElementById('clearBtn');
+    var statusMsg = document.getElementById('statusMsg');
+    var listContainer = document.getElementById('listContainer');
 
-    let currentTarget = 'knowledge';
-    let editor = null;
+    var currentTarget = 'knowledge';
+    var editor = null;
+    var TOKEN_KEY = 'foxsir_github_token';
 
-    const TOKEN_KEY = 'foxsir_github_token';
-
-    // ===== Token 管理（从环境变量或 localStorage 读取） =====
     function getEnvToken() {
         if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
             return import.meta.env.VITE_GITHUB_TOKEN;
@@ -413,17 +396,14 @@
     }
 
     function loadToken() {
-        // 1. 优先从 localStorage 读取
-        let token = localStorage.getItem(TOKEN_KEY);
+        var token = localStorage.getItem(TOKEN_KEY);
         if (token && token.length > 10) {
             tokenInput.value = token;
             tokenStatus.textContent = '✅ 已配置（localStorage）';
             tokenStatus.className = 'token-status ok';
             return token;
         }
-
-        // 2. 从环境变量读取
-        const envToken = getEnvToken();
+        var envToken = getEnvToken();
         if (envToken && envToken.length > 10) {
             tokenInput.value = envToken;
             localStorage.setItem(TOKEN_KEY, envToken);
@@ -431,7 +411,6 @@
             tokenStatus.className = 'token-status ok';
             return envToken;
         }
-
         tokenInput.value = '';
         tokenStatus.textContent = '❌ 未配置';
         tokenStatus.className = 'token-status fail';
@@ -439,7 +418,7 @@
     }
 
     function saveToken() {
-        const token = tokenInput.value.trim();
+        var token = tokenInput.value.trim();
         if (token) {
             localStorage.setItem(TOKEN_KEY, token);
             tokenStatus.textContent = '✅ 已配置';
@@ -451,10 +430,8 @@
             tokenStatus.className = 'token-status fail';
         }
     }
-
     saveTokenBtn.addEventListener('click', saveToken);
 
-    // ===== 初始化编辑器 =====
     function initEditor() {
         if (editor) return;
         editor = new EasyMDE({
@@ -462,13 +439,7 @@
             placeholder: '在这里写内容… 支持 Markdown 语法',
             spellChecker: false,
             autoDownloadFontAwesome: false,
-            toolbar: [
-                'bold', 'italic', 'heading', '|',
-                'quote', 'unordered-list', 'ordered-list', '|',
-                'link', 'image', 'table', '|',
-                'preview', 'side-by-side', 'fullscreen', '|',
-                'guide'
-            ],
+            toolbar: ['bold', 'italic', 'heading', '|', 'quote', 'unordered-list', 'ordered-list', '|', 'link', 'image', 'table', '|', 'preview', 'side-by-side', 'fullscreen', '|', 'guide'],
             status: ['lines', 'words'],
             styleSelectedText: false,
             toolbarTips: true,
@@ -476,33 +447,29 @@
         document.getElementById('editorContainer').appendChild(editor.element);
     }
 
-    // ===== 发布目标切换 =====
-    targetBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            targetBtns.forEach(b => b.classList.remove('active'));
+    targetBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            targetBtns.forEach(function(b) { b.classList.remove('active'); });
             btn.classList.add('active');
             currentTarget = btn.dataset.target;
-            showStatus(`当前发布到：${currentTarget === 'knowledge' ? '📚 知识区' : '🎯 任务区'}`, 'loading');
-            setTimeout(() => { statusMsg.style.display = 'none'; }, 1500);
+            showStatus('当前发布到：' + (currentTarget === 'knowledge' ? '📚 知识区' : '🎯 任务区'), 'loading');
+            setTimeout(function() { statusMsg.style.display = 'none'; }, 1500);
             loadList();
         });
     });
 
-    // ===== 状态消息 =====
-    function showStatus(text, type = 'loading') {
+    function showStatus(text, type) {
+        if (type === undefined) type = 'loading';
         statusMsg.textContent = text;
         statusMsg.className = type;
         statusMsg.style.display = 'block';
     }
 
-    function hideStatus() {
-        statusMsg.style.display = 'none';
-    }
+    function hideStatus() { statusMsg.style.display = 'none'; }
 
-    // ===== 检查权限 =====
     async function checkAuth() {
-        const user = await getCurrentUser();
-        const role = await getUserRole();
+        var user = await getCurrentUser();
+        var role = await getUserRole();
         if (!user || !['admin', 'subadmin'].includes(role)) {
             alert('需要管理员权限');
             window.location.href = '/index.html';
@@ -511,152 +478,133 @@
         return true;
     }
 
-    // ===== 生成 Slug =====
     function generateSlug(title) {
-        return title
-            .toLowerCase()
-            .replace(/[^\w\u4e00-\u9fa5\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .slice(0, 50);
+        return title.toLowerCase().replace(/[^\w\u4e00-\u9fa5\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 50);
     }
 
-    // ===== 获取当前内容列表 =====
     async function loadList() {
-        const token = loadToken();
+        var token = loadToken();
         if (!token) {
-            listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 请先配置 GitHub Token</div>`;
+            listContainer.innerHTML = '<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 请先配置 GitHub Token</div>';
             return;
         }
 
-        const { owner, repo, branches, paths } = CONTENT_CONFIG;
-        const branch = branches[currentTarget];
-        const path = paths[currentTarget];
+        var owner = CONTENT_CONFIG.owner;
+        var repo = CONTENT_CONFIG.repo;
+        var branch = CONTENT_CONFIG.branches[currentTarget];
+        var path = CONTENT_CONFIG.paths[currentTarget];
 
         try {
-            const response = await fetch(
-                `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
-                { headers: { 'Authorization': `token ${token}` } }
+            var response = await fetch(
+                'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=' + branch,
+                { headers: { 'Authorization': 'token ' + token } }
             );
-
             if (!response.ok) {
                 if (response.status === 404) {
-                    listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>`;
+                    listContainer.innerHTML = '<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>';
                     return;
                 }
-                throw new Error(`HTTP ${response.status}`);
+                throw new Error('HTTP ' + response.status);
             }
-
-            const data = await response.json();
-            const files = data.filter(f => f.name.endsWith('.md'));
-
+            var data = await response.json();
+            var files = data.filter(function(f) { return f.name.endsWith('.md'); });
             if (files.length === 0) {
-                listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>`;
+                listContainer.innerHTML = '<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">📭 暂无内容</div>';
                 return;
             }
-
-            listContainer.innerHTML = files.map(file => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.02);">
-                    <span style="font-size:14px;">${file.name.replace('.md', '')}</span>
-                    <span style="font-size:11px;color:rgba(255,255,255,0.1);">
-                        ${new Date(file.commit?.committer?.date || file.sha).toLocaleDateString()}
-                    </span>
-                </div>
-            `).join('');
-
+            listContainer.innerHTML = files.map(function(file) {
+                return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.02);">' +
+                    '<span style="font-size:14px;">' + file.name.replace('.md', '') + '</span>' +
+                    '<span style="font-size:11px;color:rgba(255,255,255,0.1);">' + new Date(file.commit?.committer?.date || file.sha).toLocaleDateString() + '</span></div>';
+            }).join('');
         } catch (err) {
             console.error('加载列表失败:', err);
-            listContainer.innerHTML = `<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 加载失败</div>`;
+            listContainer.innerHTML = '<div style="text-align:center;padding:30px 0;color:rgba(255,255,255,0.1);">⚠️ 加载失败</div>';
         }
     }
 
-    // ===== 发布文章 =====
     async function publishArticle() {
-        const token = loadToken();
-        if (!token) {
-            showStatus('⚠️ 请先配置 GitHub Token', 'error');
-            return;
-        }
+        var token = loadToken();
+        if (!token) { showStatus('⚠️ 请先配置 GitHub Token', 'error'); return; }
 
-        const title = editTitle.value.trim();
-        let slug = editSlug.value.trim();
-        const category = editCategory.value;
-        const points = parseInt(editPoints.value) || 0;
-        const summary = editSummary.value.trim();
-        const cover = editCover.value.trim();
-        const content = editor.value();
+        var title = editTitle.value.trim();
+        var slug = editSlug.value.trim();
+        var category = editCategory.value;
+        var points = parseInt(editPoints.value) || 0;
+        var summary = editSummary.value.trim();
+        var cover = editCover.value.trim();
+        var content = editor.value();
 
         if (!title) { showStatus('⚠️ 请输入标题', 'error'); return; }
         if (!slug) { slug = generateSlug(title); editSlug.value = slug; }
         if (!content) { showStatus('⚠️ 请输入正文内容', 'error'); return; }
 
-        const frontmatter = `---\ntitle: ${title}\nslug: ${slug}\ncategory: ${category}\nreading_points: ${points}\nsummary: ${summary || ''}\ncover_url: ${cover || ''}\nis_public: true\ncreated_at: ${new Date().toISOString()}\n---\n\n`;
-        const fullContent = frontmatter + content;
-        const fileName = `${slug}.md`;
-        const path = `${CONTENT_CONFIG.paths[currentTarget]}/${fileName}`;
-        const branch = CONTENT_CONFIG.branches[currentTarget];
-        const { owner, repo } = CONTENT_CONFIG;
+        var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: ' + points + '\nsummary: ' + (summary || '') + '\ncover_url: ' + (cover || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
+        var fullContent = frontmatter + content;
+        var fileName = slug + '.md';
+        var path = CONTENT_CONFIG.paths[currentTarget] + '/' + fileName;
+        var branch = CONTENT_CONFIG.branches[currentTarget];
+        var owner = CONTENT_CONFIG.owner;
+        var repo = CONTENT_CONFIG.repo;
 
-        showStatus(`⏳ 发布到 ${currentTarget === 'knowledge' ? '知识区' : '任务区'}…`, 'loading');
+        showStatus('⏳ 发布到 ' + (currentTarget === 'knowledge' ? '知识区' : '任务区') + '…', 'loading');
         publishBtn.disabled = true;
 
         try {
-            let sha = null;
+            var sha = null;
             try {
-                const checkRes = await fetch(
-                    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
-                    { headers: { 'Authorization': `token ${token}` } }
+                var checkRes = await fetch(
+                    'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path + '?ref=' + branch,
+                    { headers: { 'Authorization': 'token ' + token } }
                 );
                 if (checkRes.ok) {
-                    const existing = await checkRes.json();
+                    var existing = await checkRes.json();
                     sha = existing.sha;
                 }
             } catch (_) {}
 
-            const encoder = new TextEncoder();
-            const data = encoder.encode(fullContent);
-            let binary = '';
-            data.forEach(byte => binary += String.fromCharCode(byte));
-            const contentBase64 = btoa(binary);
+            var encoder = new TextEncoder();
+            var data = encoder.encode(fullContent);
+            var binary = '';
+            data.forEach(function(byte) { binary += String.fromCharCode(byte); });
+            var contentBase64 = btoa(binary);
 
-            const payload = {
-                message: `📝 发布: ${title} (${currentTarget})`,
+            var payload = {
+                message: '📝 发布: ' + title + ' (' + currentTarget + ')',
                 content: contentBase64,
-                branch: branch,
+                branch: branch
             };
             if (sha) payload.sha = sha;
 
-            console.log('🚀 发布请求:', { path, branch, payload });
+            console.log('🚀 发布请求:', { path: path, branch: branch });
 
-            const commitRes = await fetch(
-                `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+            var commitRes = await fetch(
+                'https://api.github.com/repos/' + owner + '/' + repo + '/contents/' + path,
                 {
                     method: 'PUT',
                     headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json',
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(payload)
                 }
             );
 
-            const responseText = await commitRes.text();
-            console.log('📦 GitHub 响应:', commitRes.status, responseText);
-
+            var responseText = await commitRes.text();
             if (!commitRes.ok) {
-                let errorMsg = `HTTP ${commitRes.status}`;
-                try {
-                    const errJson = JSON.parse(responseText);
-                    errorMsg = errJson.message || errorMsg;
-                } catch (_) {
-                    errorMsg = responseText || errorMsg;
-                }
+                var errorMsg = 'HTTP ' + commitRes.status;
+                try { var errJson = JSON.parse(responseText); errorMsg = errJson.message || errorMsg; } catch (_) { errorMsg = responseText || errorMsg; }
                 throw new Error(errorMsg);
             }
 
-            showStatus(`✅ 发布成功！已推送到 ${currentTarget} 分支`, 'success');
-            await loadList();
+            if (currentTarget === 'knowledge') {
+                clearKnowledgeCache();
+            } else {
+                clearTaskCache();
+            }
 
+            showStatus('✅ 发布成功！', 'success');
+            await loadList();
             editSlug.value = '';
             editSummary.value = '';
             editCover.value = '';
@@ -665,13 +613,12 @@
 
         } catch (err) {
             console.error('发布失败:', err);
-            showStatus(`❌ 发布失败: ${err.message}`, 'error');
+            showStatus('❌ 发布失败: ' + err.message, 'error');
         } finally {
             publishBtn.disabled = false;
         }
     }
 
-    // ===== 清空表单 =====
     function clearForm() {
         if (editor) editor.value('');
         editTitle.value = '';
@@ -681,37 +628,32 @@
         hideStatus();
     }
 
-    // ===== 事件绑定 =====
     publishBtn.addEventListener('click', publishArticle);
     clearBtn.addEventListener('click', clearForm);
 
-    editTitle.addEventListener('blur', () => {
+    editTitle.addEventListener('blur', function() {
         if (!editSlug.value.trim()) {
             editSlug.value = generateSlug(editTitle.value);
         }
     });
 
-    // ===== 初始化 =====
     (async function init() {
-        const ok = await checkAuth();
+        var ok = await checkAuth();
         if (!ok) return;
-
         loadToken();
         initEditor();
         await loadList();
-
         document.querySelector('.target-btn[data-target="knowledge"]')?.classList.add('active');
         currentTarget = 'knowledge';
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetParam = urlParams.get('target');
+        var urlParams = new URLSearchParams(window.location.search);
+        var targetParam = urlParams.get('target');
         if (targetParam === 'tasks' || targetParam === 'knowledge') {
-            const btn = document.querySelector(`.target-btn[data-target="${targetParam}"]`);
+            var btn = document.querySelector('.target-btn[data-target="' + targetParam + '"]');
             if (btn) btn.click();
         }
     })();
 
-    window.__admin = { editor, publishArticle, loadList, clearForm };
+    window.__admin = { editor: editor, publishArticle: publishArticle, loadList: loadList, clearForm: clearForm };
 </script>
 </body>
 </html>

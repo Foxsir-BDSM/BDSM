@@ -7,7 +7,7 @@
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ★ 强制深色覆盖（修复视觉空白） ★ */
+        /* ★ 强制深色覆盖 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .task-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
         .task-card h3 { color: #fffffe !important; }
@@ -15,7 +15,6 @@
         .task-card .meta { color: rgba(255,255,255,0.2) !important; }
         .task-card .footer { color: rgba(255,255,255,0.1) !important; border-top-color: rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
         .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
         .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
         .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
@@ -24,7 +23,6 @@
         .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
         .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
         select {
             background: rgba(255,255,255,0.02) !important;
             color: #fffffe !important;
@@ -39,7 +37,6 @@
             border-color: rgba(212,165,116,0.2) !important;
         }
 
-        /* ===== 原有样式（保留完整布局） ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -87,9 +84,7 @@
             color: #d4a574;
             border: 1px solid rgba(212,165,116,0.08);
         }
-        .header .right-actions .btn-admin:hover {
-            background: rgba(212,165,116,0.12);
-        }
+        .header .right-actions .btn-admin:hover { background: rgba(212,165,116,0.12); }
         .header .right-actions .btn-admin.active {
             background: rgba(212,165,116,0.15);
             border-color: rgba(212,165,116,0.2);
@@ -132,9 +127,7 @@
             border-color: rgba(212,165,116,0.12);
             color: #d4a574;
         }
-        .filters .filter-btn:hover:not(.active) {
-            color: rgba(255,255,255,0.6);
-        }
+        .filters .filter-btn:hover:not(.active) { color: rgba(255,255,255,0.6); }
         .task-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -215,11 +208,6 @@
             transition: all 0.3s;
             font-family: inherit;
         }
-        .task-card .card-actions .btn-edit {
-            background: rgba(212,165,116,0.06);
-            color: #d4a574;
-        }
-        .task-card .card-actions .btn-edit:hover { background: rgba(212,165,116,0.12); }
         .task-card .card-actions .btn-delete {
             background: rgba(239,68,68,0.06);
             color: #f87171;
@@ -371,7 +359,7 @@
     }
 }
 </script>
-  <script type="module" crossorigin src="/assets/assets_pages_task_index-Dylvmubh.js"></script>
+  <script type="module" crossorigin src="/assets/assets_pages_task_index-CRlJ_3N7.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_config.js-Bq3EMvTC.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_request.js-BophGKQa.js">
@@ -380,7 +368,8 @@
   <link rel="modulepreload" crossorigin href="/assets/assets_js_identity.js-BoUU-mI8.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_loading.js-BK0rGq7M.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_content-manager.js-neIpQfMu.js">
+  <link rel="modulepreload" crossorigin href="/assets/cache-B30IefVb.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_content-manager.js-BOE3BKSE.js">
   <link rel="modulepreload" crossorigin href="/assets/easymde-kqwopcDm.js">
   <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
 </head>
@@ -407,13 +396,12 @@
     </div>
 </div>
 
-<!-- ===== Modal ===== -->
+<!-- ===== Modal（仅发布/新增） ===== -->
 <div class="modal-overlay" id="editorModal">
     <div class="modal-box">
         <button class="modal-close" id="modalCloseBtn">✕</button>
         <div class="modal-title" id="modalTitle">📝 发布新任务</div>
 
-        <input type="hidden" id="editSlug" />
         <input type="hidden" id="editMode" value="create" />
 
         <div class="form-row">

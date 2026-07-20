@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>内容管理 · Foxsir</title>
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
-    <!-- ===== EasyMDE 编辑器（可视化 Markdown） ===== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
@@ -238,7 +237,6 @@
             .panel { padding: 16px; }
         }
 
-        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
         .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
         .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
         .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
@@ -247,7 +245,6 @@
         .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
         .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
 
-        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
         select {
             background: rgba(255,255,255,0.02) !important;
             color: #fffffe !important;
@@ -262,7 +259,6 @@
             border-color: rgba(212,165,116,0.2) !important;
         }
 
-        /* ★ 修复管理后台白背景 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .admin-container, .panel, .token-section { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.04) !important; }
         .header h1 { color: #fffffe !important; }
@@ -278,7 +274,7 @@
     }
 }
 </script>
-  <script type="module" crossorigin src="/assets/admin-article-B00WDLVf.js"></script>
+  <script type="module" crossorigin src="/assets/admin-article-DtkYZey8.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/easymde-kqwopcDm.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
@@ -287,33 +283,28 @@
   <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-DmiGq-Dk.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-DwBsfD0Z.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_identity.js-BoUU-mI8.js">
+  <link rel="modulepreload" crossorigin href="/assets/cache-B30IefVb.js">
 </head>
 <body>
 
 <div class="admin-container">
-    <!-- ===== 顶栏 ===== -->
     <div class="header">
         <h1>📝 内容管理</h1>
         <a href="/index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <!-- ===== Token 配置区 ===== -->
     <div class="token-section" id="tokenSection">
         <div class="token-row">
             <input type="password" id="githubToken" placeholder="GitHub Personal Access Token" value="" />
             <button class="btn" id="saveTokenBtn">保存 Token</button>
             <span id="tokenStatus" class="token-status ok">✅ 已配置</span>
         </div>
-        <div class="hint">
-            💡 请从 Vercel 环境变量或手动输入 Token。硬编码已移除。
-        </div>
+        <div class="hint">💡 请从 Vercel 环境变量或手动输入 Token。</div>
     </div>
 
-    <!-- ===== 编辑器面板 ===== -->
     <div class="panel">
-        <h2>✏️ 编写内容</h2>
+        <h2>✏️ 发布内容</h2>
 
-        <!-- 发布目标选择 -->
         <div class="publish-target" id="targetSelector">
             <button class="target-btn active" data-target="knowledge">
                 <span class="icon">📚</span> 知识区
@@ -323,7 +314,6 @@
             </button>
         </div>
 
-        <!-- 表单 -->
         <div class="form-row">
             <div class="form-group">
                 <label>标题 *</label>
@@ -360,7 +350,6 @@
             <input type="text" id="editCover" placeholder="https://example.com/cover.jpg" />
         </div>
 
-        <!-- 可视化编辑器 -->
         <div class="form-group">
             <label>正文</label>
             <div id="editorContainer"></div>
@@ -373,7 +362,6 @@
         <div id="statusMsg"></div>
     </div>
 
-    <!-- ===== 已发布内容列表 ===== -->
     <div class="panel">
         <h2>📋 已发布内容</h2>
         <div id="listContainer">
@@ -382,9 +370,7 @@
     </div>
 </div>
 
-<!-- ===== Import Map ===== -->
 
-
-<!-- ===== 主逻辑 ===== -->
+
 </body>
 </html>
