@@ -57,6 +57,14 @@ const ROLE_MAP = {
 };
 const ROLE_VALUES = ['self', 'verified', 'subadmin', 'admin'];
 
+// ★ 新增：角色排序优先级（数字越小越靠前）
+const ROLE_ORDER = {
+  admin: 0,
+  subadmin: 1,
+  verified: 2,
+  self: 3,
+};
+
 function getUserNickname(user) {
   if (!user) return '';
   const meta = user.raw_user_meta_data || user.user_metadata || {};
@@ -86,7 +94,16 @@ async function loadUsers() {
 }
 
 function renderUserTable() {
-  const users = filteredUsers.length ? filteredUsers : allUsers;
+  // ★ 获取要渲染的数据（已过滤）
+  let users = filteredUsers.length ? filteredUsers : allUsers;
+
+  // ★ 按角色优先级排序（根源 → 次级 → 认证 → 普通）
+  users = [...users].sort((a, b) => {
+    const roleA = a.role || 'self';
+    const roleB = b.role || 'self';
+    return (ROLE_ORDER[roleA] ?? 99) - (ROLE_ORDER[roleB] ?? 99);
+  });
+
   if (!users.length) {
     userTableContainer.innerHTML = `<p class="empty">暂无用户数据</p>`;
     return;
@@ -104,16 +121,19 @@ function renderUserTable() {
       const display = ROLE_MAP[r] || r;
       return `<option value="${r}" ${r === currentRole ? 'selected' : ''}>${display}</option>`;
     }).join('');
+
+    // ★ 修改：第三列使用 role-badge + 角色类
     html += `<tr data-email="${u.email}">
       <td><span style="color:rgba(255,255,255,0.7);">${displayName}</span></td>
       <td>${u.email}</td>
-      <td>${currentDisplay}</td>
+      <td><span class="role-badge role-${currentRole}">${currentDisplay}</span></td>
       <td><select class="role-select" data-email="${u.email}">${options}</select></td>
     </tr>`;
   });
   html += `</tbody></table>`;
   userTableContainer.innerHTML = html;
 
+  // 绑定下拉选择事件
   document.querySelectorAll('.role-select').forEach((sel) => {
     sel.addEventListener('change', (e) => {
       const email = e.target.dataset.email;

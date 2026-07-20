@@ -459,6 +459,48 @@ body {
   color: rgba(255, 255, 255, 0.08);
 }
 
+/* ===== 角色徽章（第三列高亮） ===== */
+.role-badge {
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* 根源管理 (admin) - 暗金/深红 最高 */
+.role-admin {
+  background: #7f1d1d;
+  color: #fca5a5;
+  border: 1px solid #991b1b;
+  box-shadow: 0 0 20px rgba(127, 29, 29, 0.3);
+}
+
+/* 次级管理 (subadmin) - 橙色系 */
+.role-subadmin {
+  background: #7c3a1e;
+  color: #fdba74;
+  border: 1px solid #9a4d24;
+  box-shadow: 0 0 16px rgba(124, 58, 30, 0.2);
+}
+
+/* 认证用户 (verified) - 蓝色系 */
+.role-verified {
+  background: #1e3a5f;
+  color: #93c5fd;
+  border: 1px solid #2563eb;
+  box-shadow: 0 0 16px rgba(30, 58, 95, 0.2);
+}
+
+/* 普通用户 (self) - 灰色系（低调） */
+.role-self {
+  background: #2d2d2d;
+  color: #a0a0a0;
+  border: 1px solid #4a4a4a;
+}
+
 /* ===== 响应式 ===== */
 @media (max-width: 768px) {
   body {
