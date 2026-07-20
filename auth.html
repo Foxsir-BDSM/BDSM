@@ -323,15 +323,21 @@
         import { renderIdentitySelector, getSelectedIdentityData, resetIdentitySelector } from '@/js/identity-selector.js';
         import { showLoading, hideLoading } from '@/js/loading.js';
 
+        // ===== 跳转目标（从 URL 参数获取，默认首页） =====
         const params = new URLSearchParams(window.location.search);
         const redirectUrl = params.get('redirect') || '/index.html';
 
+        // ===== DOM 引用 =====
         const loginForm = document.getElementById('login-form');
         const registerForm = document.getElementById('register-form');
         const msgBox = document.getElementById('auth-message');
         const tabBtns = document.querySelectorAll('.tab-btn');
         const switchLinks = document.querySelectorAll('[data-switch-to]');
 
+        // ===== 防重复跳转标记 =====
+        let redirectPending = false;
+
+        // ===== Tab 切换 =====
         function switchTab(tab) {
             tabBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
             loginForm.classList.toggle('active', tab === 'login');
@@ -357,11 +363,27 @@
             msgBox.className = `message ${type}`;
         }
 
+        // ===== 统一跳转函数（带防重入） =====
+        function navigateTo(target) {
+            if (redirectPending) return;
+            redirectPending = true;
+            window.location.href = target;
+        }
+
+        // ===== 渲染身份选择器 =====
         renderIdentitySelector('identity-selector-container');
 
-        // 登录
+        // ============================================================
+        // ★★★ 关键修复：不再在页面加载时主动跳转 ★★★
+        // 已登录用户在 auth.html 的访问由 guard.js 统一处理，
+        // 无需在此重复判断，避免与 guard 形成竞争。
+        // ============================================================
+
+        // ===== 登录提交 =====
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (redirectPending) return;
+
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             if (!email || !password) return showMsg('请填写完整信息');
@@ -370,18 +392,22 @@
             try {
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
+                // 强制将会话写入 localStorage，确保后续页面能立即识别
                 await setSession(data.session);
                 showMsg('登录成功，即将跳转…', 'success');
-                setTimeout(() => { window.location.href = redirectUrl; }, 600);
+                // 延迟跳转，确保会话已完全持久化
+                setTimeout(() => navigateTo(redirectUrl), 400);
             } catch (err) {
                 hideLoading(false);
                 showMsg(err.message || '登录失败，请重试');
             }
         });
 
-        // 注册
+        // ===== 注册提交 =====
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (redirectPending) return;
+
             const email = document.getElementById('register-email').value.trim();
             const nickname = document.getElementById('register-nickname').value.trim();
             const password = document.getElementById('register-password').value;
@@ -414,22 +440,30 @@
                 if (error) throw error;
                 if (!data.user) throw new Error('注册异常，请重试');
 
+                // 注册后自动登录
                 const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
                 if (signInError) throw signInError;
 
+                // 强制同步会话
                 await setSession(data.session);
                 showMsg('注册成功，欢迎加入！', 'success');
-                setTimeout(() => { window.location.href = redirectUrl; }, 600);
+                setTimeout(() => navigateTo(redirectUrl), 400);
             } catch (err) {
                 hideLoading(false);
                 showMsg(err.message || '注册失败，请重试');
             }
         });
 
-        const user = await getCurrentUser();
-        if (user) {
-            window.location.href = redirectUrl;
-        }
+        // ===== 监听 Auth 状态变化（仅用于日志调试，不触发跳转） =====
+        // 所有跳转由 guard.js 统一控制，此处仅做状态记录
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                console.log('🔐 已登录:', session.user.email);
+            }
+            if (event === 'SIGNED_OUT') {
+                console.log('🚪 已登出');
+            }
+        });
     </script>
 </body>
 </html>

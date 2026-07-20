@@ -1,3 +1,8 @@
+// ================================================================
+// assets/js/auth.js
+// 认证核心模块，含缓存同步与会话验证
+// ================================================================
+
 import { supabase } from './supabase-client.js';
 
 // ★ 错误消息本地化映射 ★
@@ -75,18 +80,31 @@ export async function setSession(session) {
     }
 }
 
-// ===== R-01：获取当前用户（优先本地缓存） =====
+// ===== R-01：获取当前用户（优先本地缓存，但需验证有效性） =====
 export async function getCurrentUser() {
+    // 1. 先从 localStorage 读取会话
     const stored = localStorage.getItem('foxsir_session');
     if (stored) {
         try {
             const session = JSON.parse(stored);
             if (session?.user) {
-                return session.user;
+                // 验证该会话是否仍然有效（避免使用过期 token）
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (!error && user) {
+                    // 会话有效，直接返回 user
+                    return user;
+                } else {
+                    // 会话无效（token过期或被吊销），清除本地缓存
+                    localStorage.removeItem('foxsir_session');
+                }
             }
-        } catch { /* ignore */ }
+        } catch (e) {
+            // 解析失败，清除无效缓存
+            localStorage.removeItem('foxsir_session');
+        }
     }
 
+    // 2. 如果缓存无效或不存在，重新从 Supabase 获取
     try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -97,7 +115,8 @@ export async function getCurrentUser() {
             return user;
         }
         return null;
-    } catch {
+    } catch (err) {
+        console.warn('获取用户失败:', err);
         return null;
     }
 }
