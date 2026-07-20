@@ -12,7 +12,7 @@ import {
   getImageUrls,
   filterFieldsByRoleAndPrivacy,
 } from './utils.js';
-import { getUserRole } from '/assets/js/identity.js';
+import { getUserRole } from '@/js/identity.js';
 
 // DOM
 const container = document.getElementById('detailContainer');

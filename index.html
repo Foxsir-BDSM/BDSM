@@ -731,7 +731,7 @@
     Phase 1: 全局 Loading（最优先执行）
     ============================================================ -->
     <script type="module">
-      import { showLoading, hideLoading, updateLoadingText } from '/assets/js/loading.js';
+      import { showLoading, hideLoading, updateLoadingText } from '@/js/loading.js';
 
       showLoading('唤醒欲研所', '连接安全通道…');
       setTimeout(() => updateLoadingText('正在准备庄园', '加载你的专属空间'), 1500);
@@ -741,7 +741,7 @@
 
     <!-- ===== R-01 路由守卫 ===== -->
     <script type="module">
-      import { initGuard } from '/assets/js/guard.js';
+      import { initGuard } from '@/js/guard.js';
       initGuard();
     </script>
 
@@ -818,11 +818,11 @@
 
     <script type="module">
       // ===== 核心模块导入 =====
-      import { signOut, getCurrentUser, getUserIdentity } from '/assets/js/auth.js';
-      import { getUserRole } from '/assets/js/identity.js';
-      import { getVisibleProjects } from '/assets/js/registry.js';
-      import { calculateLevel, getLevelBadge, getLevelProgressBar, formatPoints } from '/assets/js/level.js';
-      import { uploadAvatar } from '/assets/js/avatar.js';
+      import { signOut, getCurrentUser, getUserIdentity } from '@/js/auth.js';
+      import { getUserRole } from '@/js/identity.js';
+      import { getVisibleProjects } from '@/js/registry.js';
+      import { calculateLevel, getLevelBadge, getLevelProgressBar, formatPoints } from '@/js/level.js';
+      import { uploadAvatar } from '@/js/avatar.js';
 
       const topUserInfo = document.getElementById('topUserInfo');
       const projectGrid = document.getElementById('projectGrid');
@@ -1023,7 +1023,7 @@
 
       window.addEventListener('resize', () => renderProjects());
 
-      import { onAuthStateChange } from '/assets/js/auth.js';
+      import { onAuthStateChange } from '@/js/auth.js';
       onAuthStateChange(() => renderAll());
 
       renderAll();

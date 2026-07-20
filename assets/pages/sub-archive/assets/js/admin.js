@@ -2,10 +2,10 @@
 // 管理面板主逻辑（Tab 切换 + 用户权限 + 下位档案管理）
 // ============================================================
 
-import { getCurrentUser, getUserRole } from '/assets/js/identity.js';
-import { signOut } from '/assets/js/auth.js';
-import { supabase } from '/assets/js/supabase-client.js';
-import { showToast } from '/assets/js/ui-helpers.js';
+import { getCurrentUser, getUserRole } from '@/js/identity.js';
+import { signOut } from '@/js/auth.js';
+import { supabase } from '@/js/supabase-client.js';
+import { showToast } from '@/js/ui-helpers.js';
 
 // ----- 下位者档案馆 API 模块 -----
 import {

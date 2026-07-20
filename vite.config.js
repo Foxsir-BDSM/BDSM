@@ -13,6 +13,11 @@ export default defineConfig({
     port: 5173,
     open: '/index.html',
   },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'assets'),  // 将 @/ 指向 assets 目录
+    },
+  },
   build: {
     target: 'esnext',
     outDir: 'dist',

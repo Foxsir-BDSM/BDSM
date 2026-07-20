@@ -1,7 +1,7 @@
 import { CONFIG, SEARCH_FIELDS, PAGE_SIZE } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
 import { getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo } from './utils.js';
-import { getUserRole } from '/assets/js/identity.js';
+import { getUserRole } from '@/js/identity.js';
 
 const grid = document.getElementById('gridContainer');
 const searchInput = document.getElementById('searchInput');

@@ -437,10 +437,10 @@
 </script>
 
 <script type="module">
-    import { getCurrentUser } from '/assets/js/auth.js';
-    import { getUserRole } from '/assets/js/identity.js';
-    import { showLoading, hideLoading } from '/assets/js/loading.js';
-    import { CONTENT_CONFIG } from '/assets/js/content-config.js';
+    import { getCurrentUser } from '@/js/auth.js';
+    import { getUserRole } from '@/js/identity.js';
+    import { showLoading, hideLoading } from '@/js/loading.js';
+    import { CONTENT_CONFIG } from '@/js/content-config.js';
     import {
         getToken,
         fetchContentList,
@@ -449,7 +449,7 @@
         parseFrontmatter,
         generateSlug,
         buildFullContent
-    } from '/assets/js/content-manager.js';
+    } from '@/js/content-manager.js';
     import EasyMDE from 'easymde';
 
     // ★ 强制保留 getToken 的引用，防止被树摇删除 ★

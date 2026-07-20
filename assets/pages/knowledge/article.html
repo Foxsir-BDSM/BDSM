@@ -136,9 +136,9 @@
         { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
     </script>
     <script type="module">
-        import { CONTENT_CONFIG } from '/assets/js/content-config.js';
-        import { getCurrentUser } from '/assets/js/auth.js';
-        import { showLoading, hideLoading } from '/assets/js/loading.js';
+        import { CONTENT_CONFIG } from '@/js/content-config.js';
+        import { getCurrentUser } from '@/js/auth.js';
+        import { showLoading, hideLoading } from '@/js/loading.js';
 
         const params = new URLSearchParams(window.location.search);
         const slug = params.get('slug');
