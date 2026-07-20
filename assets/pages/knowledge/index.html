@@ -456,6 +456,11 @@
     } from '/assets/js/content-manager.js';
     import EasyMDE from 'easymde';
 
+    // ★ 强制保留 getToken 的引用，防止被树摇删除 ★
+    const token = getToken();
+    window.__foxsir_token = token;
+    console.log('🔑 getToken 返回值:', token ? token.substring(0, 10) + '…' : 'null');
+
     // ===== 常量 =====
     const BRANCH = CONTENT_CONFIG.branches.knowledge;
     const PATH = CONTENT_CONFIG.paths.knowledge;
@@ -506,6 +511,10 @@
 
     // ===== 获取文章列表（实时，带缓存破坏） =====
     async function fetchArticles() {
+        // 强制引用 token，确保 getToken 不被优化
+        if (window.__foxsir_token) {
+            // 仅引用，不做任何操作
+        }
         const files = await fetchContentList(BRANCH, PATH);
         const articles = await Promise.all(
             files.map(async (file) => {

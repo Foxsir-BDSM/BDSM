@@ -7,16 +7,20 @@ import { CONTENT_CONFIG } from './content-config.js';
 
 // ===== 获取 Token =====
 export function getToken() {
+    console.log('⚙️ getToken 被调用');
     // 1. 优先从 localStorage 读取（用户手动配置）
     const token = localStorage.getItem('foxsir_github_token');
-    if (token && token.length > 10) return token;
-    
+    if (token && token.length > 10) {
+        console.log('✅ 从 localStorage 获取 token');
+        return token;
+    }
     // 2. 从 Vite 环境变量读取（Vercel 部署时注入）
     if (import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+        console.log('✅ 从环境变量获取 token');
         return import.meta.env.VITE_GITHUB_TOKEN;
     }
-    
     // 3. 都没有则返回 null（让调用方处理）
+    console.warn('❌ 未找到任何 token');
     return null;
 }
 
