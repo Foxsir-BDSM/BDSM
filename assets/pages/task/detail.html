@@ -7,11 +7,15 @@
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <style>
+        /* ★ 强制深色覆盖（修复详情页视觉空白） ★ */
+        body { background: #0f0e17 !important; color: #fffffe !important; }
+        .task-body { color: rgba(255,255,255,0.85) !important; }
+        .task-body h1, .task-body h2, .task-body h3 { color: #fffffe !important; }
+
+        /* ===== 原有样式 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: #0f0e17;
-            color: #fffffe;
             min-height: 100vh;
             background-image: radial-gradient(ellipse at 50% 30%, rgba(212,165,116,0.05) 0%, transparent 60%);
             padding: 40px 20px;
@@ -55,12 +59,11 @@
         .task-body {
             font-size: 17px;
             line-height: 1.8;
-            color: rgba(255,255,255,0.85);
             padding: 20px 0;
             border-top: 1px solid rgba(255,255,255,0.04);
         }
-        .task-body h2 { font-size: 24px; margin: 28px 0 12px; color: #fffffe; }
-        .task-body h3 { font-size: 20px; margin: 24px 0 8px; color: #fffffe; }
+        .task-body h2 { font-size: 24px; margin: 28px 0 12px; }
+        .task-body h3 { font-size: 20px; margin: 24px 0 8px; }
         .task-body p { margin-bottom: 16px; }
         .task-body ul, .task-body ol { padding-left: 24px; margin-bottom: 16px; }
         .task-body blockquote {
@@ -85,30 +88,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-        }
-        .task-footer .points {
-            font-size: 14px;
-            color: #d4a574;
-        }
-        .task-footer .btn-claim {
-            padding: 8px 24px;
-            border-radius: 30px;
-            border: none;
-            background: linear-gradient(135deg, #d4a574, #b8946a);
-            color: #0f0e17;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .task-footer .btn-claim:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(212,165,116,0.2);
-        }
-        .task-footer .btn-claim:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
         }
         .error-msg {
             text-align: center;
@@ -139,6 +118,7 @@
         import { CONTENT_CONFIG } from '@/js/content-config.js';
         import { getCurrentUser } from '@/js/auth.js';
         import { showLoading, hideLoading } from '@/js/loading.js';
+        import { getToken } from '@/js/content-manager.js';
 
         const params = new URLSearchParams(window.location.search);
         const slug = params.get('slug');
@@ -151,17 +131,6 @@
 
         let user = null;
         let task = null;
-        let hasRead = false;
-
-        // ===== 获取 Token =====
-        function getToken() {
-            const token = localStorage.getItem('foxsir_github_token');
-            if (token && token.length > 10) return token;
-            if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
-                return import.meta.env.VITE_GITHUB_TOKEN;
-            }
-            return null;
-        }
 
         // ===== 从 GitHub 获取任务内容 =====
         async function fetchTaskFromGitHub(slug) {
@@ -169,7 +138,7 @@
             const path = CONTENT_CONFIG.paths.tasks;
             const url = CONTENT_CONFIG.getApiUrl(branch, path);
             const token = getToken();
-            
+
             if (!token) {
                 throw new Error('未配置 GitHub Token');
             }
@@ -181,11 +150,11 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 if (!Array.isArray(data)) throw new Error('数据格式错误');
-                
+
                 const mdFiles = data.filter(f => f && f.name && f.name.endsWith('.md'));
                 const targetFile = mdFiles.find(f => f.name.replace('.md', '') === slug);
                 if (!targetFile) throw new Error('任务不存在');
-                
+
                 const contentRes = await fetch(targetFile.download_url);
                 const raw = await contentRes.text();
                 return parseFrontmatter(raw);
@@ -199,7 +168,7 @@
         function parseFrontmatter(raw) {
             const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
             const match = raw.match(frontmatterRegex);
-            
+
             if (!match) {
                 return {
                     title: '未命名任务',
@@ -216,7 +185,7 @@
 
             const frontmatterStr = match[1];
             const content = match[2].trim();
-            
+
             const lines = frontmatterStr.split('\n');
             const data = {};
             let currentKey = '';
@@ -225,16 +194,16 @@
             for (const line of lines) {
                 const trimmed = line.trim();
                 if (!trimmed) continue;
-                
+
                 const colonIndex = trimmed.indexOf(':');
                 if (colonIndex === -1) {
                     if (currentKey) currentValue += '\n' + trimmed;
                     continue;
                 }
-                
+
                 const key = trimmed.substring(0, colonIndex).trim();
                 let value = trimmed.substring(colonIndex + 1).trim();
-                
+
                 if (value === '|' || value === '>') {
                     currentKey = key;
                     currentValue = '';
@@ -268,7 +237,7 @@
             try {
                 user = await getCurrentUser();
                 task = await fetchTaskFromGitHub(slug);
-                
+
                 if (!task) {
                     container.innerHTML = `<div class="error-msg"><div class="icon">⚠️</div><p>任务不存在或加载失败</p></div>`;
                     hideLoading(false);
@@ -296,7 +265,7 @@
             }
         }
 
-        // ===== 渲染任务 =====
+        // ===== 渲染任务（无积分） =====
         function renderTask() {
             const coverHtml = task.cover_url
                 ? `<img src="${task.cover_url}" alt="封面" style="width:100%; border-radius:12px; margin-bottom:20px;" />`
@@ -312,16 +281,6 @@
                     return `<h${level} style="font-size:${size};margin:20px 0 8px;color:#fffffe;">${p1}</h${level}>`;
                 });
 
-            const pointsHtml = (user && task.reading_points > 0) ? `
-                <span class="points">📖 完成任务可得 ${task.reading_points} 积分</span>
-            ` : '';
-
-            const claimBtnHtml = (user && task.reading_points > 0 && !hasRead) ? `
-                <button class="btn-claim" id="claimBtn">领取积分</button>
-            ` : (user && task.reading_points > 0 && hasRead ? `
-                <span style="font-size:13px;color:rgba(255,255,255,0.15);">✅ 已领取积分</span>
-            ` : '');
-
             container.innerHTML = `
                 <div class="task-header">
                     <span class="category">${task.category}</span>
@@ -335,66 +294,8 @@
                 <div class="task-body">
                     ${bodyHtml}
                 </div>
-                <div class="task-footer">
-                    ${pointsHtml}
-                    ${claimBtnHtml}
-                </div>
+                <div class="task-footer"></div>
             `;
-
-            const claimBtn = document.getElementById('claimBtn');
-            if (claimBtn) {
-                claimBtn.addEventListener('click', async () => {
-                    claimBtn.disabled = true;
-                    claimBtn.textContent = '领取中…';
-                    try {
-                        const { supabase } = await import('/assets/js/supabase-client.js');
-                        const { data: readData } = await supabase
-                            .from('article_reads')
-                            .select('id')
-                            .eq('user_id', user.id)
-                            .eq('article_id', slug)
-                            .maybeSingle();
-                        
-                        if (readData) {
-                            alert('你已经领取过这个任务的积分了！');
-                            claimBtn.textContent = '已领取';
-                            claimBtn.disabled = true;
-                            return;
-                        }
-
-                        const { error: insertError } = await supabase
-                            .from('article_reads')
-                            .insert({ user_id: user.id, article_id: slug, points_claimed: true });
-                        if (insertError) throw insertError;
-
-                        const newPoints = (user.user_metadata?.points || 0) + task.reading_points;
-                        const { error: updateError } = await supabase.auth.updateUser({
-                            data: { points: newPoints }
-                        });
-                        if (updateError) throw updateError;
-
-                        alert(`🎉 获得 ${task.reading_points} 积分！`);
-                        hasRead = true;
-                        claimBtn.textContent = '已领取';
-                        claimBtn.disabled = true;
-                        setTimeout(() => location.reload(), 500);
-                    } catch (err) {
-                        // ★ BUG-005: 改进积分领取错误处理 ★
-                        console.error('❌ 积分领取详细错误:', err);
-                        let msg = '领取失败，请重试';
-                        if (err.message?.includes('permission denied') || err.message?.includes('permission')) {
-                            msg = '权限不足，请确保已登录';
-                        } else if (err.message?.includes('duplicate')) {
-                            msg = '您已领取过该积分';
-                        } else if (err.message?.includes('network')) {
-                            msg = '网络错误，请检查连接';
-                        }
-                        alert(msg);
-                        claimBtn.disabled = false;
-                        claimBtn.textContent = '领取积分';
-                    }
-                });
-            }
         }
 
         loadTask();

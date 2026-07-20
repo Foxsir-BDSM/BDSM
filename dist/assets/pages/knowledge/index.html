@@ -7,12 +7,42 @@
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ===== 完整样式保留 ===== */
+        /* ★ 强制深色覆盖（修复视觉空白） ★ */
+        body { background: #0f0e17 !important; color: #fffffe !important; }
+        .article-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
+        .article-card h3 { color: #fffffe !important; }
+        .article-card p { color: rgba(255,255,255,0.5) !important; }
+        .article-card .meta { color: rgba(255,255,255,0.2) !important; }
+        .article-card .footer { color: rgba(255,255,255,0.1) !important; border-top-color: rgba(255,255,255,0.04) !important; }
+
+        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
+        .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
+        .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
+        .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
+        .editor-preview { background: #0f0e17 !important; color: #d4d0c8 !important; }
+        .editor-preview * { color: #d4d0c8 !important; }
+        .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
+        .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
+
+        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
+        select {
+            background: rgba(255,255,255,0.02) !important;
+            color: #fffffe !important;
+            border: 1px solid rgba(255,255,255,0.04) !important;
+        }
+        select option {
+            background: #1a1a1a !important;
+            color: #fffffe !important;
+        }
+        select:focus {
+            outline: none;
+            border-color: rgba(212,165,116,0.2) !important;
+        }
+
+        /* ===== 原有样式（保留完整布局） ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: #0f0e17;
-            color: #fffffe;
             min-height: 100vh;
             background-image: radial-gradient(ellipse at 50% 30%, rgba(212,165,116,0.05) 0%, transparent 60%);
             background-attachment: fixed;
@@ -111,10 +141,8 @@
             gap: 20px;
         }
         .article-card {
-            background: rgba(255,255,255,0.02);
             border-radius: 18px;
             padding: 20px;
-            border: 1px solid rgba(255,255,255,0.04);
             transition: all 0.35s ease;
             text-decoration: none;
             color: inherit;
@@ -143,7 +171,6 @@
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: rgba(255,255,255,0.15);
             margin-bottom: 6px;
         }
         .article-card .meta .category {
@@ -156,11 +183,9 @@
             font-size: 17px;
             font-weight: 500;
             margin-bottom: 6px;
-            color: #fffffe;
         }
         .article-card p {
             font-size: 13px;
-            color: rgba(255,255,255,0.3);
             line-height: 1.5;
             flex: 1;
         }
@@ -169,13 +194,10 @@
             display: flex;
             justify-content: space-between;
             font-size: 12px;
-            color: rgba(255,255,255,0.1);
             border-top: 1px solid rgba(255,255,255,0.02);
             padding-top: 10px;
         }
-        .article-card .footer .badge {
-            color: #d4a574;
-        }
+        .article-card .footer .badge { color: #d4a574; }
         .article-card .card-actions {
             display: none;
             gap: 8px;
@@ -197,19 +219,13 @@
             background: rgba(212,165,116,0.06);
             color: #d4a574;
         }
-        .article-card .card-actions .btn-edit:hover {
-            background: rgba(212,165,116,0.12);
-        }
+        .article-card .card-actions .btn-edit:hover { background: rgba(212,165,116,0.12); }
         .article-card .card-actions .btn-delete {
             background: rgba(239,68,68,0.06);
             color: #f87171;
         }
-        .article-card .card-actions .btn-delete:hover {
-            background: rgba(239,68,68,0.12);
-        }
-        .article-card .card-actions.visible {
-            display: flex;
-        }
+        .article-card .card-actions .btn-delete:hover { background: rgba(239,68,68,0.12); }
+        .article-card .card-actions.visible { display: flex; }
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -347,30 +363,6 @@
             .modal-box { padding: 20px; }
             .modal-box .form-row { grid-template-columns: 1fr; }
         }
-
-        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
-        .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
-        .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
-        .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
-        .editor-preview { background: #0f0e17 !important; color: #d4d0c8 !important; }
-        .editor-preview * { color: #d4d0c8 !important; }
-        .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
-        .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
-
-        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
-        select {
-            background: rgba(255,255,255,0.02) !important;
-            color: #fffffe !important;
-            border: 1px solid rgba(255,255,255,0.04) !important;
-        }
-        select option {
-            background: #1a1a1a !important;
-            color: #fffffe !important;
-        }
-        select:focus {
-            outline: none;
-            border-color: rgba(212,165,116,0.2) !important;
-        }
     </style>
 <script type="importmap">
 {
@@ -379,13 +371,13 @@
     }
 }
 </script>
-  <script type="module" crossorigin src="/assets/assets_pages_knowledge_index-C44kbJqV.js"></script>
+  <script type="module" crossorigin src="/assets/assets_pages_knowledge_index-DEd0UXLE.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_config.js-Bq3EMvTC.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_request.js-BophGKQa.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-CF0gWE4d.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-BCXhz0hh.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_identity.js-bxn2ZtHW.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-DmiGq-Dk.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-DwBsfD0Z.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_identity.js-BoUU-mI8.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_loading.js-BK0rGq7M.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-manager.js-neIpQfMu.js">

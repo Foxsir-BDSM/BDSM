@@ -1,0 +1,1 @@
+import{s as e}from"./assets_js_supabase-client.js-DmiGq-Dk.js";import"./assets_js_config.js-Bq3EMvTC.js";import"./assets_js_request.js-BophGKQa.js";async function s(){const{data:r,error:t}=await e.auth.getUser();return t||!r.user?null:r.user}async function o(){const r=await s();return r&&r.user_metadata?.role||"guest"}export{s as a,o as g};

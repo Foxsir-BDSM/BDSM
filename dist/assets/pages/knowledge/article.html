@@ -6,11 +6,15 @@
     <title>文章 · Foxsir</title>
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <style>
+        /* ★ 强制深色覆盖（修复详情页视觉空白） ★ */
+        body { background: #0f0e17 !important; color: #fffffe !important; }
+        .article-body { color: rgba(255,255,255,0.85) !important; }
+        .article-body h1, .article-body h2, .article-body h3 { color: #fffffe !important; }
+
+        /* ===== 原有样式 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: #0f0e17;
-            color: #fffffe;
             min-height: 100vh;
             background-image: radial-gradient(ellipse at 50% 30%, rgba(212,165,116,0.05) 0%, transparent 60%);
             padding: 40px 20px;
@@ -54,12 +58,11 @@
         .article-body {
             font-size: 17px;
             line-height: 1.8;
-            color: rgba(255,255,255,0.85);
             padding: 20px 0;
             border-top: 1px solid rgba(255,255,255,0.04);
         }
-        .article-body h2 { font-size: 24px; margin: 28px 0 12px; color: #fffffe; }
-        .article-body h3 { font-size: 20px; margin: 24px 0 8px; color: #fffffe; }
+        .article-body h2 { font-size: 24px; margin: 28px 0 12px; }
+        .article-body h3 { font-size: 20px; margin: 24px 0 8px; }
         .article-body p { margin-bottom: 16px; }
         .article-body ul, .article-body ol { padding-left: 24px; margin-bottom: 16px; }
         .article-body blockquote {
@@ -85,30 +88,6 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .article-footer .points {
-            font-size: 14px;
-            color: #d4a574;
-        }
-        .article-footer .btn-claim {
-            padding: 8px 24px;
-            border-radius: 30px;
-            border: none;
-            background: linear-gradient(135deg, #d4a574, #b8946a);
-            color: #0f0e17;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        .article-footer .btn-claim:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(212,165,116,0.2);
-        }
-        .article-footer .btn-claim:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
         .error-msg {
             text-align: center;
             padding: 60px 20px;
@@ -125,15 +104,15 @@
     <script type="importmap">
         { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
     </script>
-  <script type="module" crossorigin src="/assets/assets_pages_knowledge_article-d4QCdrLH.js"></script>
+  <script type="module" crossorigin src="/assets/assets_pages_knowledge_article-CiEd2pJy.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/preload-helper-CLcXU_4U.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_config.js-Bq3EMvTC.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_request.js-BophGKQa.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-CF0gWE4d.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-BCXhz0hh.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-DmiGq-Dk.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-DwBsfD0Z.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_loading.js-BK0rGq7M.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_content-manager.js-neIpQfMu.js">
   <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
 </head>
 <body>

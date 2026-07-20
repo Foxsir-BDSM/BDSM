@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{g as r}from"./assets_js_auth.js-DwBsfD0Z.js";import"./assets_js_supabase-client.js-DmiGq-Dk.js";import"./assets_js_config.js-Bq3EMvTC.js";import"./assets_js_request.js-BophGKQa.js";const t=await r();t&&(window.location.href="/index.html");
