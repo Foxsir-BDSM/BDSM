@@ -8,30 +8,28 @@ import { CONTENT_CONFIG } from './content-config.js';
 // ===== 获取 Token =====
 export function getToken() {
     console.log('⚙️ getToken 被调用');
-    // 1. 优先从 localStorage 读取（用户手动配置）
     const token = localStorage.getItem('foxsir_github_token');
     if (token && token.length > 10) {
         console.log('✅ 从 localStorage 获取 token');
         return token;
     }
-    // 2. 从 Vite 环境变量读取（Vercel 部署时注入）
     if (import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
         console.log('✅ 从环境变量获取 token');
         return import.meta.env.VITE_GITHUB_TOKEN;
     }
-    // 3. 都没有则返回 null（让调用方处理）
     console.warn('❌ 未找到任何 token');
     return null;
 }
 
-// ===== 获取文件列表 =====
+// ===== 获取文件列表（★ 添加时间戳破坏缓存 ★） =====
 export async function fetchContentList(branch, path) {
     const token = getToken();
     if (!token) {
         console.error('❌ 未配置 GitHub Token');
         return [];
     }
-    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}`;
+    // ★ 添加时间戳强制刷新 ★
+    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`;
     try {
         const response = await fetch(url, {
             headers: { 'Authorization': `token ${token}` }
@@ -53,7 +51,7 @@ export async function fetchContentList(branch, path) {
 export async function getFileSha(branch, path) {
     const token = getToken();
     if (!token) return null;
-    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}`;
+    const url = `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`;
     try {
         const response = await fetch(url, {
             headers: { 'Authorization': `token ${token}` }
@@ -80,7 +78,7 @@ export async function createOrUpdateContent(branch, path, content, message) {
     let sha = null;
     try {
         const check = await fetch(
-            `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}`,
+            `https://api.github.com/repos/${CONTENT_CONFIG.owner}/${CONTENT_CONFIG.repo}/contents/${path}?ref=${branch}&t=${Date.now()}`,
             { headers: { 'Authorization': `token ${token}` } }
         );
         if (check.ok) {

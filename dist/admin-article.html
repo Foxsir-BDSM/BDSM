@@ -25,7 +25,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .header h1 { font-size: 26px; font-weight: 600; }
+        .header h1 { font-size: 26px; font-weight: 600; color: #fffffe; }
         .header .back-link {
             color: rgba(255,255,255,0.2);
             text-decoration: none;
@@ -237,6 +237,39 @@
             .admin-container { padding: 0 4px; }
             .panel { padding: 16px; }
         }
+
+        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
+        .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
+        .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
+        .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
+        .editor-preview { background: #0f0e17 !important; color: #d4d0c8 !important; }
+        .editor-preview * { color: #d4d0c8 !important; }
+        .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
+        .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
+
+        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
+        select {
+            background: rgba(255,255,255,0.02) !important;
+            color: #fffffe !important;
+            border: 1px solid rgba(255,255,255,0.04) !important;
+        }
+        select option {
+            background: #1a1a1a !important;
+            color: #fffffe !important;
+        }
+        select:focus {
+            outline: none;
+            border-color: rgba(212,165,116,0.2) !important;
+        }
+
+        /* ★ 修复管理后台白背景 ★ */
+        body { background: #0f0e17 !important; color: #fffffe !important; }
+        .admin-container, .panel, .token-section { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.04) !important; }
+        .header h1 { color: #fffffe !important; }
+        .panel h2 { color: rgba(255,255,255,0.3) !important; }
+        .token-section .hint { color: rgba(255,255,255,0.1) !important; }
+        #statusMsg { color: #fffffe !important; }
+        .form-group label { color: rgba(255,255,255,0.2) !important; }
     </style>
 <script type="importmap">
 {
@@ -245,14 +278,14 @@
     }
 }
 </script>
-  <script type="module" crossorigin src="/assets/admin-article-C3g5gZ0r.js"></script>
+  <script type="module" crossorigin src="/assets/admin-article-CLR1yI2E.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/easymde-kqwopcDm.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_content-config.js-Bq1Nvs_5.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_config.js-Bq3EMvTC.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_request.js-BophGKQa.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_supabase-client.js-CF0gWE4d.js">
-  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-CORIovx3.js">
+  <link rel="modulepreload" crossorigin href="/assets/assets_js_auth.js-BCXhz0hh.js">
   <link rel="modulepreload" crossorigin href="/assets/assets_js_identity.js-bxn2ZtHW.js">
 </head>
 <body>

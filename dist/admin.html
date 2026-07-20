@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>管理面板 · Foxsir</title>
   <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
+  <style>
+    /* ★ 修复管理后台白背景 ★ */
+    body { background: #0f0e17 !important; color: #fffffe !important; }
+    .admin-header { background: rgba(255,255,255,0.02) !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+    .admin-header .brand-mark h1 { color: #fffffe !important; }
+    .admin-header .admin-user { color: rgba(255,255,255,0.6) !important; }
+    .rule-banner { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.04) !important; }
+    .rule-text h2 { color: #fffffe !important; }
+    .rule-text p { color: rgba(255,255,255,0.6) !important; }
+    .tab-nav { border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+    .tab-btn { color: rgba(255,255,255,0.3) !important; }
+    .tab-btn.active { color: #d4a574 !important; border-bottom-color: #d4a574 !important; }
+    .tab-content { background: rgba(255,255,255,0.02) !important; }
+    .toolbar { border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+    .toolbar .stats-label { color: rgba(255,255,255,0.3) !important; }
+    .toolbar .stats-label strong { color: #fffffe !important; }
+    #userSearchInput, #subSearchInput { background: rgba(255,255,255,0.02) !important; color: #fffffe !important; border: 1px solid rgba(255,255,255,0.04) !important; }
+    #userSearchInput::placeholder, #subSearchInput::placeholder { color: rgba(255,255,255,0.1) !important; }
+    .admin-table th { color: rgba(255,255,255,0.3) !important; border-bottom: 1px solid rgba(255,255,255,0.04) !important; }
+    .admin-table td { color: rgba(255,255,255,0.6) !important; border-bottom: 1px solid rgba(255,255,255,0.02) !important; }
+    .admin-table select { background: rgba(255,255,255,0.02) !important; color: #fffffe !important; border: 1px solid rgba(255,255,255,0.04) !important; }
+    .admin-table select option { background: #1a1a1a !important; color: #fffffe !important; }
+    .btn-gold { background: linear-gradient(135deg, #d4a574, #b8946a) !important; color: #0f0e17 !important; }
+    .btn-logout { background: rgba(239,68,68,0.06) !important; color: #f87171 !important; }
+    .coming-soon { color: rgba(255,255,255,0.3) !important; }
+    .coming-soon .sub-text { color: rgba(255,255,255,0.1) !important; }
+    .empty { color: rgba(255,255,255,0.2) !important; }
+    .error { color: #f87171 !important; }
+    .push-result { color: rgba(255,255,255,0.6) !important; }
+    .push-result.success { color: #22c55e !important; }
+    .push-result.error { color: #f87171 !important; }
+    .save-status { color: rgba(255,255,255,0.3) !important; }
+  </style>
 
   <script type="importmap">
     {
@@ -18,10 +51,10 @@
   <script type="module" crossorigin src="/assets/assets_js_request.js-BophGKQa.js"></script>
   <script type="module" crossorigin src="/assets/assets_js_supabase-client.js-CF0gWE4d.js"></script>
   <script type="module" crossorigin src="/assets/assets_js_identity.js-bxn2ZtHW.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_auth.js-CORIovx3.js"></script>
+  <script type="module" crossorigin src="/assets/assets_js_auth.js-BCXhz0hh.js"></script>
   <script type="module" crossorigin src="/assets/assets_js_ui-helpers.js-CEBwo3Z9.js"></script>
   <script type="module" crossorigin src="/assets/api-CAcsciEw.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_admin.js-DMdbLhPZ.js"></script>
+  <script type="module" crossorigin src="/assets/assets_js_admin.js-B2d6jGMn.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/admin-DlyjlR0V.css">
   <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
 </head>
@@ -73,7 +106,6 @@
           <span class="stats-label">共 <strong id="totalUsers">0</strong> 位用户</span>
         </div>
         <div class="right">
-          <!-- ===== R-04 新增：昵称搜索框 ===== -->
           <input type="text" id="userSearchInput" placeholder="🔍 搜索昵称或邮箱…" />
           <button id="pushBtn" class="btn btn-gold">📤 Push 生效</button>
         </div>
@@ -98,7 +130,6 @@
           <span class="stats-label">共 <strong id="subTotalCount">0</strong> 条档案</span>
         </div>
         <div class="right">
-          <!-- ===== R-06 已修复：搜索使用字段ID 'fqidTsBW5js'（姓名） ===== -->
           <input type="text" id="subSearchInput" placeholder="🔍 搜索姓名" />
         </div>
       </div>

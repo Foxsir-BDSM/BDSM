@@ -1,5 +1,18 @@
 import { supabase } from './supabase-client.js';
 
+// ★ 错误消息本地化映射 ★
+function mapAuthError(message) {
+    const map = {
+        'Invalid login credentials': '邮箱或密码错误',
+        'Email not confirmed': '邮箱未验证，请先验证邮箱',
+        'Too many requests': '请求过于频繁，请稍后再试',
+        'User already registered': '该邮箱已注册，请直接登录',
+        'Invalid email': '邮箱格式不正确',
+        'Password should be at least 6 characters': '密码长度不能少于6位',
+    };
+    return map[message] || message;
+}
+
 // 注册（支持昵称 + 身份元数据）
 export async function signUp(email, password, metadata = {}) {
     const { data, error } = await supabase.auth.signUp({
@@ -14,6 +27,9 @@ export async function signUp(email, password, metadata = {}) {
             },
         },
     });
+    if (error) {
+        return { data: null, error: { ...error, message: mapAuthError(error.message) } };
+    }
     return { data, error };
 }
 
@@ -22,6 +38,9 @@ export async function signIn(email, password) {
         email,
         password,
     });
+    if (error) {
+        return { data: null, error: { ...error, message: mapAuthError(error.message) } };
+    }
     return { data, error };
 }
 
@@ -97,7 +116,7 @@ export async function getUserIdentity() {
         nickname: meta.nickname || user.email?.split('@')[0] || '访客',
         role: meta.role || 'self',
         points: meta.points ?? 0,
-        avatarUrl: meta.avatar_url || null, // ===== R-05 新增 =====
+        avatarUrl: meta.avatar_url || null,
     };
 }
 

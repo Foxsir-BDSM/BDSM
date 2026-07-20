@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* ===== 完整样式保留（与用户原始文件一致） ===== */
+        /* ===== 完整样式保留 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -347,6 +347,30 @@
         @media (max-width: 600px) {
             .modal-box { padding: 20px; }
             .modal-box .form-row { grid-template-columns: 1fr; }
+        }
+
+        /* ★ BUG-008: 修复 EasyMDE 编辑器选中高亮不可见 ★ */
+        .CodeMirror-selected { background: rgba(212,165,116,0.35) !important; }
+        .CodeMirror .CodeMirror-cursor { border-left: 2px solid #d4a574 !important; }
+        .CodeMirror .CodeMirror-matchingbracket { color: #d4a574 !important; background: transparent !important; }
+        .editor-preview { background: #0f0e17 !important; color: #d4d0c8 !important; }
+        .editor-preview * { color: #d4d0c8 !important; }
+        .CodeMirror { background: rgba(255,255,255,0.02) !important; color: #d4d0c8 !important; }
+        .CodeMirror-gutters { background: rgba(255,255,255,0.02) !important; border-right: 1px solid rgba(255,255,255,0.04) !important; }
+
+        /* ★ BUG-009: 修复 select 在深色背景下白色背景 ★ */
+        select {
+            background: rgba(255,255,255,0.02) !important;
+            color: #fffffe !important;
+            border: 1px solid rgba(255,255,255,0.04) !important;
+        }
+        select option {
+            background: #1a1a1a !important;
+            color: #fffffe !important;
+        }
+        select:focus {
+            outline: none;
+            border-color: rgba(212,165,116,0.2) !important;
         }
     </style>
 </head>

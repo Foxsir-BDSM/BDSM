@@ -379,8 +379,17 @@
                         claimBtn.disabled = true;
                         setTimeout(() => location.reload(), 500);
                     } catch (err) {
-                        console.error('领取失败:', err);
-                        alert('领取失败，请重试');
+                        // ★ BUG-005: 改进积分领取错误处理 ★
+                        console.error('❌ 积分领取详细错误:', err);
+                        let msg = '领取失败，请重试';
+                        if (err.message?.includes('permission denied') || err.message?.includes('permission')) {
+                            msg = '权限不足，请确保已登录';
+                        } else if (err.message?.includes('duplicate')) {
+                            msg = '您已领取过该积分';
+                        } else if (err.message?.includes('network')) {
+                            msg = '网络错误，请检查连接';
+                        }
+                        alert(msg);
                         claimBtn.disabled = false;
                         claimBtn.textContent = '领取积分';
                     }
