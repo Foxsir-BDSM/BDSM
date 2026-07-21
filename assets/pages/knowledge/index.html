@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde@2.18.0/dist/easymde.min.css" />
     <style>
-        /* 深色覆盖 + 基础样式（与之前相同，省略重复） */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .article-card { background: rgba(255,255,255,0.04) !important; backdrop-filter: blur(8px) !important; border: 1px solid rgba(255,255,255,0.06) !important; }
         .article-card h3 { color: #fffffe !important; }
@@ -25,6 +24,32 @@
         select { background: rgba(255,255,255,0.02) !important; color: #fffffe !important; border: 1px solid rgba(255,255,255,0.04) !important; }
         select option { background: #1a1a1a !important; color: #fffffe !important; }
         select:focus { outline: none; border-color: rgba(212,165,116,0.2) !important; }
+
+        .btn-refresh {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.4);
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        .btn-refresh:hover {
+            background: rgba(212,165,116,0.08);
+            color: #fffffe;
+            border-color: rgba(212,165,116,0.08);
+        }
+        .btn-refresh:active {
+            transform: rotate(180deg);
+            transition: transform 0.6s ease;
+        }
+        .btn-refresh:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
 
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
@@ -349,6 +374,7 @@
         <h1>📚 欲识之海</h1>
         <div class="right-actions" id="adminActions">
             <a href="/landing.html#modules-section" class="back-link">← 返回探索</a>
+            <button class="btn-refresh" id="refreshBtn" title="刷新文章列表">🔄 刷新</button>
             <button class="btn btn-publish" id="publishBtn" style="display:none;">✨ 发布</button>
             <button class="btn btn-admin" id="manageBtn" style="display:none;">⚙️ 管理</button>
         </div>
@@ -367,7 +393,7 @@
     </div>
 </div>
 
-<!-- ===== Modal（发布面板 - 新布局） ===== -->
+<!-- Modal -->
 <div class="modal-overlay" id="editorModal">
     <div class="modal-box">
         <button class="modal-close" id="modalCloseBtn">✕</button>
@@ -421,7 +447,6 @@
     </div>
 </div>
 
-<!-- ===== Import Map ===== -->
 <script type="importmap">
 {
     "imports": {
@@ -438,6 +463,7 @@
     import {
         getToken,
         fetchContentList,
+        fetchContentListForce,
         createOrUpdateContent,
         deleteContent,
         parseFrontmatter,
@@ -457,6 +483,7 @@
 
     var grid = document.getElementById('articleGrid');
     var filterBtns = document.querySelectorAll('.filter-btn');
+    var refreshBtn = document.getElementById('refreshBtn');
     var publishBtn = document.getElementById('publishBtn');
     var manageBtn = document.getElementById('manageBtn');
     var modal = document.getElementById('editorModal');
@@ -481,7 +508,7 @@
     var currentUserRole = null;
     var pendingContent = '';
 
-    // ===== ★★★ 权限控制（分层） ★★★ =====
+    // ===== ★★★ 权限控制（分层）- 普通用户可发布 ★★★ =====
     async function checkPermissions() {
         var user = await getCurrentUser();
         var role = await getUserRole();
@@ -493,14 +520,14 @@
             return false;
         }
 
-        // 普通用户 (self)：只读，无任何按钮
+        // ★ 普通用户 (self)：可发布，不可管理 ★
         if (role === 'self') {
-            publishBtn.style.display = 'none';
+            publishBtn.style.display = 'inline-block';
             manageBtn.style.display = 'none';
-            return false;
+            return true;
         }
 
-        // 认证用户 (verified)：仅可发布，不可管理
+        // 认证用户 (verified)：可发布，不可管理
         if (role === 'verified') {
             publishBtn.style.display = 'inline-block';
             manageBtn.style.display = 'none';
@@ -519,7 +546,6 @@
 
     // ===== 获取文章列表 =====
     async function fetchArticles() {
-        if (window.__foxsir_token) {}
         var files = await fetchContentList(BRANCH, PATH);
         var articles = await Promise.all(
             files.map(async function(file) {
@@ -537,13 +563,36 @@
     }
 
     // ===== 渲染文章 =====
-    async function renderArticles(category) {
+    async function renderArticles(category, forceRefresh) {
         if (category === undefined) category = 'all';
+        if (forceRefresh === undefined) forceRefresh = false;
+
         showLoading('加载文章', '欲识之海…');
         try {
             var user = await getCurrentUser();
-            var articles = await fetchArticles();
-            allArticles = articles;
+            var articles;
+
+            if (forceRefresh) {
+                var files = await fetchContentListForce(BRANCH, PATH);
+                articles = await Promise.all(
+                    files.map(async function(file) {
+                        try {
+                            var url = file.download_url + '?t=' + Date.now();
+                            var res = await fetch(url);
+                            var raw = await res.text();
+                            return parseFrontmatter(raw, file.name);
+                        } catch {
+                            return null;
+                        }
+                    })
+                );
+                articles = articles.filter(function(a) { return a !== null; });
+                allArticles = articles;
+                console.log('🔄 强制刷新完成，共', articles.length, '篇文章');
+            } else {
+                articles = await fetchArticles();
+                allArticles = articles;
+            }
 
             if (category !== 'all') {
                 articles = articles.filter(function(a) { return a.category === category; });
@@ -593,6 +642,29 @@
             hideLoading(false);
         }
     }
+
+    // ===== 刷新按钮 =====
+    refreshBtn.addEventListener('click', async function() {
+        var btn = refreshBtn;
+        btn.textContent = '⏳ 刷新中…';
+        btn.disabled = true;
+
+        try {
+            await renderArticles(currentCategory, true);
+            btn.textContent = '✅ 已更新';
+            setTimeout(function() {
+                btn.textContent = '🔄 刷新';
+                btn.disabled = false;
+            }, 1200);
+        } catch (err) {
+            console.error('刷新失败:', err);
+            btn.textContent = '❌ 失败';
+            setTimeout(function() {
+                btn.textContent = '🔄 刷新';
+                btn.disabled = false;
+            }, 1500);
+        }
+    });
 
     // ===== 管理模式切换 =====
     manageBtn.addEventListener('click', function() {
@@ -786,7 +858,7 @@
     publishBtn.addEventListener('click', openEditor);
 
     (async function init() {
-        await checkPermissions();  // ★ 使用新的权限控制
+        await checkPermissions();
         await renderArticles('all');
     })();
 </script>
