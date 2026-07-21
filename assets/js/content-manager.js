@@ -1,39 +1,46 @@
 // ================================================================
 // assets/js/content-manager.js
 // 功能：GitHub 内容管理 CRUD 操作（知识区 / 任务区共用）
+// 缓存策略：5 分钟过期 + 手动刷新
 // ================================================================
 
 import { CONTENT_CONFIG } from './content-config.js';
-import { getCache, setCache, clearCache } from './cache.js';
+import { getCache, setCache, clearCache, getCacheWithMeta, setCacheWithMeta, DEFAULT_TTL } from './cache.js';
 
-// ===== 获取 Token =====
+// ===== 获取 Token（环境变量优先） =====
 export function getToken() {
     console.log('⚙️ getToken 被调用');
+
+    // 优先从环境变量读取（Vercel 生产环境）
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
+        console.log('✅ 从环境变量获取 token');
+        return import.meta.env.VITE_GITHUB_TOKEN;
+    }
+
+    // 降级：从 localStorage 读取（本地开发备用）
     const token = localStorage.getItem('foxsir_github_token');
     if (token && token.length > 10) {
         console.log('✅ 从 localStorage 获取 token');
         return token;
     }
-    if (import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
-        console.log('✅ 从环境变量获取 token');
-        return import.meta.env.VITE_GITHUB_TOKEN;
-    }
+
     console.warn('❌ 未找到任何 token');
     return null;
 }
 
-// ===== 获取文件列表（优先读取缓存，永不过期） =====
+// ===== 获取文件列表（5 分钟缓存） =====
 export async function fetchContentList(branch, path) {
     const cacheKey = 'list_' + branch + '_' + path;
 
-    // ★ 优先读取缓存 ★
-    const cached = getCache(cacheKey);
+    // ★ 优先读取缓存（5 分钟过期检查） ★
+    const cached = getCacheWithMeta(cacheKey, DEFAULT_TTL);
     if (cached) {
-        console.log('📦 命中缓存:', cacheKey);
+        const remaining = getCacheRemainingTime(cacheKey);
+        console.log('📦 命中缓存:', cacheKey, '剩余有效期', remaining);
         return cached;
     }
 
-    console.log('📡 未命中缓存，从 GitHub 拉取:', cacheKey);
+    console.log('📡 未命中缓存或已过期，从 GitHub 拉取:', cacheKey);
 
     const token = getToken();
     if (!token) {
@@ -54,13 +61,19 @@ export async function fetchContentList(branch, path) {
         const data = await response.json();
         const files = Array.isArray(data) ? data.filter(function(f) { return f && f.name && f.name.endsWith('.md'); }) : [];
 
-        // ★ 存入缓存（永久有效） ★
-        setCache(cacheKey, files);
-        console.log('✅ 缓存已写入:', cacheKey, files.length, '个文件');
+        // ★ 存入缓存（5 分钟有效期） ★
+        setCacheWithMeta(cacheKey, files, DEFAULT_TTL);
+        console.log('✅ 缓存已写入:', cacheKey, files.length, '个文件，有效期 5 分钟');
 
         return files;
     } catch (err) {
         console.error('获取列表失败:', err);
+        // 降级：如果请求失败但有过期缓存，返回过期缓存
+        const fallback = getCache(cacheKey);
+        if (fallback) {
+            console.warn('⚠️ 使用降级缓存（过期）:', cacheKey);
+            return fallback;
+        }
         return [];
     }
 }
@@ -71,6 +84,22 @@ export async function fetchContentListForce(branch, path) {
     clearCache(cacheKey);
     console.log('🔄 强制刷新，已清除缓存:', cacheKey);
     return fetchContentList(branch, path);
+}
+
+// ===== 获取缓存剩余有效期（调试用） =====
+function getCacheRemainingTime(key) {
+    try {
+        const raw = localStorage.getItem('foxsir_' + key);
+        if (!raw) return '无缓存';
+        const entry = JSON.parse(raw);
+        if (!entry._timestamp) return '旧格式缓存';
+        const remaining = Math.max(0, (entry._timestamp + (entry._ttl || DEFAULT_TTL) - Date.now()) / 1000);
+        if (remaining <= 0) return '已过期';
+        if (remaining > 60) return Math.floor(remaining / 60) + ' 分钟';
+        return Math.floor(remaining) + ' 秒';
+    } catch {
+        return '未知';
+    }
 }
 
 // ===== 获取文件 SHA（用于更新/删除） =====

@@ -1,12 +1,59 @@
 // ============================================================
 // assets/js/cache.js
-// 前端缓存工具（localStorage）- 永不过期版本
-// 只有管理员更新内容或用户手动清除时才刷新
+// 前端缓存工具（localStorage）- 支持过期时间
 // ============================================================
 
 const CACHE_PREFIX = 'foxsir_';
+const CACHE_VERSION = 'v2';
 
-// ===== 获取缓存 =====
+// 默认缓存过期时间：5 分钟
+export const DEFAULT_TTL = 5 * 60 * 1000;
+
+// ===== 获取缓存（带过期检查） =====
+export function getCacheWithMeta(key, ttl = DEFAULT_TTL) {
+    try {
+        const raw = localStorage.getItem(CACHE_PREFIX + key);
+        if (!raw) return null;
+
+        const entry = JSON.parse(raw);
+
+        // 检查版本是否匹配
+        if (entry._version && entry._version !== CACHE_VERSION) {
+            console.log('🔄 缓存版本不匹配，清除:', key);
+            localStorage.removeItem(CACHE_PREFIX + key);
+            return null;
+        }
+
+        const now = Date.now();
+        const isExpired = (now - entry._timestamp) > ttl;
+
+        if (isExpired) {
+            console.log('⏰ 缓存已过期:', key);
+            return null;
+        }
+
+        return entry._data;
+    } catch {
+        return null;
+    }
+}
+
+// ===== 设置缓存（带元数据） =====
+export function setCacheWithMeta(key, value, ttl = DEFAULT_TTL) {
+    try {
+        const entry = {
+            _data: value,
+            _timestamp: Date.now(),
+            _ttl: ttl,
+            _version: CACHE_VERSION,
+        };
+        localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(entry));
+    } catch (e) {
+        console.warn('⚠️ 缓存写入失败:', e);
+    }
+}
+
+// ===== 获取缓存（兼容旧接口，永不过期） =====
 export function getCache(key) {
     try {
         const raw = localStorage.getItem(CACHE_PREFIX + key);
@@ -17,7 +64,7 @@ export function getCache(key) {
     }
 }
 
-// ===== 设置缓存（永久有效，无过期时间） =====
+// ===== 设置缓存（兼容旧接口，永久有效） =====
 export function setCache(key, value) {
     try {
         localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(value));
