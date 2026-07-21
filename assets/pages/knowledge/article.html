@@ -7,12 +7,10 @@
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <style>
-        /* ★ 强制深色覆盖 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .article-body { color: rgba(255,255,255,0.85) !important; }
         .article-body h1, .article-body h2, .article-body h3 { color: #fffffe !important; }
 
-        /* ===== 原有样式 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -55,7 +53,14 @@
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
+            align-items: center;
         }
+        .article-header .meta .author-info {
+            color: rgba(255,255,255,0.2);
+            font-size: 13px;
+        }
+        .article-header .meta .author-info .nickname { color: rgba(255,255,255,0.4); }
+        .article-header .meta .author-info .email { color: rgba(212,165,116,0.3); font-size: 12px; }
         .article-body {
             font-size: 17px;
             line-height: 1.8;
@@ -116,7 +121,8 @@
     </script>
     <script type="module">
         import { CONTENT_CONFIG } from '@/js/content-config.js';
-        import { getCurrentUser } from '@/js/auth.js';
+        import { getCurrentUser, getUserIdentity } from '@/js/auth.js';
+        import { getUserRole } from '@/js/identity.js';
         import { showLoading, hideLoading } from '@/js/loading.js';
         import { getToken } from '@/js/content-manager.js';
         import { getCache, setCache } from '@/js/cache.js';
@@ -131,6 +137,7 @@
         }
 
         var user = null;
+        var userRole = null;
         var article = null;
 
         // ===== 从 GitHub 获取文章内容（带缓存） =====
@@ -185,7 +192,7 @@
             }
         }
 
-        // ===== 解析 Frontmatter =====
+        // ===== 解析 Frontmatter（含作者信息） =====
         function parseFrontmatter(raw) {
             var frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
             var match = raw.match(frontmatterRegex);
@@ -200,7 +207,9 @@
                     is_public: true,
                     reading_points: 0,
                     created_at: new Date().toISOString(),
-                    cover_url: ''
+                    cover_url: '',
+                    author_nickname: '',
+                    author_email: ''
                 };
             }
 
@@ -244,7 +253,9 @@
                 is_public: data.is_public !== 'false',
                 reading_points: parseInt(data.reading_points) || 0,
                 created_at: data.created_at || new Date().toISOString(),
-                cover_url: data.cover_url || ''
+                cover_url: data.cover_url || '',
+                author_nickname: data.author_nickname || '',
+                author_email: data.author_email || ''
             };
         }
 
@@ -253,6 +264,7 @@
             showLoading('加载文章', '正在翻阅…');
             try {
                 user = await getCurrentUser();
+                userRole = await getUserRole();
                 article = await fetchArticleFromGitHub(slug);
 
                 if (!article) {
@@ -276,8 +288,23 @@
             }
         }
 
-        // ===== 渲染文章 =====
+        // ===== 渲染文章（含作者信息） =====
         function renderArticle() {
+            // ★ 构建作者显示信息 ★
+            var authorNickname = article.author_nickname || '匿名';
+            var authorEmail = article.author_email || '';
+            var authorDisplay = '';
+
+            if (userRole === 'admin' && authorEmail) {
+                // 根源管理：显示昵称 + 邮箱
+                authorDisplay = '<span class="nickname">' + authorNickname + '</span> <span class="email">(' + authorEmail + ')</span>';
+            } else if (authorNickname) {
+                // 其他登录用户或未登录：只显示昵称
+                authorDisplay = '<span class="nickname">' + authorNickname + '</span>';
+            } else {
+                authorDisplay = '<span class="nickname">匿名</span>';
+            }
+
             var coverHtml = article.cover_url
                 ? '<img src="' + article.cover_url + '" alt="封面" style="width:100%; border-radius:12px; margin-bottom:20px;" />'
                 : '';
@@ -295,7 +322,9 @@
             container.innerHTML = '<div class="article-header">' +
                 '<span class="category">' + article.category + '</span>' +
                 '<h1>' + article.title + '</h1>' +
-                '<div class="meta"><span>' + new Date(article.created_at).toLocaleDateString('zh-CN') + '</span>' +
+                '<div class="meta">' +
+                '<span>' + new Date(article.created_at).toLocaleDateString('zh-CN') + '</span>' +
+                '<span class="author-info">✍️ ' + authorDisplay + '</span>' +
                 (article.is_public ? '<span>公开</span>' : '<span>🔒 私密</span>') +
                 '</div></div>' +
                 coverHtml +

@@ -2,6 +2,7 @@
 // assets/js/content-manager.js
 // 功能：GitHub 内容管理 CRUD 操作（知识区 / 任务区共用）
 // 缓存策略：5 分钟过期 + 手动刷新
+// 作者字段：自动从当前用户获取，不可修改
 // ================================================================
 
 import { CONTENT_CONFIG } from './content-config.js';
@@ -202,7 +203,7 @@ export async function deleteContent(branch, path) {
     return await response.json();
 }
 
-// ===== 解析 Frontmatter =====
+// ===== 解析 Frontmatter（含作者信息） =====
 export function parseFrontmatter(raw, filename) {
     var frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
     var match = raw.match(frontmatterRegex);
@@ -217,7 +218,9 @@ export function parseFrontmatter(raw, filename) {
             is_public: true,
             reading_points: 0,
             created_at: new Date().toISOString(),
-            cover_url: ''
+            cover_url: '',
+            author_nickname: '',
+            author_email: ''
         };
     }
 
@@ -261,7 +264,10 @@ export function parseFrontmatter(raw, filename) {
         is_public: data.is_public !== 'false',
         reading_points: parseInt(data.reading_points) || 0,
         created_at: data.created_at || new Date().toISOString(),
-        cover_url: data.cover_url || ''
+        cover_url: data.cover_url || '',
+        // ★ 解析作者信息 ★
+        author_nickname: data.author_nickname || '',
+        author_email: data.author_email || ''
     };
 }
 
@@ -275,8 +281,12 @@ export function generateSlug(title) {
         .slice(0, 50);
 }
 
-// ===== 构建 Frontmatter 内容 =====
-export function buildFullContent(title, slug, category, points, summary, cover, content) {
-    var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: ' + (parseInt(points) || 0) + '\nsummary: ' + (summary.trim() || '') + '\ncover_url: ' + (cover.trim() || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n---\n\n';
+// ===== 构建 Frontmatter 内容（含作者信息） =====
+export function buildFullContent(title, slug, category, points, summary, cover, content, authorNickname, authorEmail) {
+    var frontmatter = '---\ntitle: ' + title + '\nslug: ' + slug + '\ncategory: ' + category + '\nreading_points: ' + (parseInt(points) || 0) + '\nsummary: ' + (summary.trim() || '') + '\ncover_url: ' + (cover.trim() || '') + '\nis_public: true\ncreated_at: ' + new Date().toISOString() + '\n';
+    // ★ 写入作者信息 ★
+    if (authorNickname) frontmatter += 'author_nickname: ' + authorNickname + '\n';
+    if (authorEmail) frontmatter += 'author_email: ' + authorEmail + '\n';
+    frontmatter += '---\n\n';
     return frontmatter + content;
 }

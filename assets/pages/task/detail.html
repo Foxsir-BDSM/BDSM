@@ -7,12 +7,10 @@
     <link rel="icon" href="/assets/images/OIP-C.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <style>
-        /* ★ 强制深色覆盖 ★ */
         body { background: #0f0e17 !important; color: #fffffe !important; }
         .task-body { color: rgba(255,255,255,0.85) !important; }
         .task-body h1, .task-body h2, .task-body h3 { color: #fffffe !important; }
 
-        /* ===== 原有样式 ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', -apple-system, sans-serif;
@@ -55,7 +53,14 @@
             display: flex;
             gap: 16px;
             flex-wrap: wrap;
+            align-items: center;
         }
+        .task-header .meta .author-info {
+            color: rgba(255,255,255,0.2);
+            font-size: 13px;
+        }
+        .task-header .meta .author-info .nickname { color: rgba(255,255,255,0.4); }
+        .task-header .meta .author-info .email { color: rgba(212,165,116,0.3); font-size: 12px; }
         .task-body {
             font-size: 17px;
             line-height: 1.8;
@@ -117,6 +122,7 @@
     <script type="module">
         import { CONTENT_CONFIG } from '@/js/content-config.js';
         import { getCurrentUser } from '@/js/auth.js';
+        import { getUserRole } from '@/js/identity.js';
         import { showLoading, hideLoading } from '@/js/loading.js';
         import { getToken } from '@/js/content-manager.js';
         import { getCache, setCache } from '@/js/cache.js';
@@ -131,13 +137,13 @@
         }
 
         var user = null;
+        var userRole = null;
         var task = null;
 
         // ===== 从 GitHub 获取任务内容（带缓存） =====
         async function fetchTaskFromGitHub(slug) {
             var cacheKey = 'detail_tasks_' + slug;
 
-            // ★ 优先读取缓存 ★
             var cached = getCache(cacheKey);
             if (cached) {
                 console.log('📦 命中详情缓存:', slug);
@@ -171,7 +177,6 @@
                 var raw = await contentRes.text();
                 var parsed = parseFrontmatter(raw);
 
-                // ★ 存入缓存（永久有效） ★
                 setCache(cacheKey, parsed);
                 console.log('✅ 详情缓存已写入:', slug);
 
@@ -182,7 +187,7 @@
             }
         }
 
-        // ===== 解析 Frontmatter =====
+        // ===== 解析 Frontmatter（含作者信息） =====
         function parseFrontmatter(raw) {
             var frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
             var match = raw.match(frontmatterRegex);
@@ -197,7 +202,9 @@
                     is_public: true,
                     reading_points: 0,
                     created_at: new Date().toISOString(),
-                    cover_url: ''
+                    cover_url: '',
+                    author_nickname: '',
+                    author_email: ''
                 };
             }
 
@@ -241,7 +248,9 @@
                 is_public: data.is_public !== 'false',
                 reading_points: parseInt(data.reading_points) || 0,
                 created_at: data.created_at || new Date().toISOString(),
-                cover_url: data.cover_url || ''
+                cover_url: data.cover_url || '',
+                author_nickname: data.author_nickname || '',
+                author_email: data.author_email || ''
             };
         }
 
@@ -250,6 +259,7 @@
             showLoading('加载任务', '正在翻阅…');
             try {
                 user = await getCurrentUser();
+                userRole = await getUserRole();
                 task = await fetchTaskFromGitHub(slug);
 
                 if (!task) {
@@ -273,8 +283,20 @@
             }
         }
 
-        // ===== 渲染任务 =====
+        // ===== 渲染任务（含作者信息） =====
         function renderTask() {
+            var authorNickname = task.author_nickname || '匿名';
+            var authorEmail = task.author_email || '';
+            var authorDisplay = '';
+
+            if (userRole === 'admin' && authorEmail) {
+                authorDisplay = '<span class="nickname">' + authorNickname + '</span> <span class="email">(' + authorEmail + ')</span>';
+            } else if (authorNickname) {
+                authorDisplay = '<span class="nickname">' + authorNickname + '</span>';
+            } else {
+                authorDisplay = '<span class="nickname">匿名</span>';
+            }
+
             var coverHtml = task.cover_url
                 ? '<img src="' + task.cover_url + '" alt="封面" style="width:100%; border-radius:12px; margin-bottom:20px;" />'
                 : '';
@@ -292,7 +314,9 @@
             container.innerHTML = '<div class="task-header">' +
                 '<span class="category">' + task.category + '</span>' +
                 '<h1>' + task.title + '</h1>' +
-                '<div class="meta"><span>' + new Date(task.created_at).toLocaleDateString('zh-CN') + '</span>' +
+                '<div class="meta">' +
+                '<span>' + new Date(task.created_at).toLocaleDateString('zh-CN') + '</span>' +
+                '<span class="author-info">✍️ ' + authorDisplay + '</span>' +
                 (task.is_public ? '<span>公开</span>' : '<span>🔒 私密</span>') +
                 '</div></div>' +
                 coverHtml +

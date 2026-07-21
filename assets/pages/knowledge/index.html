@@ -203,8 +203,12 @@
             font-size: 12px;
             border-top: 1px solid rgba(255,255,255,0.02);
             padding-top: 10px;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            align-items: center;
         }
         .article-card .footer .badge { color: #d4a574; }
+        .article-card .footer .author { color: rgba(255,255,255,0.2); font-size: 11px; }
         .article-card .card-actions {
             display: none;
             gap: 8px;
@@ -407,11 +411,8 @@
             <input type="text" id="modalTitleInput" placeholder="文章标题" />
         </div>
 
+        <!-- ★ 移除了作者输入框，自动从用户信息获取 ★ -->
         <div class="form-row">
-            <div class="form-group">
-                <label>作者</label>
-                <input type="text" id="modalAuthor" placeholder="作者名称" />
-            </div>
             <div class="form-group">
                 <label>分类</label>
                 <select id="modalCategory">
@@ -420,6 +421,9 @@
                     <option value="技巧教程">技巧教程</option>
                     <option value="圈层文化">圈层文化</option>
                 </select>
+            </div>
+            <div class="form-group" style="display:flex;align-items:flex-end;justify-content:flex-end;">
+                <span style="color:rgba(255,255,255,0.15);font-size:12px;">✍️ 作者自动绑定</span>
             </div>
         </div>
 
@@ -494,7 +498,6 @@
     var modalTitleInput = document.getElementById('modalTitleInput');
     var modalSlug = document.getElementById('modalSlug');
     var modalCategory = document.getElementById('modalCategory');
-    var modalAuthor = document.getElementById('modalAuthor');
     var modalSummary = document.getElementById('modalSummary');
     var modalCover = document.getElementById('modalCover');
     var modalEditorTextarea = document.getElementById('modalEditorTextarea');
@@ -612,6 +615,7 @@
                     ? 'background-image: url(' + article.cover_url + ');'
                     : 'background: linear-gradient(135deg, rgba(212,165,116,0.05), rgba(212,165,116,0.01));';
                 var isLocked = !user && !article.is_public;
+                var authorDisplay = article.author_nickname || '匿名';
 
                 return '<div class="article-card" data-slug="' + article.slug + '">' +
                     '<a href="/assets/pages/knowledge/article.html?slug=' + article.slug + '" style="text-decoration:none;color:inherit;display:flex;flex-direction:column;flex:1;">' +
@@ -619,7 +623,11 @@
                     '<div class="meta"><span class="category">' + article.category + '</span><span>' + new Date(article.created_at).toLocaleDateString('zh-CN') + '</span></div>' +
                     '<h3>' + article.title + '</h3>' +
                     '<p>' + (article.summary || '点击阅读全文…') + '</p>' +
-                    '<div class="footer"><span>' + (isLocked ? '🔒 登录后解锁' : '📖 阅读') + '</span><span class="badge">' + (article.is_public ? '公开' : '私密') + '</span></div>' +
+                    '<div class="footer">' +
+                    '<span>' + (isLocked ? '🔒 登录后解锁' : '📖 阅读') + '</span>' +
+                    '<span class="badge">' + (article.is_public ? '公开' : '私密') + '</span>' +
+                    '<span class="author">✍️ ' + authorDisplay + '</span>' +
+                    '</div>' +
                     '</a>' +
                     '<div class="card-actions ' + (isManageMode ? 'visible' : '') + '">' +
                     '<button class="btn-sm btn-delete" data-slug="' + article.slug + '">🗑️ 删除</button>' +
@@ -707,13 +715,15 @@
         modalCover.value = '';
         pendingContent = '';
 
+        // ★ 自动获取作者信息（不显示给用户） ★
         getCurrentUser().then(function(user) {
-            if (user && user.user_metadata && user.user_metadata.nickname) {
-                modalAuthor.value = user.user_metadata.nickname;
-            } else if (user && user.email) {
-                modalAuthor.value = user.email.split('@')[0];
-            } else {
-                modalAuthor.value = '';
+            if (user) {
+                var nickname = user.user_metadata?.nickname || user.email?.split('@')[0] || '未知';
+                var email = user.email || '';
+                // 存储到全局变量供提交时使用
+                window.__authorNickname = nickname;
+                window.__authorEmail = email;
+                console.log('📝 作者信息已自动获取:', nickname);
             }
         });
 
@@ -779,17 +789,21 @@
     modalSubmitBtn.addEventListener('click', async function() {
         var title = modalTitleInput.value.trim();
         var slug = modalSlug.value.trim();
-        var author = modalAuthor.value.trim() || '未知';
         var category = modalCategory.value;
         var summary = modalSummary.value.trim();
         var cover = modalCover.value.trim();
         var content = editorInstance ? editorInstance.value() : modalEditorTextarea.value;
 
+        // ★ 使用自动获取的作者信息 ★
+        var authorNickname = window.__authorNickname || '未知';
+        var authorEmail = window.__authorEmail || '';
+
         if (!title) { showStatus('请输入标题', 'error'); return; }
         if (!slug) { slug = generateSlug(title); modalSlug.value = slug; }
         if (!content) { showStatus('请输入正文内容', 'error'); return; }
 
-        var fullContent = buildFullContent(title, slug, category, 0, summary, cover, content);
+        // ★ 传入作者信息 ★
+        var fullContent = buildFullContent(title, slug, category, 0, summary, cover, content, authorNickname, authorEmail);
         var filePath = PATH + '/' + slug + '.md';
 
         showStatus('⏳ 发布中…', 'loading');
