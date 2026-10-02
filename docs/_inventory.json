@@ -1,0 +1,1934 @@
+[
+  {
+    "file": "src/admin/admin-article-simple.html",
+    "module": "管理后台",
+    "type": "HTML",
+    "ids": [
+      "tokenInput",
+      "saveTokenBtn",
+      "tokenStatus",
+      "title",
+      "author",
+      "category",
+      "summary",
+      "cover",
+      "editorTextarea",
+      "publishBtn",
+      "clearBtn",
+      "statusMsg",
+      "listContainer"
+    ],
+    "classes": [
+      ".tab"
+    ],
+    "buttons": [
+      {
+        "id": "saveTokenBtn",
+        "cls": "btn btn-secondary",
+        "text": "保存"
+      },
+      {
+        "id": "",
+        "cls": "tab active",
+        "text": "📚 知识区"
+      },
+      {
+        "id": "",
+        "cls": "tab",
+        "text": "🎯 任务区"
+      },
+      {
+        "id": "publishBtn",
+        "cls": "btn btn-primary",
+        "text": "🚀 发布"
+      },
+      {
+        "id": "clearBtn",
+        "cls": "btn btn-secondary",
+        "text": "清空"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "saveTokenBtn",
+        "event": "click"
+      },
+      {
+        "target": "tab",
+        "event": "click"
+      },
+      {
+        "target": "publishBtn",
+        "event": "click"
+      },
+      {
+        "target": "clearBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "clearCache",
+      "clearKnowledgeCache",
+      "clearTaskCache",
+      "getEnvToken",
+      "loadToken",
+      "saveToken",
+      "initEditor",
+      "showStatus",
+      "hideStatus",
+      "generateSlug",
+      "loadList",
+      "publishArticle",
+      "loadUserInfo"
+    ],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/admin/admin-article.html",
+    "module": "管理后台",
+    "type": "HTML",
+    "ids": [
+      "tokenSection",
+      "githubToken",
+      "saveTokenBtn",
+      "tokenStatus",
+      "targetSelector",
+      "editTitle",
+      "editAuthor",
+      "editCategory",
+      "editSummary",
+      "editCover",
+      "editorContainer",
+      "publishBtn",
+      "clearBtn",
+      "statusMsg",
+      "listContainer"
+    ],
+    "classes": [
+      ".target-btn"
+    ],
+    "buttons": [
+      {
+        "id": "saveTokenBtn",
+        "cls": "btn",
+        "text": "保存 Token"
+      },
+      {
+        "id": "",
+        "cls": "target-btn active",
+        "text": "📚 知识区"
+      },
+      {
+        "id": "",
+        "cls": "target-btn",
+        "text": "🎯 任务区"
+      },
+      {
+        "id": "publishBtn",
+        "cls": "btn btn-primary",
+        "text": "🚀 发布"
+      },
+      {
+        "id": "clearBtn",
+        "cls": "btn btn-secondary",
+        "text": "清空"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "saveTokenBtn",
+        "event": "click"
+      },
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "publishBtn",
+        "event": "click"
+      },
+      {
+        "target": "clearBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "getEnvToken",
+      "loadToken",
+      "saveToken",
+      "initEditor",
+      "showStatus",
+      "hideStatus",
+      "checkAuth",
+      "generateSlug",
+      "loadList",
+      "publishArticle",
+      "clearForm"
+    ],
+    "exports": [],
+    "imports": [
+      "easymde",
+      "@/admin/content-config.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/loading.js",
+      "@/shared/js/cache.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/admin/admin.html",
+    "module": "管理后台",
+    "type": "HTML",
+    "ids": [
+      "adminUserInfo",
+      "adminLogoutBtn",
+      "tabNav",
+      "tabUserPerm",
+      "tabSubArchive",
+      "pane-userPerm",
+      "totalUsers",
+      "userSearchInput",
+      "pushBtn",
+      "userTableContainer",
+      "pushResult",
+      "pane-domArchive",
+      "pane-subArchive",
+      "subTotalCount",
+      "subSearchInput",
+      "subRecordsContainer"
+    ],
+    "classes": [],
+    "buttons": [
+      {
+        "id": "adminLogoutBtn",
+        "cls": "btn-logout",
+        "text": "登出"
+      },
+      {
+        "id": "tabUserPerm",
+        "cls": "tab-btn active",
+        "text": "👤 用户权限 已就绪"
+      },
+      {
+        "id": "",
+        "cls": "tab-btn",
+        "text": "📤 上位档案 开发中"
+      },
+      {
+        "id": "tabSubArchive",
+        "cls": "tab-btn",
+        "text": "📥 下位档案 已就绪"
+      },
+      {
+        "id": "pushBtn",
+        "cls": "btn btn-gold",
+        "text": "📤 Push 生效"
+      }
+    ],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/admin/admin.js",
+    "module": "管理后台",
+    "type": "JS",
+    "ids": [
+      "${id}",
+      "${f.id}",
+      "sub-status-${id}",
+      "userTableContainer",
+      "totalUsers",
+      "pushBtn",
+      "pushResult",
+      "userSearchInput",
+      "subRecordsContainer",
+      "subTotalCount",
+      "subSearchInput",
+      "adminUserInfo",
+      "adminLogoutBtn",
+      "tabUserPerm",
+      "pane-userPerm"
+    ],
+    "classes": [
+      ".tab-btn",
+      ".tab-pane",
+      ".role-select",
+      ".sub-check"
+    ],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "sel",
+        "event": "change"
+      },
+      {
+        "target": "userSearchInput",
+        "event": "input"
+      },
+      {
+        "target": "cb",
+        "event": "change"
+      },
+      {
+        "target": "pushSubBtn",
+        "event": "click"
+      },
+      {
+        "target": "subSearchInput",
+        "event": "input"
+      },
+      {
+        "target": "adminLogoutBtn",
+        "event": "click"
+      },
+      {
+        "target": "pushBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "getFieldValue",
+      "getUserNickname",
+      "getUserDisplayName",
+      "loadUsers",
+      "renderUserTable",
+      "filterUsers",
+      "pushChanges",
+      "loadSubRecords",
+      "renderSubTable",
+      "pushSubChanges",
+      "initAdmin",
+      "email",
+      "name",
+      "profession",
+      "region"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/identity.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/supabase-client.js",
+      "@/shared/js/ui-helpers.js",
+      "@/modules/sub-archive/js/api.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/admin/content-config.js",
+    "module": "管理后台",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [
+      "CONTENT_CONFIG"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/admin/content-manager.js",
+    "module": "管理后台",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getToken",
+      "fetchContentList",
+      "fetchContentListForce",
+      "getCacheRemainingTime",
+      "getFileSha",
+      "createOrUpdateContent",
+      "deleteContent",
+      "parseFrontmatter",
+      "generateSlug",
+      "buildFullContent"
+    ],
+    "exports": [
+      "getToken",
+      "fetchContentList",
+      "fetchContentListForce",
+      "getFileSha",
+      "createOrUpdateContent",
+      "deleteContent",
+      "parseFrontmatter",
+      "generateSlug",
+      "buildFullContent"
+    ],
+    "imports": [
+      "./content-config.js",
+      "@/shared/js/cache.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/404.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/about.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/auth.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [
+      "landing-root",
+      "login-form",
+      "login-email",
+      "login-password",
+      "register-form",
+      "register-email",
+      "register-nickname",
+      "identity-selector-container",
+      "register-password",
+      "auth-message"
+    ],
+    "classes": [
+      ".tab-btn",
+      "[data-switch-to]"
+    ],
+    "buttons": [
+      {
+        "id": "",
+        "cls": "tab-btn active",
+        "text": "登录"
+      },
+      {
+        "id": "",
+        "cls": "tab-btn",
+        "text": "注册"
+      },
+      {
+        "id": "",
+        "cls": "btn-primary",
+        "text": "进入欲界"
+      },
+      {
+        "id": "",
+        "cls": "btn-primary",
+        "text": "创建账号"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "link",
+        "event": "click"
+      },
+      {
+        "target": "loginForm",
+        "event": "submit"
+      },
+      {
+        "target": "registerForm",
+        "event": "submit"
+      }
+    ],
+    "functions": [
+      "switchTab",
+      "showMsg",
+      "navigateTo"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/supabase-client.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity-selector.js",
+      "@/shared/js/loading.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/index.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [
+      "topUserInfo",
+      "projectGrid",
+      "toastContainer",
+      "topAvatarWrapper",
+      "topAvatarInput",
+      "topLogoutBtn"
+    ],
+    "classes": [],
+    "buttons": [
+      {
+        "id": "topLogoutBtn",
+        "cls": "btn btn-danger",
+        "text": "登出"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "window",
+        "event": "load"
+      },
+      {
+        "target": "avatarWrapper",
+        "event": "click"
+      },
+      {
+        "target": "avatarInput",
+        "event": "change"
+      },
+      {
+        "target": "window",
+        "event": "resize"
+      }
+    ],
+    "functions": [
+      "showToast",
+      "getDisplayName",
+      "getAvatarLetter",
+      "isMobileScreen",
+      "renderTopUser",
+      "renderProjects",
+      "renderAll"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/loading.js",
+      "@/shared/js/guard.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/registry.js",
+      "@/shared/js/level.js",
+      "@/shared/js/avatar.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/landing.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [
+      "@/shared/js/auth.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/launcher/module.html",
+    "module": "启动器",
+    "type": "HTML",
+    "ids": [
+      "moduleDetail"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "renderModule"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/registry.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/dom-archive/index.html",
+    "module": "模块·欲主之殿",
+    "type": "HTML",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/knowledge/article.html",
+    "module": "模块·欲识之海",
+    "type": "HTML",
+    "ids": [
+      "articleContent"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "fetchArticleFromGitHub",
+      "parseFrontmatter",
+      "loadArticle",
+      "renderArticle"
+    ],
+    "exports": [],
+    "imports": [
+      "@/admin/content-config.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/loading.js",
+      "@/admin/content-manager.js",
+      "@/shared/js/cache.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/knowledge/index.html",
+    "module": "模块·欲识之海",
+    "type": "HTML",
+    "ids": [
+      "adminActions",
+      "refreshBtn",
+      "publishBtn",
+      "manageBtn",
+      "filterContainer",
+      "articleGrid",
+      "editorModal",
+      "modalCloseBtn",
+      "modalTitle",
+      "editMode",
+      "modalSlug",
+      "modalTitleInput",
+      "modalCategory",
+      "modalSummary",
+      "modalCover",
+      "modalEditorTextarea",
+      "modalStatus",
+      "modalSubmitBtn",
+      "modalCancelBtn"
+    ],
+    "classes": [
+      ".filter-btn",
+      ".btn-delete"
+    ],
+    "buttons": [
+      {
+        "id": "refreshBtn",
+        "cls": "btn-refresh",
+        "text": "🔄 刷新"
+      },
+      {
+        "id": "publishBtn",
+        "cls": "btn btn-publish",
+        "text": "✨ 发布"
+      },
+      {
+        "id": "manageBtn",
+        "cls": "btn btn-admin",
+        "text": "⚙️ 管理"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn active",
+        "text": "全部"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "入门指南"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "安全知识"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "技巧教程"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "圈层文化"
+      },
+      {
+        "id": "modalCloseBtn",
+        "cls": "modal-close",
+        "text": "✕"
+      },
+      {
+        "id": "modalSubmitBtn",
+        "cls": "btn btn-primary",
+        "text": "🚀 发布"
+      },
+      {
+        "id": "modalCancelBtn",
+        "cls": "btn btn-secondary",
+        "text": "取消"
+      },
+      {
+        "id": "",
+        "cls": "btn-sm btn-delete",
+        "text": "🗑️ 删除"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "refreshBtn",
+        "event": "click"
+      },
+      {
+        "target": "manageBtn",
+        "event": "click"
+      },
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "modalTitleInput",
+        "event": "input"
+      },
+      {
+        "target": "modalSubmitBtn",
+        "event": "click"
+      },
+      {
+        "target": "modalCloseBtn",
+        "event": "click"
+      },
+      {
+        "target": "modalCancelBtn",
+        "event": "click"
+      },
+      {
+        "target": "modal",
+        "event": "click"
+      },
+      {
+        "target": "document",
+        "event": "keydown"
+      },
+      {
+        "target": "publishBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "checkPermissions",
+      "fetchArticles",
+      "renderArticles",
+      "showStatus",
+      "hideStatus",
+      "openEditor",
+      "closeEditor",
+      "initEditor",
+      "destroyEditor",
+      "confirmDelete"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/loading.js",
+      "@/admin/content-config.js",
+      "@/admin/content-manager.js",
+      "@/shared/js/cache.js",
+      "easymde"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/mission/detail.html",
+    "module": "模块·欲炼之途",
+    "type": "HTML",
+    "ids": [
+      "taskContent"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "fetchTaskFromGitHub",
+      "parseFrontmatter",
+      "loadTask",
+      "renderTask"
+    ],
+    "exports": [],
+    "imports": [
+      "@/admin/content-config.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/loading.js",
+      "@/admin/content-manager.js",
+      "@/shared/js/cache.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/mission/index.html",
+    "module": "模块·欲炼之途",
+    "type": "HTML",
+    "ids": [
+      "adminActions",
+      "refreshBtn",
+      "publishBtn",
+      "manageBtn",
+      "filterContainer",
+      "taskGrid",
+      "editorModal",
+      "modalCloseBtn",
+      "modalTitle",
+      "editMode",
+      "modalSlug",
+      "modalTitleInput",
+      "modalCategory",
+      "modalSummary",
+      "modalCover",
+      "modalEditorTextarea",
+      "modalStatus",
+      "modalSubmitBtn",
+      "modalCancelBtn"
+    ],
+    "classes": [
+      ".filter-btn",
+      ".btn-delete"
+    ],
+    "buttons": [
+      {
+        "id": "refreshBtn",
+        "cls": "btn-refresh",
+        "text": "🔄 刷新"
+      },
+      {
+        "id": "publishBtn",
+        "cls": "btn btn-publish",
+        "text": "✨ 发布"
+      },
+      {
+        "id": "manageBtn",
+        "cls": "btn btn-admin",
+        "text": "⚙️ 管理"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn active",
+        "text": "全部"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "日常任务"
+      },
+      {
+        "id": "",
+        "cls": "filter-btn",
+        "text": "挑战任务"
+      },
+      {
+        "id": "modalCloseBtn",
+        "cls": "modal-close",
+        "text": "✕"
+      },
+      {
+        "id": "modalSubmitBtn",
+        "cls": "btn btn-primary",
+        "text": "🚀 发布"
+      },
+      {
+        "id": "modalCancelBtn",
+        "cls": "btn btn-secondary",
+        "text": "取消"
+      },
+      {
+        "id": "",
+        "cls": "btn-sm btn-delete",
+        "text": "🗑️ 删除"
+      }
+    ],
+    "listeners": [
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "refreshBtn",
+        "event": "click"
+      },
+      {
+        "target": "manageBtn",
+        "event": "click"
+      },
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "modalTitleInput",
+        "event": "input"
+      },
+      {
+        "target": "modalSubmitBtn",
+        "event": "click"
+      },
+      {
+        "target": "modalCloseBtn",
+        "event": "click"
+      },
+      {
+        "target": "modalCancelBtn",
+        "event": "click"
+      },
+      {
+        "target": "modal",
+        "event": "click"
+      },
+      {
+        "target": "document",
+        "event": "keydown"
+      },
+      {
+        "target": "publishBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "checkPermissions",
+      "fetchTasks",
+      "renderTasks",
+      "showStatus",
+      "hideStatus",
+      "openEditor",
+      "closeEditor",
+      "initEditor",
+      "destroyEditor",
+      "confirmDelete"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "@/shared/js/loading.js",
+      "@/admin/content-config.js",
+      "@/admin/content-manager.js",
+      "@/shared/js/cache.js",
+      "easymde"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/random/index.html",
+    "module": "模块·淫梦织境/欲缘之遇",
+    "type": "HTML",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/admin.html",
+    "module": "模块·欲渊之庭",
+    "type": "HTML",
+    "ids": [
+      "userInfo",
+      "userEmail",
+      "userRole",
+      "logoutBtn",
+      "adminPanel",
+      "totalCount",
+      "searchInput",
+      "recordsTableContainer"
+    ],
+    "classes": [],
+    "buttons": [
+      {
+        "id": "logoutBtn",
+        "cls": "",
+        "text": "退出"
+      }
+    ],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/detail.html",
+    "module": "模块·欲渊之庭",
+    "type": "HTML",
+    "ids": [
+      "detailContainer"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/index.html",
+    "module": "模块·欲渊之庭",
+    "type": "HTML",
+    "ids": [
+      "btnFillForm",
+      "searchInput",
+      "searchClear",
+      "searchStats",
+      "gridContainer",
+      "stateMessage",
+      "loadMoreIndicator"
+    ],
+    "classes": [],
+    "buttons": [
+      {
+        "id": "btnFillForm",
+        "cls": "btn-fill",
+        "text": "母の曝光"
+      }
+    ],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/js/admin.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [
+      "${id}",
+      "${f}",
+      "sub-status-${id}",
+      "userTableContainer",
+      "totalUsers",
+      "pushBtn",
+      "pushResult",
+      "subRecordsContainer",
+      "subTotalCount",
+      "subSearchInput",
+      "adminUserInfo",
+      "adminLogoutBtn"
+    ],
+    "classes": [
+      ".tab-btn",
+      ".tab-pane",
+      ".role-select",
+      ".save-sub-btn",
+      ".sub-check"
+    ],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "sel",
+        "event": "change"
+      },
+      {
+        "target": "btn",
+        "event": "click"
+      },
+      {
+        "target": "subSearchInput",
+        "event": "input"
+      },
+      {
+        "target": "adminLogoutBtn",
+        "event": "click"
+      },
+      {
+        "target": "pushBtn",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "loadUsers",
+      "renderUserTable",
+      "pushChanges",
+      "loadSubRecords",
+      "renderSubTable",
+      "initAdmin",
+      "name"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/identity.js",
+      "@/shared/js/auth.js",
+      "@/shared/js/supabase-client.js",
+      "@/shared/js/ui-helpers.js",
+      "./api.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/js/api.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "fetchRecordsPage",
+      "fetchRecords",
+      "fetchRecordById",
+      "clearCache",
+      "fetchAllRecords",
+      "updateRecordFields",
+      "offset"
+    ],
+    "exports": [
+      "fetchRecordsPage",
+      "fetchRecords",
+      "fetchRecordById",
+      "clearCache",
+      "fetchAllRecords",
+      "updateRecordFields"
+    ],
+    "imports": [
+      "./config.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/js/auth.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "signUp",
+      "signIn",
+      "signOut",
+      "getSession",
+      "onAuthStateChange",
+      "setSession",
+      "getCurrentUser",
+      "getUserIdentity",
+      "updateUserPoints"
+    ],
+    "exports": [
+      "signUp",
+      "signIn",
+      "signOut",
+      "getSession",
+      "onAuthStateChange",
+      "setSession",
+      "getCurrentUser",
+      "getUserIdentity",
+      "updateUserPoints"
+    ],
+    "imports": [
+      "@/shared/js/supabase-client.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/js/config.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [
+      "FIELD_LABELS",
+      "CARD_FIELDS",
+      "SEARCH_FIELDS",
+      "DETAIL_GROUPS",
+      "DETAIL_FIELD_ORDER",
+      "SYSTEM_FIELD_IDS",
+      "HOME_ONLY_FIELD_IDS",
+      "EXTRA_EXCLUDED_FIELD_IDS",
+      "PRIVACY_RULES",
+      "PRIVACY_DEPENDENCIES",
+      "ROLE_FIELD_VISIBILITY",
+      "CONFIG",
+      "PAGE_SIZE",
+      "CACHE_KEY",
+      "CACHE_TTL",
+      "isPrivacyApproved",
+      "isFieldVisibleForRole",
+      "isPrivacyApprovedForField"
+    ],
+    "imports": [
+      "@/shared/config/archive/instances.js",
+      "@/shared/config/archive/schema.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/modules/sub-archive/js/detail.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [
+      "detailContainer"
+    ],
+    "classes": [
+      ".detail-field-value img"
+    ],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "imgEl",
+        "event": "dblclick"
+      },
+      {
+        "target": "overlay",
+        "event": "click"
+      },
+      {
+        "target": "document",
+        "event": "keydown"
+      },
+      {
+        "target": "document",
+        "event": "keydown"
+      },
+      {
+        "target": "overlay",
+        "event": "click"
+      },
+      {
+        "target": "img",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "escapeHtml",
+      "isEmptyValue",
+      "getRecordIdFromUrl",
+      "isVideoValue",
+      "generateStars",
+      "showLightbox",
+      "showVideoLightbox",
+      "loadMediaInfo",
+      "collectAndSortMedia",
+      "renderMediaItem",
+      "renderMediaGroup",
+      "buildFieldMap",
+      "buildGroupedFieldsFromConfig",
+      "renderDetail",
+      "init",
+      "onKeyDown"
+    ],
+    "exports": [],
+    "imports": [
+      "./config.js",
+      "./api.js",
+      "./utils.js",
+      "@/shared/js/identity.js"
+    ],
+    "onclickAttrs": [
+      {
+        "event": "click",
+        "code": "(function(e){ e.stopPropagation(); window.showVideoLightbox "
+      },
+      {
+        "event": "click",
+        "code": "(function(e){ e.stopPropagation(); window.showLightbox && wi"
+      },
+      {
+        "event": "error",
+        "code": "this.src='${CONFIG.DEFAULT_IMAGE}'"
+      },
+      {
+        "event": "error",
+        "code": "this.src='${CONFIG.DEFAULT_IMAGE}'"
+      },
+      {
+        "event": "error",
+        "code": "this.src='${CONFIG.DEFAULT_IMAGE}'"
+      }
+    ]
+  },
+  {
+    "file": "src/modules/sub-archive/js/home.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [
+      "${id}",
+      "gridContainer",
+      "searchInput",
+      "searchClear",
+      "searchStats",
+      "stateMessage",
+      "loadMoreIndicator",
+      "btnFillForm"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "window",
+        "event": "scroll"
+      },
+      {
+        "target": "main",
+        "event": "scroll"
+      },
+      {
+        "target": "searchInput",
+        "event": "input"
+      },
+      {
+        "target": "searchClear",
+        "event": "click"
+      },
+      {
+        "target": "document.getElementById('btnFillForm')",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "isPublic",
+      "sortByLatest",
+      "generateStars",
+      "isVerified",
+      "renderAllCards",
+      "updateStats",
+      "loadPage",
+      "loadMore",
+      "handleSearch",
+      "clearSearch",
+      "setupScrollListener",
+      "init"
+    ],
+    "exports": [],
+    "imports": [
+      "./config.js",
+      "./api.js",
+      "./utils.js",
+      "@/shared/js/identity.js"
+    ],
+    "onclickAttrs": [
+      {
+        "event": "click",
+        "code": "location.href='./detail.html?id=${id}'"
+      },
+      {
+        "event": "error",
+        "code": "this.src='${CONFIG.DEFAULT_IMAGE}'"
+      }
+    ]
+  },
+  {
+    "file": "src/modules/sub-archive/js/utils.js",
+    "module": "模块·欲渊之庭",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getFieldValue",
+      "extractFileUrl",
+      "extractFileUrls",
+      "isEmptyValue",
+      "getCardImage",
+      "getCardName",
+      "getCardAge",
+      "getCardInfo",
+      "isImageValue",
+      "getImageUrls",
+      "getBusinessFields",
+      "getGroupedBusinessFields",
+      "filterFieldsByRole",
+      "filterFieldsByRoleAndPrivacy"
+    ],
+    "exports": [
+      "getFieldValue",
+      "extractFileUrl",
+      "extractFileUrls",
+      "getCardImage",
+      "getCardName",
+      "getCardAge",
+      "getCardInfo",
+      "isImageValue",
+      "getImageUrls",
+      "getBusinessFields",
+      "getGroupedBusinessFields",
+      "filterFieldsByRole",
+      "filterFieldsByRoleAndPrivacy"
+    ],
+    "imports": [
+      "./config.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/config/archive/index.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [],
+    "imports": [
+      "./schema.js",
+      "./instances.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/config/archive/instances.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getArchiveConfig"
+    ],
+    "exports": [
+      "SUB_ARCHIVE_CONFIG",
+      "DOM_ARCHIVE_CONFIG",
+      "ARCHIVE_INSTANCES",
+      "getArchiveConfig"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/config/archive/schema.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "isPrivacyApproved",
+      "isFieldVisibleForRole",
+      "isPrivacyApprovedForField"
+    ],
+    "exports": [
+      "isPrivacyApproved",
+      "isFieldVisibleForRole",
+      "isPrivacyApprovedForField"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/config/identity-config.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getGender",
+      "getType",
+      "getIdentityById"
+    ],
+    "exports": [
+      "IDENTITIES",
+      "getGender",
+      "getType",
+      "getIdentityById",
+      "IDENTITY_IDS"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/config/levelConfig.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getLevelTitle",
+      "getIdentityLabel"
+    ],
+    "exports": [
+      "LEVEL_THRESHOLDS",
+      "LEVEL_TITLES",
+      "getLevelTitle",
+      "getIdentityLabel"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/auth.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "mapAuthError",
+      "signUp",
+      "signIn",
+      "signOut",
+      "getSession",
+      "onAuthStateChange",
+      "setSession",
+      "getCurrentUser",
+      "getUserIdentity",
+      "updateUserPoints"
+    ],
+    "exports": [
+      "signUp",
+      "signIn",
+      "signOut",
+      "getSession",
+      "onAuthStateChange",
+      "setSession",
+      "getCurrentUser",
+      "getUserIdentity",
+      "updateUserPoints"
+    ],
+    "imports": [
+      "@/shared/js/supabase-client.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/avatar.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "compressImage",
+      "uploadAvatar",
+      "getAvatarUrl",
+      "deleteAvatar"
+    ],
+    "exports": [
+      "compressImage",
+      "uploadAvatar",
+      "getAvatarUrl",
+      "deleteAvatar"
+    ],
+    "imports": [
+      "@/shared/js/supabase-client.js",
+      "@/shared/js/auth.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/cache.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getCacheWithMeta",
+      "setCacheWithMeta",
+      "getCache",
+      "setCache",
+      "clearCache",
+      "clearAllCache",
+      "clearKnowledgeCache",
+      "clearTaskCache",
+      "getCacheStatus",
+      "getAllCacheKeys",
+      "isExpired"
+    ],
+    "exports": [
+      "DEFAULT_TTL",
+      "getCacheWithMeta",
+      "setCacheWithMeta",
+      "getCache",
+      "setCache",
+      "clearCache",
+      "clearAllCache",
+      "clearKnowledgeCache",
+      "clearTaskCache",
+      "getCacheStatus",
+      "getAllCacheKeys"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/config.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [
+      "SUPABASE_URL",
+      "SUPABASE_ANON_KEY",
+      "PROJECTS"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/guard.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "isPublicRoute",
+      "getCurrentPath",
+      "getRedirectUrl",
+      "initGuard",
+      "hasModuleAccess",
+      "getRedirectParam"
+    ],
+    "exports": [
+      "initGuard",
+      "hasModuleAccess",
+      "getRedirectParam"
+    ],
+    "imports": [
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/identity-selector.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [
+      "primary-grid",
+      "secondary-grid",
+      "identity-hint"
+    ],
+    "classes": [
+      ".primary-grid .identity-card",
+      ".secondary-grid .secondary-card"
+    ],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "card",
+        "event": "click"
+      },
+      {
+        "target": "card",
+        "event": "click"
+      }
+    ],
+    "functions": [
+      "renderIdentitySelector",
+      "selectPrimary",
+      "toggleSecondary",
+      "updateUI",
+      "updateHint",
+      "getSelectedIdentityData",
+      "resetIdentitySelector"
+    ],
+    "exports": [
+      "renderIdentitySelector",
+      "getSelectedIdentityData",
+      "resetIdentitySelector"
+    ],
+    "imports": [
+      "@/shared/config/identity-config.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/identity.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getCurrentUser",
+      "getUserRole",
+      "getUserNickname",
+      "getUserAvatar",
+      "getUserMetadata"
+    ],
+    "exports": [
+      "getCurrentUser",
+      "getUserRole",
+      "getUserNickname",
+      "getUserAvatar",
+      "getUserMetadata"
+    ],
+    "imports": [
+      "@/shared/js/supabase-client.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/launcher.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "renderLauncher"
+    ],
+    "exports": [
+      "renderLauncher"
+    ],
+    "imports": [
+      "./registry.js",
+      "@/shared/js/identity.js"
+    ],
+    "onclickAttrs": [
+      {
+        "event": "click",
+        "code": "return false;"
+      }
+    ]
+  },
+  {
+    "file": "src/shared/js/level.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "calculateLevel",
+      "getLevelBadge",
+      "getLevelProgressBar",
+      "formatPoints"
+    ],
+    "exports": [
+      "calculateLevel",
+      "getLevelBadge",
+      "getLevelProgressBar",
+      "formatPoints"
+    ],
+    "imports": [
+      "@/shared/config/levelConfig.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/loading.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [
+      "loading-text",
+      "loading-bar",
+      "loading-sub",
+      "loading-error",
+      "loading-retry-btn"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "createOverlay",
+      "showLoading",
+      "updateLoadingText",
+      "hideLoading",
+      "forceHideLoading"
+    ],
+    "exports": [
+      "showLoading",
+      "updateLoadingText",
+      "hideLoading",
+      "forceHideLoading"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/main.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [
+      "loginBtn",
+      "registerBtn",
+      "authFormContainer",
+      "authForm",
+      "emailInput",
+      "passwordInput",
+      "authSubmitBtn",
+      "cancelAuthBtn",
+      "logoutBtn",
+      "userSection",
+      "projectGrid"
+    ],
+    "classes": [],
+    "buttons": [],
+    "listeners": [
+      {
+        "target": "loginBtn",
+        "event": "click"
+      },
+      {
+        "target": "registerBtn",
+        "event": "click"
+      },
+      {
+        "target": "cancelAuthBtn",
+        "event": "click"
+      },
+      {
+        "target": "authForm",
+        "event": "submit"
+      }
+    ],
+    "functions": [
+      "renderUserSection",
+      "renderAll"
+    ],
+    "exports": [],
+    "imports": [
+      "@/shared/js/auth.js",
+      "@/shared/js/identity.js",
+      "./launcher.js",
+      "@/shared/js/ui-helpers.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/registry.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "getAllProjects",
+      "getVisibleProjects",
+      "getVisibleProjectIds",
+      "getProjectStatus"
+    ],
+    "exports": [
+      "getAllProjects",
+      "getVisibleProjects",
+      "getVisibleProjectIds",
+      "getProjectStatus"
+    ],
+    "imports": [
+      "./config.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/request.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "withTimeout",
+      "classifyError",
+      "safeAsync"
+    ],
+    "exports": [
+      "withTimeout",
+      "classifyError",
+      "safeAsync"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/supabase-client.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [],
+    "exports": [
+      "supabase",
+      "rawSupabase"
+    ],
+    "imports": [
+      "@supabase/supabase-js",
+      "./config.js",
+      "./request.js"
+    ],
+    "onclickAttrs": []
+  },
+  {
+    "file": "src/shared/js/ui-helpers.js",
+    "module": "共享层",
+    "type": "JS",
+    "ids": [],
+    "classes": [],
+    "buttons": [],
+    "listeners": [],
+    "functions": [
+      "showToast",
+      "showLoading"
+    ],
+    "exports": [
+      "showToast",
+      "showLoading"
+    ],
+    "imports": [],
+    "onclickAttrs": []
+  }
+]

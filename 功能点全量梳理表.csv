@@ -1,0 +1,340 @@
+﻿分区,文件名,归属板块,具体功能,与哪个功能具有联动效果,在哪个页面的容器或按钮进行交互
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,品牌 Logo 展示,无（静态）,/landing.html 页 .logo-icon 圆形容器（72px 圆形图 OIP-C.jpg）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,主标题与副标题展示,无（静态）,/landing.html 页 h1「欲界之门 · 只渡有缘人」+ .subtitle
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,「立即加入」入口,→ auth.html 登录注册页,/landing.html 页 .cta-group > a.btn-primary「🌿 立即加入」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,「了解规则」入口,→ about.html 用户指南,/landing.html 页 .cta-group > a.btn-secondary「📖 了解规则 →」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,Telegram 作者入口,外部跳转 t.me/Foxsir0（新窗口）,/landing.html 页 .social-buttons > a.social-btn.telegram 圆形图标钮
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,Twitter/X 作者入口,外部跳转 twitter.com/foxsir00（新窗口）,/landing.html 页 .social-buttons > a.social-btn.twitter 圆形图标钮
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,已登录自动跳转控制中心,读 auth.getCurrentUser() → 有用户则跳 index.html,页面加载即触发（无 UI 元素，顶层 await）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,响应式（480 / 380px 两档）,无,/landing.html 页整页（@media 断点）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,landing.html,底部链接区（已屏蔽）,登录/关于链接被 HTML 注释包裹,/landing.html 页 L316-L325 注释块（当前不可见）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第一章「这是什么地方」,展示 6 板块开放状态表,/about.html 页 .table-wrap 表格（功能板块/状态/说明）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第二章「怎么开始」三步引导,指向 auth.html 注册流程,/about.html 页 h3 第一步/第二步/第三步 + .info-card「💡 小白提示」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第三章 12 身份网格展示,与 identity-config.js 的 12 身份定义一致,/about.html 页 .identity-grid > .identity-item ×6（男/女合并展示）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第三章 5 角色卡片,与 ROLE_FIELD_VISIBILITY 5 层角色一致,/about.html 页 .role-grid > .role-card ×5（含 .role-badge 代码标签）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第三章 权限速查表,对应 guard.js 白名单 + config.js requiredRoles,/about.html 页 .table-wrap 表格（角色/板块访问/知识任务/档案馆/后台）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第四章 功能板块说明,指向 3 个已开放模块的实际路径,/about.html 页 .table-wrap 表格 + h3 各模块小节
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第四章 发布权限说明表,对应 knowledge/mission 的 checkPermissions() 分层,/about.html 页 .table-wrap 表格（操作/所需角色/说明）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第五章 等级阶梯与积分阈值表,对应 levelConfig.js 的 LEVEL_THRESHOLDS,/about.html 页 两张 .table-wrap 表格
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第五章 积分获取方式表,⚠️ 5 种方式均未实现（updateUserPoints 无调用者）,/about.html 页 .table-wrap 表格（方式/积分/说明）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第六章 隐私开关说明,对应 instances.js 的 PRIVACY_RULES 四个控制字段,/about.html 页 .table-wrap 表格（含 <code> 包裹的字段 ID）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第六章 5 角色可见范围矩阵,对应 ROLE_FIELD_VISIBILITY 白名单,/about.html 页 .table-wrap 表格（字段分类 × 5 角色）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第七章 常见问题 FAQ ×8,解释积分/身份/认证/隐私开关等,/about.html 页 h3「Q：…」×8 + p「A：…」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第八章 快速指引 8 步表,串联注册→浏览→发布→完善档案全流程,/about.html 页 .table-wrap 表格（步骤/操作/说明）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,第九章 版本信息,声明 v2.2 / 2026-07-20,/about.html 页 .table-wrap 表格
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,导航栏跳转,→ index.html / about.html（当前页）/ admin.html,/about.html 页 .nav-bar > .nav-links > a ×3
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,页脚返回首页,→ index.html,/about.html 页 页脚 a「← 返回首页」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,about.html,CSS 计数器步骤列表,无（纯 CSS 组件）,/about.html 页 .step-list li::before（金色圆形序号）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,登录 / 注册 Tab 切换,切换表单显示 + 重置身份选择器,/auth.html 页 .tabs > button.tab-btn ×2「登录」「注册」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,Tab 文字链切换,与 Tab 按钮等价（preventDefault）,/auth.html 页 .auth-switch > a[data-switch-to]「立即注册」「去登录」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,登录提交,写 localStorage 会话 → 400ms 后跳转（带 ?redirect 回跳）,/auth.html 页 #login-form > button.btn-primary「进入欲界」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,注册提交,写 8 项 user_metadata → 自动登录 → 跳转,/auth.html 页 #register-form > button.btn-primary「创建账号」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,主身份单选,决定等级路径（primary_identity / gender / role_type）,#identity-selector-container 内 .primary-grid > .identity-card ×12
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,副身份多选,写入 secondary_identities 数组,#identity-selector-container 内 .secondary-grid > .secondary-card ×12
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,身份选择实时提示,未选主身份时阻止提交并提示,#identity-selector-container 内 #identity-hint
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,认证错误本地化,6 条 Supabase 英文错误 → 中文,/auth.html 页 #auth-message 消息框（.error / .success）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,防重入跳转,redirectPending 标记位，避免重复 location.href,无 UI（内部函数 navigateTo）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,全局 Loading 遮罩,登录/注册期间显示，失败时 hideLoading,/auth.html 页全屏 #global-loading-overlay（由 loading.js 注入）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,auth.html,返回首页,→ landing.html,/auth.html 页 a.back-link「← 返回首页」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,Phase 1 三段式启动 Loading,loading.js 遮罩 + 时间轴文案推进,/index.html 页全屏 #global-loading-overlay（含 #loading-text / #loading-bar）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,Phase 2 路由守卫,guard.js 拦截未登录用户,"页面加载即触发（<script type=""module"">）"
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏未登录占位,由 renderTopUser() 渲染（实际被 guard 拦截）,/index.html 页 .top-bar > #topUserInfo
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏头像展示,有 avatar_url 显示图片，否则首字母/👤,/index.html 页 #topUserInfo > .avatar-wrapper（36px 圆形容器）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏昵称展示,meta.nickname → 回退 email,/index.html 页 #topUserInfo > span.uname
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏等级称号,"calculateLevel(primaryId, points).title",/index.html 页 #topUserInfo > span.level-title（金色药丸）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏无身份占位,无主身份时显示「—」,/index.html 页 #topUserInfo > span.no-identity
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,顶栏管理入口,角色 admin/subadmin 时出现 → admin.html,/index.html 页 #topUserInfo > a.btn.btn-secondary「⚙️ 管理」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,头像上传,compressImage → Storage(avatars) → 更新 metadata → 重渲染,/index.html 页 .avatar-wrapper#topAvatarWrapper 点击 + 隐藏 input#topAvatarInput
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,头像上传类型校验,非图片文件拒绝并提示,同上（file.type 检查）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,头像上传大小校验,> 5MB 拒绝并提示,同上（file.size 检查）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,登出,signOut → 清 foxsir_session → 跳 landing,/index.html 页 #topUserInfo > button#topLogoutBtn「登出」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,欢迎卡片展示,文案 + OIP-B.jpg 背景渐变融合,/index.html 页 section.welcome-card（左 .welcome-text + 右 .welcome-image）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,「了解规则」入口,→ about.html,/index.html 页 .welcome-text > a.btn-about「📖 了解规则 →」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,探索区模块卡片渲染,registry.getVisibleProjects(role) → 6 张卡,/index.html 页 section.projects-section > .project-grid#projectGrid
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,模块卡进入,→ 各模块 URL（/modules/<mod>/）,/index.html 页 .project-card 整卡 <a>（hover 上浮 + 箭头右移）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,模块卡状态标签,online / maintenance（橙）/ offline（红）——⚠️ 当前全部 online,/index.html 页 .project-card > span.status-tag
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,移动端卡片结构切换,innerWidth ≤ 480 走不同 DOM（横向卡 + .text-group）,/index.html 页 .project-grid（JS 分支渲染）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,窗口尺寸监听重绘,resize 时重渲染项目网格,window resize 事件（无防抖）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,渲染超时兜底,Promise.race 8 秒，失败保留已渲染部分,无 UI（内部逻辑）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,Toast 通知,毛玻璃 + 边框变色 + 进出动画,/index.html 页 .toast-container#toastContainer（右下角堆叠）
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,index.html,页脚,「✦ 以安全、尊重、共识为核心 ✦」,/index.html 页 .footer
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,module.html,模块信息查询,registry.getVisibleProjects(role) 查找 ?id=,/module.html 页 #moduleDetail 容器
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,module.html,状态徽章,maintenance「🔧 维护中」/ offline「⛔ 暂不可用」,/module.html 页 #moduleDetail 内 .status-badge
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,module.html,已登录进入模块,→ project.url,/module.html 页 .cta-area > a.btn-primary「进入 <模块名>」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,module.html,未登录解锁引导,→ landing.html?redirect=<当前URL>,/module.html 页 .cta-area > a.btn-primary「登录后解锁」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,module.html,返回探索,→ index.html（原锚点 #modules-section 已失效，重构时修正）,/module.html 页 a.back-link「← 返回探索」
+启动器（src/launcher/）—— 公开门面 + 控制中心,启动器,404.html,404 错误页,无（静态，无 JS）,/404.html 页 a「返回首页」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,管理规则横幅,引导管理员谨慎操作（⚠️「记录日志」未实现）,/admin.html 页 .rule-banner（OIP-A.jpg + .rule-text）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,Tab 切换（三个面板）,admin.js Tab 切换逻辑 + .tab-pane.active,/admin.html 页 nav.tab-nav > button.tab-btn ×3（data-tab=userPerm/domArchive/subArchive）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,用户权限面板,仅 admin 可见（subadmin 时被 JS 整体替换）,/admin.html 页 #pane-userPerm
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,上位档案占位,开发中提示,/admin.html 页 #pane-domArchive > .coming-soon「🚧 上位档案馆尚未接入」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,下位档案面板,subadmin + admin 均可操作,/admin.html 页 #pane-subArchive
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,管理员身份显示,邮箱 + 角色中文名,/admin.html 页 #adminUserInfo
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.html,管理后台登出,signOut → 跳首页,/admin.html 页 button#adminLogoutBtn「登出」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,Tab 切换逻辑,切换 .tab-btn.active 与 .tab-pane.active,/admin.html 页 → 由 .tab-btn 点击触发
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,用户列表加载,supabase.rpc(get_all_users),入口在 /admin.html 页（initAdmin 自动调用）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,用户角色排序,ROLE_ORDER：admin→subadmin→verified→self,/admin.html 页 #userTableContainer 表格行顺序
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,用户表格渲染（4 列）,昵称｜邮箱｜当前角色徽章｜新角色下拉,/admin.html 页 #userTableContainer > table.admin-table
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,角色彩色徽章,admin 深红 / subadmin 橙 / verified 蓝 / self 灰,/admin.html 页 #userTableContainer 内 span.role-badge.role-<role>
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,用户搜索筛选,匹配昵称 + 邮箱（大小写不敏感）,/admin.html 页 input#userSearchInput（placeholder「🔍 搜索昵称或邮箱…」）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,筛选计数联动,显示「共 N 位用户（筛选后 M 位）」,/admin.html 页 #pane-userPerm .stats-label
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,角色变更暂存（pendingChanges）,与原始值比对，相同则移除；驱动 Push 按钮 disabled,/admin.html 页 #userTableContainer 内 select.role-select（change 事件）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,Push 生效（用户角色）,逐个 rpc(update_user_role) + 成功/失败统计,/admin.html 页 button#pushBtn「📤 Push 生效」（角色变更后才可点）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,Push 结果提示,「✅ 成功更新 N 位用户，❌ 失败 M 位」+ Toast,/admin.html 页 #pushResult + .toast-container
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,下位档案加载,api.fetchAllRecords(true) 强制绕过缓存,入口在 /admin.html 页（initAdmin 自动调用）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,档案表格渲染（8 列）,姓名 + 6 个隐私开关 + 状态,/admin.html 页 #subRecordsContainer > table.admin-table
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,隐私开关勾选,记入 pendingSubChanges，显示橙色「待保存」,/admin.html 页 .sub-check 复选框 ×6（公开问卷/常住地址/联系方式/生活照片/隐私照片/认证）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,Push 下位档案变更（动态注入按钮）,PATCH Fillout + 乐观更新 + 清缓存 + 重拉,/admin.html 页 #pane-subArchive .toolbar .right 内动态创建的「📤 Push 下位档案变更」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,档案搜索,匹配姓名,/admin.html 页 input#subSearchInput（placeholder「🔍 搜索姓名」）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,档案计数联动,共 N 条档案,/admin.html 页 #subTotalCount
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,初始化权限判定,非管理员 → Toast + 2 秒后跳首页,入口在 /admin.html 页（页面加载即触发）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin.js,subadmin 降级处理,隐藏用户权限 Tab + 面板替换为「🔒 仅限根源管理」,/admin.html 页 .tab-btn[data-tab=userPerm] 与 #pane-userPerm
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,GitHub Token 输入,password 类型输入框,/admin-article.html 页 #tokenSection > input#githubToken
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,Token 保存,写 localStorage foxsir_github_token,/admin-article.html 页 button#saveTokenBtn「保存 Token」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,Token 状态显示,「✅ 已配置（localStorage/环境变量）」/「❌ 未配置」,/admin-article.html 页 span#tokenStatus
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,发布目标切换,知识区 / 任务区（切分支与目录）,/admin-article.html 页 .publish-target > button.target-btn ×2「📚 知识区」「🎯 任务区」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,管理员鉴权,非 admin/subadmin → alert 后跳首页,入口在 /admin-article.html 页（页面加载即触发 checkAuth）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,作者自动填充,meta.nickname → 回退 email 前缀,/admin-article.html 页 input#editAuthor
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,表单：标题,必填，用于生成 slug 与文件名,/admin-article.html 页 input#editTitle
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,表单：分类,6 个选项（4 知识 + 2 任务）,/admin-article.html 页 select#editCategory
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,表单：摘要,可空，写入 frontmatter.summary,/admin-article.html 页 input#editSummary
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,表单：封面图 URL,可空，写入 frontmatter.cover_url,/admin-article.html 页 input#editCover
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,EasyMDE 编辑器,Markdown 编辑 + 预览 + 全屏,/admin-article.html 页 #editorContainer（15 项工具栏）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,发布内容,拼 frontmatter → base64 → GitHub PUT,/admin-article.html 页 button#publishBtn「🚀 发布」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,清空表单,重置全部字段 + 编辑器,/admin-article.html 页 button#clearBtn「清空」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,发布状态提示,loading / success / error 三态,/admin-article.html 页 #statusMsg
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,已发布列表加载,GitHub contents API 过滤 .md,/admin-article.html 页 #listContainer
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,发布后清缓存,clearKnowledgeCache / clearTaskCache,无 UI（发布成功后自动执行）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article.html,⚠️ 列表无删除按钮,缺失功能（删除在知识/任务区管理模式内）,/admin-article.html 页 #listContainer（仅文本行）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,零构建依赖编辑器,全局 script 引入 EasyMDE（失败降级为 textarea）,/admin-article-simple.html 页 #editorTextarea
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,Token 输入与保存,同完整版（localStorage）,/admin-article-simple.html 页 input#tokenInput + button#saveTokenBtn「保存」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,发布目标切换,知识区 / 任务区,/admin-article-simple.html 页 .target-tabs > button.tab ×2
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,发布表单,标题/作者/分类/摘要/封面/正文,/admin-article-simple.html 页 #title #author #category #summary #cover
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,发布内容,同完整版逻辑（内联实现）,/admin-article-simple.html 页 button#publishBtn「🚀 发布」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,清空表单,重置全部字段,/admin-article-simple.html 页 button#clearBtn「清空」
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,⚠️ 无鉴权,任何人可用（安全缺口）,入口在 /admin-article-simple.html 页（无 checkAuth）
+管理后台（src/admin/）—— 管理员操作台,管理后台,admin-article-simple.html,⚠️ import.meta 语法错误,非 module script 中使用 import.meta（既有缺陷）,/admin-article-simple.html 页 L207 getEnvToken（控制台报 SyntaxError）
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-config.js,GitHub 仓库配置,owner / repo / branches / paths,被 content-manager.js 与两个内容管理页 import
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-config.js,CDN 直读地址生成,getCdnUrl（jsdelivr）——⚠️ 全站零调用,无 UI（未启用）
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-config.js,GitHub API 地址生成,getApiUrl（contents API）,被知识区/任务区详情页 import 使用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,Token 获取（环境变量优先）,import.meta.env.VITE_GITHUB_TOKEN → localStorage,被知识区/任务区/详情页 import
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,内容列表拉取（5 分钟缓存）,fetchContentList + getCacheWithMeta,被知识区/任务区列表页调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,强制刷新列表,fetchContentListForce（先清缓存）,被「🔄 刷新」按钮调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,缓存剩余时间显示,getCacheRemainingTime（调试用）,无 UI（控制台日志）
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,获取文件 SHA,getFileSha（用于更新/删除）,被 createOrUpdateContent / deleteContent 内部调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,创建或更新文件,base64 编码 → GitHub PUT（UTF-8 安全）,被知识区/任务区发布流程调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,删除文件,getFileSha → GitHub DELETE,被知识区/任务区「🗑️ 删除」调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,Frontmatter 解析,title/slug/category/summary/cover/author 等,被列表页与详情页调用（⚠️ 详情页另有内联副本）
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,Slug 生成,小写→去特殊字符→空格转-→截断 50,被发布表单输入标题时自动调用
+管理后台（src/admin/）—— 管理员操作台,管理后台,content-manager.js,Frontmatter 构建,含作者昵称与邮箱,被发布流程调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,顶部 Logo 展示,无（静态）,/modules/sub-archive/ 页 .logo-icon + .logo-text「Foxsir档案库」
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,返回首页,→ index.html 控制中心,/modules/sub-archive/ 页 a.btn-home「🏠 首页」
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,「母の曝光」提交档案,新窗口打开 Fillout 表单（CONFIG.FORM_URL）,/modules/sub-archive/ 页 button#btnFillForm「母の曝光」（暖琥珀渐变，视觉重心）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,搜索框输入,前端过滤 SEARCH_FIELDS（姓名/职业学历/常住地址），重置到第 1 页,/modules/sub-archive/ 页 input#searchInput（placeholder「搜索姓名、职业或地区…」）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,搜索清除按钮,清空 + 重置分页 + 重新聚焦,/modules/sub-archive/ 页 span#searchClear（✕，有内容时才 .visible）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,结果计数显示,「共 N 位」,/modules/sub-archive/ 页 #searchStats
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,卡片网格渲染,响应式 7 档列数（≥1800px 7 列 → ≤599px 2 列）,/modules/sub-archive/ 页 .grid-container#gridContainer
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,卡片主图与占位,生活照 → 照片2 兜底 → 内联 SVG「暂无图片」；受隐私控制,/modules/sub-archive/ 页 .card > .card-image-wrap > img[loading=lazy]
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,认证徽章,fwK2mQMoxto 为真时显示 ✅,/modules/sub-archive/ 页 .card-image-wrap > .verified-badge
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,图片底部字幕,姓名（20px 粗体）+ 年龄,/modules/sub-archive/ 页 .card-image-caption
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,📍 地区展示,受 f1s9DJg4oLc 控制，未公开显示「未公开」,/modules/sub-archive/ 页 .card-footer .info-row（第 1 行）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,📏 身高 / ⚖ 体重展示,⚠️ 空值仍拼接 cm/kg,/modules/sub-archive/ 页 .card-footer .row-height-weight
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,★ 推荐指数星级,10 星制，无值显示「暂无评分」,/modules/sub-archive/ 页 .card-footer .stars-row > .stars-container
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,卡片进入详情,→ detail.html?id=<recordId>,/modules/sub-archive/ 页 .card 整卡 onclick
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,无限滚动加载,距底 150px 自动加载下一页（100ms 防抖）,/modules/sub-archive/ 页 .main-content（滚动监听容器）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,加载更多指示器,四态：加载中/滚动加载更多/已加载全部/加载失败,/modules/sub-archive/ 页 #loadMoreIndicator
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,初始加载状态,spinner + 「加载中…」,/modules/sub-archive/ 页 #stateMessage
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,index.html,控制台清缓存钩子,window.clearArchiveCache() 清缓存并刷新,控制台调用（无 UI 按钮）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,返回列表,→ ./index.html,/modules/sub-archive/detail.html 页 a.btn-back「← 返回列表」
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,标题展示,「👤 <姓名>の档案」,/modules/sub-archive/detail.html 页 #detailContainer > .detail-title
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,📋 基本信息分组渲染,17 个字段，两列键值网格（标签 140px）,/modules/sub-archive/detail.html 页 .detail-group[data-group=basic]
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,📸 生活写照分组渲染,4 个字段，媒体网格（标签在图片下方）,/modules/sub-archive/detail.html 页 .detail-group[data-group=photos_life]
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,🔥 亲密经历分组渲染,19 个字段，两列键值网格,/modules/sub-archive/detail.html 页 .detail-group[data-group=intimate]
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,🔞 私密影像分组渲染,5 个字段，毛玻璃 + 红边框 + 「🔒 隐私内容」警告条,/modules/sub-archive/detail.html 页 .detail-group[data-group=photos_private]
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,角色权限过滤,ROLE_FIELD_VISIBILITY 白名单,无 UI（渲染时过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,隐私开关过滤,PRIVACY_DEPENDENCIES，⚠️ 用严格 === true（与列表页宽松判定不一致）,无 UI（渲染时过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,空值字段隐藏,isEmptyValue 判定后剔除,无 UI（渲染时过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,空分组隐藏 / 全空提示,全空显示「🔒 当前角色无权查看此档案内容」,/modules/sub-archive/detail.html 页 #detailContainer > .state-message
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,媒体横竖屏自动分类,运行时探测真实像素（5 秒超时兜底）,/modules/sub-archive/detail.html 页 .media-row.portrait-row / .landscape-row
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,视频缩略图与播放图标,视频排在图片之后，带 ▶ 图标,/modules/sub-archive/detail.html 页 .media-item > video + .media-play-icon
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,空媒体分组隐藏,无有效媒体时整组不渲染,无 UI（渲染时过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,🖼️ 图片 Lightbox,大图查看 + 单击关闭 + 双击 1.8× 缩放 + Esc 关闭 + ✕ 按钮,/modules/sub-archive/detail.html 页 .lightbox-overlay（含 .lightbox-close / .lightbox-image-wrap / .lightbox-image / .lightbox-loading）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,▶ 视频全屏播放器,autoplay + controls + playsinline，关闭时 pause,/modules/sub-archive/detail.html 页 .lightbox-overlay.lightbox-video（含 .lightbox-video-wrap > video）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,多图画廊,同字段多图渲染为 .image-gallery,/modules/sub-archive/detail.html 页 .detail-group 内 .image-gallery
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,特殊字段渲染：星级,颜值 f99RpESRNBX / 身材 fb483ZvPoMH → 10 星,/modules/sub-archive/detail.html 页 对应 .detail-field-value
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,特殊字段渲染：单位,身高 cm / 体重 kg / 深喉·淫穴·菊穴最深 cm,/modules/sub-archive/detail.html 页 对应 .detail-field-value
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,布尔值渲染,true → 「是」/ false → 「否」,/modules/sub-archive/detail.html 页 对应 .detail-field-value
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,数组值渲染,逗号拼接,/modules/sub-archive/detail.html 页 对应 .detail-field-value
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,HTML 转义（XSS 防护）,escapeHtml 五字符转义（全站唯一做转义的页面）,无 UI（安全处理）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,内存泄漏防护,MutationObserver 检测 overlay 移出后清理 keydown 监听,无 UI（内部处理）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,detail.html,⚠️ 缺 ?id 参数提示,显示「⚠️ 缺少记录 ID」,/modules/sub-archive/detail.html 页 #detailContainer > .state-message
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,admin.html,⚠️ 废弃页面,旧版独立后台，中文曾损坏、导入不存在的模块（死文件）,/modules/sub-archive/admin.html（无入口链接）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,分页拉取记录（5 分钟缓存）,fetchRecordsPage（PAGE_SIZE=20）,被列表页 loadPage 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,全量拉取记录（5 分钟缓存）,fetchRecords（管理后台用）,被管理后台 loadSubRecords 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,单条记录拉取,fetchRecordById（无缓存）,被详情页 init 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,清空档案缓存,clearCache（清所有 foxsir_sub_archive_cache_*）,被管理后台与 window.clearArchiveCache 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,全量拉取别名,fetchAllRecords（兼容管理后台）,被 admin.js import
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/api.js,更新记录字段（白名单）,PATCH Fillout，仅允许 6 个隐私字段,被管理后台 Push 流程调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/config.js,从共享配置重新导出,FIELD_LABELS / DETAIL_GROUPS / PRIVACY_RULES 等 11 项,被 utils.js / detail.js / home.js import
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/config.js,Fillout API 配置,DATABASE_ID / TABLE_ID / API_KEY / FORM_URL / DEFAULT_IMAGE,被 api.js 与「母の曝光」按钮使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/config.js,分页与缓存常量,PAGE_SIZE=20 / CACHE_KEY / CACHE_TTL=5min,被 api.js 与 home.js 使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,字段取值（data 优先）,getFieldValue：record.data → record.fields,被列表页与详情页调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,附件 URL 提取,extractFileUrl / extractFileUrls（容错 5 种形态）,被卡片与媒体渲染调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,卡片主图取值,getCardImage：隐私检查 → photo → photoFallback → 占位图,被列表页 renderAllCards 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,卡片姓名取值,getCardName：name → nameFallback → 对象 .name → 「未命名」,被列表页调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,卡片年龄取值,getCardAge,被列表页调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,卡片信息聚合,getCardInfo：area（隐私）/height/weight/recommend/verified,被列表页调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,图片类型判定,isImageValue（扩展名正则 + 数组递归）,被详情页调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,角色 + 隐私双过滤,filterFieldsByRoleAndPrivacy（★ 隐私对所有角色生效，含 admin）,被详情页 renderDetail 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/utils.js,⚠️ 未使用导出,getBusinessFields / getGroupedBusinessFields / filterFieldsByRole（死代码）,无调用者
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,公开问卷准入过滤,isPublic：仅 fgerzjJpBTF 为真的记录入列表,无 UI（数据过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,前端排序,sortByLatest：按编号 fxwUAnrwpaT 降序,无 UI（数据排序）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,星级生成,generateStars：10 星制 ★/☆,被卡片渲染调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,认证判定,isVerified：容忍 true/「是」/「认证」/1,被卡片渲染调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,全量重绘卡片,renderAllCards（无虚拟 DOM）,影响 .grid-container#gridContainer
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,分页加载与去重,loadPage（按 id 去重）,无 UI（数据逻辑）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,⚠️ hasMore 判定缺陷,过滤后数量 vs 服务端总数比较 → 永远无法「已加载全部」,影响 #loadMoreIndicator 文案
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/home.js,⚠️ 滚动监听容器缺陷,绑定 .main-content 但该元素无 overflow,影响无限滚动是否生效
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,HTML 转义,escapeHtml（5 字符）,无 UI（安全处理）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,URL 取记录 ID,getRecordIdFromUrl（?id=）,无 UI
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,视频类型判定,isVideoValue（8 种格式双正则）,被媒体分组调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,媒体尺寸探测,loadMediaInfo（Image/video 探测 + 5 秒超时）,被 collectAndSortMedia 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,横竖屏分类,collectAndSortMedia（视频排最后）,影响 .portrait-row / .landscape-row
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,字段映射构建,buildFieldMap（跳过 id/createdAt/updatedAt）,无 UI
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,按配置分组,buildGroupedFieldsFromConfig（按 DETAIL_GROUPS 顺序）,影响详情页分组顺序
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,三级过滤管线,空值 → 权限+隐私 → 空分组,无 UI
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,全局 Lightbox 挂载,window.showLightbox / window.showVideoLightbox,供内联 onclick 调用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,模块·欲渊之庭,js/detail.js,⚠️ 死文件,js/auth.js 与 js/admin.js 旧版实现（无引用/异常）,无入口
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,字段标签映射（57 项）,FIELD_LABELS：Fillout 字段 ID → 中文标签,被详情页 buildFieldMap 使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,首页卡片字段映射（9 项）,CARD_FIELDS：photo/name/age/area/height/weight/recommend/verified,被 utils.js 卡片函数使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,搜索字段（3 项）,SEARCH_FIELDS：姓名/职业学历/常住地址,被列表页 handleSearch 使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,详情页分组（4 组 45 字段）,DETAIL_GROUPS：basic/photos_life/intimate/photos_private,决定详情页渲染顺序与分组
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,详情字段顺序派生,DETAIL_FIELD_ORDER（getter，自动 flatMap）,被 config.js 导出
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,系统字段排除,SYSTEM_FIELD_IDS（Source）,无 UI（过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,首页专用字段排除（4 项）,HOME_ONLY_FIELD_IDS：公开问卷/推荐指数/认证/ID,无 UI（详情页过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,额外排除字段（2 项）,EXTRA_EXCLUDED_FIELD_IDS：我已知悉/继续填写,无 UI（过滤）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,隐私控制规则（4 条）,PRIVACY_RULES：控制字段 → 受控展示字段,被 utils.js 与详情页过滤使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,隐私依赖反查表（11 条）,PRIVACY_DEPENDENCIES：受控字段 → 控制字段,被 filterFieldsByRoleAndPrivacy 使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,角色字段白名单（5 角色）,ROLE_FIELD_VISIBILITY：38~45 项/角色,决定各角色可见字段
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,上位档案馆占位配置,DOM_ARCHIVE_CONFIG（全空，接口契约）,无 UI（预留）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/instances.js,多实例注册与查询,ARCHIVE_INSTANCES / getArchiveConfig(id),无调用者（预留多档案馆）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/schema.js,隐私通过判定（宽松）,isPrivacyApproved：true/「是」/「true」/1/「TRUE」,被 utils.js 卡片函数使用
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/schema.js,角色字段可见判定,isFieldVisibleForRole,被 config.js 重新导出
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/schema.js,单字段隐私判定,isPrivacyApprovedForField,被 config.js 重新导出（无直接调用者）
+模块 · 欲渊之庭（src/modules/sub-archive/）—— 下位者档案馆【功能最重】,共享层,config/archive/index.js,统一导出入口,export * from schema.js + instances.js,无直接 import 者
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,权限显隐控制,checkPermissions 按角色显隐发布/管理按钮,/modules/knowledge/ 页 .header > .right-actions#adminActions
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,✨ 发布按钮,角色 ≥ self 时显示，打开发布 Modal,/modules/knowledge/ 页 button#publishBtn「✨ 发布」（默认 display:none）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,⚙️ 管理按钮,仅 subadmin/admin 显示，切换管理模式,/modules/knowledge/ 页 button#manageBtn「⚙️ 管理」（默认 display:none）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,🔄 刷新按钮,强制绕过缓存重拉，三态反馈（刷新中/已更新/失败）,/modules/knowledge/ 页 button#refreshBtn「🔄 刷新」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,返回探索,→ index.html（重构时从失效锚点修正）,/modules/knowledge/ 页 a.back-link「← 返回探索」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,分类筛选,全部 / 入门指南 / 安全知识 / 技巧教程 / 圈层文化,/modules/knowledge/ 页 .filters#filterContainer > button.filter-btn ×5
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,文章卡片渲染,封面 + 分类 + 日期 + 标题 + 摘要 + 阅读 + 公开徽章 + 作者,/modules/knowledge/ 页 .article-grid#articleGrid > .article-card
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,未登录锁定态,非公开文章显示「🔒 登录后解锁」,/modules/knowledge/ 页 .article-card .footer > span
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,进入文章详情,→ article.html?slug=<slug>,/modules/knowledge/ 页 .article-card 内 <a> 整块
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,管理模式切换,isManageMode 取反，卡片底部露出删除按钮,/modules/knowledge/ 页 button#manageBtn（文案在「⚙️ 管理」↔「✕ 退出管理」间切换）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,🗑️ 删除文章,confirm 二次确认 → GitHub DELETE → 清缓存 → alert,/modules/knowledge/ 页 .article-card .card-actions > button.btn-delete「🗑️ 删除」（管理模式可见）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,发布 Modal 打开,重置表单 + 自动绑定作者 + 延迟 150ms 初始化编辑器,/modules/knowledge/ 页 .modal-overlay#editorModal > .modal-box
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,发布 Modal 关闭（4 种）,✕ / 取消 / 点遮罩 / Esc,/modules/knowledge/ 页 #modalCloseBtn「✕」+ #modalCancelBtn「取消」+ #editorModal 遮罩 + document keydown
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,表单：标题 + Slug 实时生成,输入标题即生成隐藏 slug,/modules/knowledge/ 页 input#modalTitleInput → input[type=hidden]#modalSlug
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,表单：分类,4 个选项,/modules/knowledge/ 页 select#modalCategory
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,表单：作者自动绑定,只读提示，取 user_metadata.nickname,/modules/knowledge/ 页 Modal 内 span「✍️ 作者自动绑定」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,表单：摘要 / 封面图 URL,可空,/modules/knowledge/ 页 input#modalSummary + input#modalCover
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,EasyMDE 编辑器（Modal 内）,含降级为 textarea 的处理,/modules/knowledge/ 页 textarea#modalEditorTextarea
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,提交发布,buildFullContent → GitHub PUT → 清缓存 → 重绘,/modules/knowledge/ 页 button#modalSubmitBtn「🚀 发布」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,发布状态提示,loading / success / error,/modules/knowledge/ 页 #modalStatus
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,编辑器生命周期管理,initEditor / destroyEditor（toTextArea）,无 UI（Modal 开关时自动处理）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,index.html,全局 Loading,列表加载与删除时显示,/modules/knowledge/ 页 #global-loading-overlay
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,返回列表,→ ./index.html,/modules/knowledge/article.html 页 a.back-link「← 返回列表」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,文章数据拉取,GitHub contents API 找 slug → fetch download_url,入口在页面加载（无 UI 触发）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,永久缓存,detail_knowledge_<slug>（仅发布/删除时清）,无 UI（内部缓存）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,访问控制,非公开且未登录 → 锁屏页 + 登录回跳,/modules/knowledge/article.html 页 #articleContent > .error-msg「🔒 此文章仅限登录用户阅读」
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,作者分层展示,★ admin 可见「昵称 (邮箱)」，其他角色仅昵称,/modules/knowledge/article.html 页 .article-header .meta > .author-info
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,封面图渲染,有 cover_url 时顶部大图,/modules/knowledge/article.html 页 #articleContent 内 <img>
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,Markdown 简易渲染,⚠️ 仅支持换行/粗体/斜体/标题 4 种语法,/modules/knowledge/article.html 页 .article-body
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,⚠️ 正文无 HTML 转义,存储型 XSS 风险（安全缺口）,/modules/knowledge/article.html 页 .article-body（innerHTML 注入）
+模块 · 欲识之海（src/modules/knowledge/）—— 知识区,模块·欲识之海,article.html,⚠️ 缺 slug 提示,抛 Error: No slug（被自身 catch）,/modules/knowledge/article.html 页 #articleContent > .error-msg
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,权限显隐控制,checkPermissions 按角色显隐,/modules/mission/ 页 .right-actions#adminActions
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,✨ 发布按钮,打开发布 Modal,/modules/mission/ 页 button#publishBtn「✨ 发布」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,⚙️ 管理按钮,仅 subadmin/admin,/modules/mission/ 页 button#manageBtn「⚙️ 管理」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,🔄 刷新按钮,三态反馈,/modules/mission/ 页 button#refreshBtn「🔄 刷新」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,返回探索,→ index.html,/modules/mission/ 页 a.back-link「← 返回探索」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,分类筛选,全部 / 日常任务 / 挑战任务,/modules/mission/ 页 .filters#filterContainer > button.filter-btn ×3
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,任务卡片渲染,封面 + 分类 + 日期 + 标题 + 摘要 + 查看任务 + 公开徽章 + 作者,/modules/mission/ 页 .task-grid#taskGrid > .task-card
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,进入任务详情,→ detail.html?slug=<slug>,/modules/mission/ 页 .task-card 内 <a> 整块
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,管理模式与删除,同知识区,/modules/mission/ 页 .task-card .card-actions > button.btn-delete「🗑️ 删除」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,发布 Modal（含 4 种关闭）,同知识区,/modules/mission/ 页 .modal-overlay#editorModal + #modalCloseBtn/#modalCancelBtn
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,表单：标题 + 分类（2 项）,日常任务 / 挑战任务,/modules/mission/ 页 input#modalTitleInput + select#modalCategory
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,提交发布 / 清空,buildFullContent → GitHub PUT,/modules/mission/ 页 button#modalSubmitBtn「🚀 发布」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,index.html,⚠️ 页面标题错误,标题写作「欲渊之庭」，应为「欲炼之途」（既有缺陷）,/modules/mission/ 页 h1 + <title>
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,返回任务列表,→ ./index.html,/modules/mission/detail.html 页 a.back-link「← 返回任务列表」
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,任务数据拉取 + 永久缓存,detail_tasks_<slug>,入口在页面加载
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,访问控制与锁屏,非公开且未登录 → 登录引导,/modules/mission/detail.html 页 #taskContent > .error-msg
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,作者分层展示,admin 可见邮箱,/modules/mission/detail.html 页 .task-header .meta > .author-info
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,Markdown 简易渲染,同知识区（4 种语法）,/modules/mission/detail.html 页 .task-body
+模块 · 欲炼之途（src/modules/mission/）—— 任务区（与知识区 95% 同构）,模块·欲炼之途,detail.html,⚠️ 正文无 HTML 转义,存储型 XSS 风险,/modules/mission/detail.html 页 .task-body
+占位模块,模块·欲主之殿,index.html,上位档案馆占位页,无 JS；声明「即将上线」,/modules/dom-archive/ 页 a「← 返回控制中心」
+占位模块,模块·淫梦织境/欲缘之遇,index.html,随机模块占位页,无 JS；声明「正在开发中」,/modules/random/ 页 a「返回首页」
+占位模块,模块·淫梦织境/欲缘之遇,—,⚠️ 一个页面被两个模块共用,registry 中 dream-weaver 与 random 指向同一 URL,影响 /index.html 页 探索区 2 张卡片（🌙 淫梦织境 / 🎲 欲缘之遇）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/config.js,Supabase 连接配置,URL + anon key（被 supabase-client.js 使用）,无 UI
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/config.js,模块注册表（6 项）,PROJECTS：id/name/description/url/status/requiredRoles,决定 /index.html 页 探索区 6 张卡
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/config.js,⚠️ 3 个占位模块标为 online,不显示「维护中」灰态（既有缺陷）,影响 /index.html 页 .status-tag
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/registry.js,可见模块查询,getVisibleProjects：offline 剔除 / maintenance 仅管理员 / requiredRoles 匹配,被 /index.html 页与 /module.html 页调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/registry.js,⚠️ 未使用导出,getAllProjects / getVisibleProjectIds / getProjectStatus,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,公开路由白名单,landing / about / auth,影响全站访问
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,已登录跳转,在 landing/auth 页 → 跳 index.html,影响 /launcher/landing.html 与 /launcher/auth.html
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,未登录拦截,受保护页 → landing.html?redirect=<原URL>,影响除白名单外的所有页面
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,防重入保护,guardRunning 标记位,无 UI（内部）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,异常保守处理,出错时非公开路由一律跳 landing,无 UI（内部）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,自动执行,DOMContentLoaded 或立即执行,被 /launcher/index.html 引入
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,⚠️ 覆盖缺口,仅 index.html 引入；其他页面未接守卫,影响 knowledge/mission/sub-archive/admin 等页
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/guard.js,⚠️ 未使用导出,hasModuleAccess / getRedirectParam,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,注册（含身份元数据）,写 role:self + nickname + points:0 + 8 项身份字段,被 /launcher/auth.html 注册表单调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,登录,signInWithPassword,被 /launcher/auth.html 登录表单调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,登出,清 foxsir_session → 跳 landing,被 /launcher/index.html #topLogoutBtn 与 /admin.html #adminLogoutBtn 调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,会话读取与持久化,setSession / getSession（localStorage foxsir_session）,被多页调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,当前用户（缓存 + 有效性验证）,localStorage → supabase.auth.getUser() 验证 → 失败清缓存,被 guard / 顶栏 / 各模块调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,身份元数据聚合,getUserIdentity：primaryId/nickname/role/points/avatarUrl 等 9 项,被 /launcher/index.html renderTopUser 调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,错误消息本地化,mapAuthError：6 条英文 → 中文,被登录/注册表单使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/auth.js,⚠️ 积分更新未启用,updateUserPoints 无任何调用者,无 UI
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity.js,角色读取,getUserRole：user_metadata.role → 回退 guest,被全站权限判断调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity.js,昵称 / 头像 / 元数据读取,getUserNickname / getUserAvatar / getUserMetadata,被顶栏与各模块调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity.js,⚠️ 与 auth.js 的 getCurrentUser 双份实现,本文件版无缓存；auth.js 版带缓存验证（语义不同）,无 UI（架构隐患）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/supabase-client.js,Supabase 客户端创建,autoRefreshToken / persistSession / detectSessionInUrl,被 auth / identity / avatar / admin 调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/supabase-client.js,★ auth 方法超时注入,Proxy 包装 7 个方法，10 秒超时（防网络挂起）,无 UI（全站生效）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/supabase-client.js,原始客户端备用导出,rawSupabase,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/loading.js,全局 Loading 遮罩,单例 DOM 复用 + 72px Logo + 进度条 + 副文案,全站 #global-loading-overlay
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/loading.js,进度条模拟动画,三段速度衰减，封顶 95%,全站 #loading-bar
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/loading.js,10 秒超时保护,超时切错误态并露出重试按钮,全站 #loading-error + #loading-retry-btn「刷新重试」
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/loading.js,文案更新 API,updateLoadingText,被 /launcher/index.html 三段式调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/loading.js,强制隐藏 API,forceHideLoading（异常场景）,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/ui-helpers.js,Toast 提示（简陋版）,⚠️ 砖红/钢蓝纯色，与黑金主题冲突,被 /admin.html 与 /admin-article.html 调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/ui-helpers.js,⚠️ showLoading 与 loading.js 同名不同义,把容器 innerHTML 换成「加载中...」,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/avatar.js,图片压缩,compressImage：等比缩放至 200px + WebP quality 0.8,被头像上传调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/avatar.js,头像上传,Storage(avatars) upsert → 更新 metadata → 同步本地会话,被 /launcher/index.html 头像点击触发
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/avatar.js,⚠️ 未使用导出,getAvatarUrl / deleteAvatar,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/level.js,等级计算,calculateLevel：8 级阈值 + 称号 + 进度百分比,被 /launcher/index.html 顶栏调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/level.js,⚠️ 未使用导出,getLevelBadge / getLevelProgressBar / formatPoints（已 import 未调用）,无实际 UI 使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/level.js,徽章三档配色,bronze Lv0-2 / silver Lv3-5 / gold Lv6-7,影响 level.css 的 .level-badge
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/cache.js,带元数据缓存（新 API）,getCacheWithMeta / setCacheWithMeta（含版本号 + TTL）,被 content-manager.js 列表缓存使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/cache.js,裸值缓存（旧 API）,getCache / setCache（永不过期）,被知识/任务详情页使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/cache.js,分区清缓存,clearKnowledgeCache / clearTaskCache,被发布/删除流程调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/cache.js,⚠️ clearAllCache 会连会话一起删,foxsir_ 前缀通杀（含 foxsir_session / github_token）,无 UI（潜在风险）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/cache.js,⚠️ 新旧 API 混用缺陷,降级路径用旧 getCache 读新格式 → 返回包装对象,影响列表页降级逻辑
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/request.js,超时 Promise 包装,withTimeout（默认 8000ms）,被 supabase-client.js 使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/request.js,错误分类,classifyError：timeout/network/server/auth/unknown,无直接调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/request.js,⚠️ 未使用导出,safeAsync,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity-selector.js,主身份卡渲染（12 张）,单选；再点可取消,/launcher/auth.html 页 #identity-selector-container > .primary-grid > #primary-grid
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity-selector.js,副身份卡渲染（12 张）,多选，青蓝色高亮,/launcher/auth.html 页 #identity-selector-container > .secondary-grid > #secondary-grid
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity-selector.js,实时提示拼装,「主：… ｜ 副：…」/「⚠️ 请选择主身份」,/launcher/auth.html 页 #identity-selector-container > #identity-hint
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity-selector.js,选中数据导出,getSelectedIdentityData（valid + 6 字段）,被 /launcher/auth.html 注册提交调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/identity-selector.js,选择重置,resetIdentitySelector,被 /launcher/auth.html Tab 切换调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/launcher.js,⚠️ 旧版启动器渲染（死代码）,renderLauncher（旧 .project-card 结构）,无调用者（已被 index.html 内联实现取代）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,js/main.js,⚠️ 旧版控制中心逻辑（死代码）,renderUserSection / renderAll（选择器指向已不存在的元素）,无调用者
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/identity-config.js,12 身份定义,id/label/gender/type/icon/desc,被 /launcher/auth.html 身份选择器使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/identity-config.js,身份工具函数,getGender / getType / getIdentityById / IDENTITY_IDS,无直接调用者（预留）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/levelConfig.js,积分阈值表（8 级）,"LEVEL_THRESHOLDS = [0,1,11,51,101,501,1001,5001]",被 level.js calculateLevel 使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/levelConfig.js,12 身份 × 8 级称号（96 个）,LEVEL_TITLES,被 level.js getLevelTitle 使用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/levelConfig.js,称号与身份名查询,getLevelTitle / getIdentityLabel,被 level.js 调用
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,config/levelConfig.js,⚠️ 等级分段与文档不一致,about.html 分段（Lv1-2/3-4/5-6/7）vs 代码徽章分段（0-2/3-5/6-7）,影响 /launcher/about.html 第五章表格
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,css/theme 系列,黑金主题（7 个 CSS 文件）,landing/level/avatar/identity-selector/main/admin/control-center,被各页面 <link> 引入（control-center.css 无引用）
+共享层（src/shared/js/ 与 src/shared/config/）,共享层,assets/images/OIP-A/B/C.jpg,全站图片资源,A=favicon+规则横幅；B=首页欢迎卡背景；C=全站 Logo,被各页面 favicon / .logo-icon / .welcome-image 使用
