@@ -2,11 +2,20 @@
   "name": "bdsmv2.0",
   "version": "1.0.0",
   "description": "Foxsir 欲研所 v2.0 项目",
-  "main": "index.html",
+  "main": "src/launcher/index.html",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build && node tools/flatten-dist.mjs",
+    "preview": "vite preview",
+    "check": "node tools/ref-check.mjs",
+    "check:baseline": "node tools/ref-check.mjs --baseline",
+    "refs": "node tools/show-refs.mjs",
+    "serve": "node tools/static-server.mjs",
+    "serve:dist": "node tools/static-server.mjs --dist --port 5601",
+    "smoke": "node tools/smoke.mjs",
+    "smoke:dist": "node tools/smoke.mjs --port 5601 --prod --label \"dist 生产态\"",
+    "verify": "npm run check && npm run build && npm run smoke:dist",
+    "flatten": "node tools/flatten-dist.mjs"
   },
   "keywords": [],
   "author": "",

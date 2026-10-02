@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>管理面板 · Foxsir</title>
-  <link rel="icon" href="/assets/images/OIP-A.jpg" type="image/jpeg" />
+  <link rel="icon" href="/assets/OIP-A-OLsRkys7.jpg" type="image/jpeg" />
   <style>
     /* ★ 修复管理后台白背景 ★ */
     body { background: #0f0e17 !important; color: #fffffe !important; }
@@ -47,15 +47,15 @@
     }
   </script>
   <script type="module" crossorigin src="/assets/modulepreload-polyfill-B5Qt9EMX.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_config.js-Bq3EMvTC.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_request.js-BophGKQa.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_supabase-client.js-DmiGq-Dk.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_identity.js-BoUU-mI8.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_auth.js-DwBsfD0Z.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_ui-helpers.js-CEBwo3Z9.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_config.js-tFVY60rS.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_request.js-BophGKQa.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_supabase-client.js-DHt-ePtr.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_identity.js-DN2yExvZ.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_auth.js--k0t-PfD.js"></script>
+  <script type="module" crossorigin src="/assets/src_shared_js_ui-helpers.js-CEBwo3Z9.js"></script>
   <script type="module" crossorigin src="/assets/api-CAcsciEw.js"></script>
-  <script type="module" crossorigin src="/assets/assets_js_admin.js-Ds5I0Tmd.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/admin-DlyjlR0V.css">
+  <script type="module" crossorigin src="/assets/src_admin_admin.js-pR4yNOnC.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/src_admin_admin-auH1HSMz.css">
   <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
 </head>
 <body>
@@ -64,7 +64,7 @@
     <div class="header-left">
       <a href="/" class="back-link">← 返回欲研所</a>
       <div class="brand-mark">
-        <img src="/assets/images/OIP-C.jpg" alt="Foxsir" class="brand-icon" />
+        <img src="/assets/OIP-C-DsxhjT2W.jpg" alt="Foxsir" class="brand-icon" />
         <h1>管理面板</h1>
       </div>
     </div>
@@ -76,22 +76,22 @@
 
   <!-- ===== 规则横幅 ===== -->
   <div class="rule-banner">
-    <img src="/assets/images/OIP-A.jpg" alt="母の规则" class="rule-image" />
+    <img src="/assets/OIP-A-OLsRkys7.jpg" alt="母の规则" class="rule-image" />
     <div class="rule-text">
       <h2>📜 管理规则</h2>
       <p>本面板用于管理用户权限及档案信息的可见性。请谨慎操作，所有变更将记录日志。</p>
     </div>
   </div>
 
-  <!-- ===== Tab 导航 ===== -->
-  <nav class="tab-nav">
-    <button class="tab-btn active" data-tab="userPerm">
+  <!-- ===== Tab 导航（动态控制：仅 admin 可见用户权限） ===== -->
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-btn active" data-tab="userPerm" id="tabUserPerm">
       👤 用户权限 <span class="badge ready">已就绪</span>
     </button>
     <button class="tab-btn" data-tab="domArchive">
       📤 上位档案 <span class="badge coming">开发中</span>
     </button>
-    <button class="tab-btn" data-tab="subArchive">
+    <button class="tab-btn" data-tab="subArchive" id="tabSubArchive">
       📥 下位档案 <span class="badge ready">已就绪</span>
     </button>
   </nav>
@@ -99,7 +99,7 @@
   <!-- ===== Tab 内容 ===== -->
   <div class="tab-content">
 
-    <!-- 面板一：用户权限 -->
+    <!-- 面板一：用户权限（仅 admin 可见） -->
     <div class="tab-pane active" id="pane-userPerm">
       <div class="toolbar">
         <div class="left">
@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    <!-- 面板三：下位档案 -->
+    <!-- 面板三：下位档案（subadmin + admin 可见） -->
     <div class="tab-pane" id="pane-subArchive">
       <div class="toolbar">
         <div class="left">

@@ -7,29 +7,66 @@
 
 
 ## 📁 档案模块文件架构总览
-assets/
-├── config/
-│ └── archive/
-│ ├── schema.js # 【工具层】字段处理通用函数（极少修改）
-│ ├── instances.js # 【配置层】★ 核心维护文件 ★ 所有字段/分组/权限/隐私配置
-│ └── index.js # 【导出层】统一导出入口（无需修改）
-│
-├── pages/
-│ └── sub-archive/
-│ └── assets/
-│ ├── js/
-│ │ ├── api.js # 【数据层】Fillout API 调用（换表/换Key时修改）
-│ │ ├── config.js # 【桥接层】从 instances.js 导入并重新导出（无需修改）
-│ │ ├── detail.js # 【渲染层】详情页渲染（特殊格式/单位需修改）
-│ │ ├── home.js # 【渲染层】首页列表渲染（一般无需修改）
-│ │ ├── admin.js # 【管理面板】字段白名单（新增可切换字段时修改）
-│ │ └── utils.js # 【工具层】字段过滤/提取函数（逻辑变更时修改）
-│ └── css/ # 样式文件（无需修改）
-│
-└── js/
-└── admin.js # 【全局管理面板】与子项目 admin.js 联动
 
-text
+> **v2.3 分层重构后**：全部源码位于 `src/`，按「启动器 / 管理后台 / 各模块 / 共享层」隔离。
+> 导入约定：`@` 别名指向 `src/`。
+
+```
+src/
+├── launcher/                     启动器（公开层）
+│   ├── landing.html              引导页
+│   ├── about.html                用户指南
+│   ├── auth.html                 登录 / 注册
+│   ├── index.html                控制中心（欲研所）
+│   ├── module.html               模块介绍
+│   └── 404.html
+│
+├── admin/                        管理后台
+│   ├── admin.html                管理面板
+│   ├── admin-article.html        内容管理（完整版）
+│   ├── admin-article-simple.html 内容管理（简易版，零构建依赖）
+│   ├── admin.js                  【全局管理面板】与子项目联动
+│   ├── content-config.js         GitHub 仓库配置
+│   └── content-manager.js        GitHub 内容 CRUD
+│
+├── modules/                      ★ 业务模块（一个模块一个文件夹）
+│   └── sub-archive/              下位者档案馆（欲渊之庭）
+│       ├── index.html            列表页
+│       ├── detail.html           详情页
+│       ├── admin.html            旧版独立后台（已废弃，仅留档）
+│       ├── OIP-C.jpg             模块自有图片
+│       ├── css/                  global.css / home.css / detail.css / admin.css
+│       └── js/
+│           ├── api.js            【数据层】Fillout API 调用（换表/换Key时修改）
+│           ├── config.js         【桥接层】从 instances.js 导入并重新导出（无需修改）
+│           ├── detail.js         【渲染层】详情页渲染（特殊格式/单位需修改）
+│           ├── home.js           【渲染层】首页列表渲染（一般无需修改）
+│           ├── admin.js          【管理面板】字段白名单（新增可切换字段时修改）
+│           ├── utils.js          【工具层】字段过滤/提取函数（逻辑变更时修改）
+│           └── auth.js           旧版认证（已废弃，仅留档）
+│
+└── shared/                       ★ 共享层（跨层复用）
+    ├── js/                       认证 / 身份 / 缓存 / 加载 / 头像 / 等级 / 守卫 / 注册表
+    ├── css/                      主题样式（landing / level / avatar / admin / main …）
+    ├── config/
+    │   ├── archive/
+    │   │   ├── schema.js         【工具层】字段处理通用函数（极少修改）
+    │   │   ├── instances.js      【配置层】★ 核心维护文件 ★ 所有字段/分组/权限/隐私配置
+    │   │   └── index.js          【导出层】统一导出入口（无需修改）
+    │   ├── identity-config.js    12 身份定义
+    │   └── levelConfig.js        等级称号配置
+    └── assets/images/            全站图片（OIP-A / OIP-B / OIP-C）
+
+tools/                            开发工具（引用校验 / 静态服务器 / 冒烟测试 / 构建后处理）
+_archive/                         历史归档（不参与构建与运行）
+```
+
+**跨层导入示例**：
+```js
+import { supabase } from '@/shared/js/supabase-client.js';
+import { SUB_ARCHIVE_CONFIG } from '@/shared/config/archive/instances.js';
+import { fetchAllRecords } from '@/modules/sub-archive/js/api.js';
+```
 
 
 ## 🔑 第一部分：Key（字段ID）的获取与维护
@@ -39,8 +76,9 @@ text
 | 方法 | 操作步骤 | 适用场景 |
 | :--- | :--- | :--- |
 | **方法一：Fillout 后台** | 进入 Fillout 表 → 点击字段设置 → URL 或字段属性中查看 `fieldId` | 新建字段后首次获取 |
-| **方法二：浏览器控制台** | 打开任意详情页 → F12 Console → 输入 `record.data` 查看所有字段 ID | 快速查看已有字段 |
-| **方法三：API 调试** | 在 Console 执行 `(await import('/assets/pages/sub-archive/assets/js/api.js')).fetchAllRecords().then(r => console.log(Object.keys(r[0].data)))` | 批量获取所有字段 ID |
+| **方法二：浏览器控制台** | 打开任意详情页 → F12 Console → 输入 `record.data` 查看所有字段 ID | 快速查看已有字段 ID |
+| **方法三：API 调试** | 在 Console 执行 `(await import('/modules/sub-archive/js/api.js')).fetchAllRecords().then(r => console.log(Object.keys(r[0].data)))` | 批量获取所有字段 ID |
+| **方法四：离线自检** | `node _archive/sub-archive-admin/get_fields_diff.js`（对拍本地配置与 Fillout 远程字段，输出差异报告） | 排查配置漂移 |
 
 ### 1.2 字段 ID 命名规范
 

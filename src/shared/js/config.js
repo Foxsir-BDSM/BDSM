@@ -1,0 +1,61 @@
+// Supabase 配置（保持不变）
+export const SUPABASE_URL = 'https://mfexambabgxytkrkhmwx.supabase.co';
+export const SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZXhhbWJhYmd4eXRrcmtobXd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NzcwMTgsImV4cCI6MjA5OTU1MzAxOH0.FdD4EV8fV1mX6J8Vxsio_eyJgkY-_W7SM0M0xvcKN90';
+
+// ★★★ 项目注册表（新可见性矩阵） ★★★
+// 访客(guest) 无权访问任何板块
+// 普通用户(self) 可访问全部六大板块
+// 认证用户(verified) 可访问全部六大板块
+// 次级管理(subadmin) 可访问全部六大板块
+// 根源管理(admin) 可访问全部六大板块
+export const PROJECTS = [
+  {
+    id: 'dom-archive',
+    name: '👑 欲主之殿',
+    description: '主宰者的殿堂，上位者的欲望档案',
+    url: '/modules/dom-archive/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+  {
+    id: 'sub-archive',
+    name: '🌊 欲渊之庭',
+    description: '深渊的庭院，交付身体与灵魂的归所',
+    url: '/modules/sub-archive/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+  {
+    id: 'knowledge',
+    name: '📖 欲识之海',
+    description: '欲望的知识海洋，懂欲方可纵欲',
+    url: '/modules/knowledge/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+  {
+    id: 'mission',
+    name: '⛓️ 欲炼之途',
+    description: '欲望的修炼之路，每一次靠近都更深',
+    url: '/modules/mission/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+  {
+    id: 'dream-weaver',
+    name: '🌙 淫梦织境',
+    description: '编织梦境与幻想，在场景中尽情发泄',
+    url: '/modules/random/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+  {
+    id: 'random',
+    name: '🎲 欲缘之遇',
+    description: '欲望缘分的偶然相遇，未知的陌生人游戏',
+    url: '/modules/random/',
+    status: 'online',
+    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
+  },
+];

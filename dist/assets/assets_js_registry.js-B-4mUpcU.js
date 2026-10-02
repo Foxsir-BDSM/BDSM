@@ -1,1 +1,0 @@
-import{P as n}from"./assets_js_config.js-Bq3EMvTC.js";function t(i){return n.filter(e=>e.status==="offline"||e.status==="maintenance"&&!["admin","subadmin"].includes(i)?!1:e.requiredRoles.includes(i))}export{t as g};
