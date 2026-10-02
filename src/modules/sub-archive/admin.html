@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
     <title>下位者档案馆 · 管理后台</title>
     <link rel="stylesheet" href="./css/global.css" />
     <link rel="stylesheet" href="./css/admin.css" />
@@ -21,22 +22,22 @@
       <div id="userInfo">
         <span id="userEmail"></span>
         <span id="userRole"></span>
-        <button id="logoutBtn">退�?/button>
+        <button id="logoutBtn">退出</button>
       </div>
     </header>
 
     <!-- 管理面板（登录后显示，权限不足时会替换内容） -->
     <div id="adminPanel" style="display: none; padding: 2rem">
       <div class="toolbar">
-        <span>�?<span id="totalCount">0</span> 条档�?/span>
-        <input type="text" id="searchInput" placeholder="按姓名搜�?.." />
+        <span>共 <span id="totalCount">0</span> 条档案</span>
+        <input type="text" id="searchInput" placeholder="按姓名搜索…" />
       </div>
       <div id="recordsTableContainer">
-        <!-- 动态渲染表�?-->
+        <!-- 动态渲染表格 -->
       </div>
     </div>
 
-    <!-- 使用 importmap 加载 Supabase（由欲研所处理，这里留空�?-->
+    <!-- 动态渲染表格 -->
     <script type="importmap">
       {
         "imports": {

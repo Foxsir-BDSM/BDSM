@@ -1,21 +1,30 @@
 {
   "name": "bdsmv2.0",
   "version": "1.0.0",
-  "description": "Foxsir 欲研所 v2.0 项目",
+  "description": "Foxsir 欲研所 v2.0 项目（启动器 / 管理后台 / 各模块 / 共享层）",
   "main": "src/launcher/index.html",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node tools/flatten-dist.mjs",
     "preview": "vite preview",
+
+    "serve": "node tools/static-server.mjs",
+    "serve:dist": "node tools/static-server.mjs --dist --port 5601",
+
     "check": "node tools/ref-check.mjs",
     "check:baseline": "node tools/ref-check.mjs --baseline",
     "refs": "node tools/show-refs.mjs",
-    "serve": "node tools/static-server.mjs",
-    "serve:dist": "node tools/static-server.mjs --dist --port 5601",
+
     "smoke": "node tools/smoke.mjs",
     "smoke:dist": "node tools/smoke.mjs --port 5601 --prod --label \"dist 生产态\"",
+    "crawl": "node tools/crawl.mjs",
+    "runtime": "node tools/runtime-check.mjs",
+    "runtime:dist": "node tools/runtime-check.mjs --port 5601",
+    "shots": "node tools/runtime-check.mjs --port 5601 --shot --wait 3000",
+
+    "flatten": "node tools/flatten-dist.mjs",
     "verify": "npm run check && npm run build && npm run smoke:dist",
-    "flatten": "node tools/flatten-dist.mjs"
+    "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist"
   },
   "keywords": [],
   "author": "",
