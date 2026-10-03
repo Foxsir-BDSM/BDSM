@@ -2,7 +2,7 @@
 // 身份选择器渲染 & 交互逻辑
 // ============================================================
 
-import { IDENTITIES } from '@/shared/config/identity-config.js';
+import { IDENTITIES, ORIENTATIONS } from '@/shared/config/identity-config.js';
 
 let selectedPrimary = null;           // 当前选中的主身份 ID
 const selectedSecondaries = new Set(); // 副身份 ID 集合
@@ -175,4 +175,72 @@ export function resetIdentitySelector() {
   selectedSecondaries.clear();
   updateUI();
   updateHint();
+}
+
+// ============================================================
+// ★★★ 取向选择器（独立组件，用于注册与资料页）★★★
+// ============================================================
+let selectedOrientation = null;
+
+/**
+ * 渲染取向选择器
+ * @param {string} containerId 容器 DOM ID
+ */
+export function renderOrientationSelector(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn('[identity-selector] 取向容器不存在:', containerId);
+    return;
+  }
+  container.innerHTML = `
+    <div class="orientation-selector">
+      <div class="section-label">🧭 取向 <small>（必选，决定档案馆默认展示谁）</small></div>
+      <div class="orientation-grid" id="orientation-grid"></div>
+      <div class="orientation-hint" id="orientation-hint">请选择取向</div>
+    </div>`;
+
+  const grid = document.getElementById('orientation-grid');
+  ORIENTATIONS.forEach((o) => {
+    const card = document.createElement('div');
+    card.className = 'orientation-card';
+    card.dataset.id = o.id;
+    card.innerHTML = `
+      <span class="icon">${o.icon}</span>
+      <span class="label">${o.label}</span>
+      <span class="badge">${o.desc}</span>`;
+    card.addEventListener('click', () => selectOrientation(o.id));
+    grid.appendChild(card);
+  });
+  updateOrientationUI();
+}
+
+function selectOrientation(id) {
+  selectedOrientation = selectedOrientation === id ? null : id;
+  updateOrientationUI();
+}
+
+function updateOrientationUI() {
+  document.querySelectorAll('.orientation-grid .orientation-card').forEach((card) => {
+    card.classList.toggle('selected-orientation', card.dataset.id === selectedOrientation);
+  });
+  const hint = document.getElementById('orientation-hint');
+  if (hint) {
+    if (selectedOrientation) {
+      const o = ORIENTATIONS.find((x) => x.id === selectedOrientation);
+      hint.textContent = `已选：${o.icon} ${o.label}（${o.desc}）`;
+    } else {
+      hint.textContent = '请选择取向';
+    }
+  }
+}
+
+/** 读取已选取向 */
+export function getSelectedOrientation() {
+  return selectedOrientation;
+}
+
+/** 重置取向选择器 */
+export function resetOrientationSelector() {
+  selectedOrientation = null;
+  updateOrientationUI();
 }

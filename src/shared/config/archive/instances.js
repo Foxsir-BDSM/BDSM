@@ -106,6 +106,44 @@ export const SUB_ARCHIVE_CONFIG = {
     weight: 'fgSKHPJhFhb',
     recommend: 'feVJMAAnX7s',
     verified: 'fwK2mQMoxto',
+    // 筛选用（当前为占位，见 FILTER_FIELDS）
+    identity: null,
+    orientation: null,
+  },
+
+  // ============================================================
+  // ★★★ 档案类型（ARCHIVE_TYPE）★★★
+  // 当前 57 个字段为「女馆」配置。
+  // 男馆待表单补齐后新增一套实例（instances['male-archive']）即可，
+  // 筛选逻辑与渲染层无需改动。
+  // ============================================================
+  ARCHIVE_TYPE: 'female',
+  ARCHIVE_TYPE_LABEL: '女馆',
+
+  // ============================================================
+  // ★★★ 筛选字段（FILTER_FIELDS）★★★
+  // 目的：按「身份 + 取向」做默认过滤。
+  //
+  // ⚠️ 当前为占位状态：FORM 字段 ID 尚未在 Fillout 表单中建立，
+  //    因此 filloutId 为 null。此时筛选逻辑会走「无字段」降级路径：
+  //      · 身份筛选 → 退化为按 ARCHIVE_TYPE 分区（当前全部记录视为女馆）
+  //      · 取向筛选 → 不生效（无可读字段）
+  //    表单补齐后，只需把 filloutId 换成真实字段 ID，
+  //    并在 HOME_ONLY_FIELD_IDS / DETAIL_GROUPS 中按需登记，逻辑即刻生效。
+  // ============================================================
+  FILTER_FIELDS: {
+    identity: {
+      filloutId: null,            // ← 待补：Fillout 字段 ID
+      label: '身份',
+      options: ['男S', '女S', '男M', '女M'],
+      placeholder: true,
+    },
+    orientation: {
+      filloutId: null,            // ← 待补：Fillout 字段 ID
+      label: '取向',
+      options: ['异性', '同性', '双性', '未定'],
+      placeholder: true,
+    },
   },
 
   // ============================================================

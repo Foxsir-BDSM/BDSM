@@ -140,3 +140,79 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+/* ============================================================
+   取向选择器（与身份选择器同源样式）
+   ============================================================ */
+.orientation-selector { margin-top: 0.9rem; width: 100%; }
+.orientation-selector .section-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.orientation-selector .section-label small {
+  color: rgba(255, 255, 255, 0.15);
+  font-weight: 400;
+  font-size: 0.7rem;
+}
+.orientation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+.orientation-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.orientation-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+.orientation-card .icon { font-size: 1.3rem; display: block; }
+.orientation-card .label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  display: block;
+  margin-top: 0.1rem;
+}
+.orientation-card .badge {
+  font-size: 0.55rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.05rem 0.4rem;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  margin-top: 0.1rem;
+}
+.orientation-card.selected-orientation {
+  border-color: #6a9fb5;
+  background: rgba(106, 159, 181, 0.08);
+  box-shadow: 0 0 20px rgba(106, 159, 181, 0.06);
+}
+.orientation-card.selected-orientation .label { color: #b0d8e8; }
+.orientation-card.selected-orientation .badge {
+  background: rgba(106, 159, 181, 0.15);
+  color: #b0d8e8;
+}
+.orientation-hint {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.15);
+  margin-top: 0.4rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  padding-top: 0.5rem;
+  min-height: 1.6rem;
+  letter-spacing: 0.3px;
+}
+@media (max-width: 500px) {
+  .orientation-grid { grid-template-columns: repeat(2, 1fr); }
+}

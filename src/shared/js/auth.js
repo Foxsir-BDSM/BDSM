@@ -121,7 +121,7 @@ export async function getCurrentUser() {
     }
 }
 
-// ===== R-02 + R-05：获取用户身份元数据（含头像） =====
+// ===== R-02 + R-05：获取用户身份元数据（含头像与取向） =====
 export async function getUserIdentity() {
     const user = await getCurrentUser();
     if (!user) return null;
@@ -132,6 +132,9 @@ export async function getUserIdentity() {
         gender: meta.gender || null,
         roleType: meta.role_type || null,
         secondaryIds: meta.secondary_identities || [],
+        // ★ 取向（决定档案馆默认展示谁）
+        orientationId: meta.orientation || null,
+        orientationLabel: meta.orientation_label || null,
         nickname: meta.nickname || user.email?.split('@')[0] || '访客',
         role: meta.role || 'self',
         points: meta.points ?? 0,

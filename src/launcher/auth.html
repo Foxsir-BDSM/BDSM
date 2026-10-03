@@ -300,6 +300,7 @@
                             <input type="text" id="register-nickname" placeholder="圈内称呼" required />
                         </div>
                         <div class="form-group" id="identity-selector-container"></div>
+        <div class="form-group" id="orientation-selector-container"></div>
                         <div class="form-group">
                             <label for="register-password">密码</label>
                             <input type="password" id="register-password" placeholder="至少 6 位" required />
@@ -320,7 +321,14 @@
     <script type="module">
         import { supabase } from '@/shared/js/supabase-client.js';
         import { setSession, getCurrentUser } from '@/shared/js/auth.js';
-        import { renderIdentitySelector, getSelectedIdentityData, resetIdentitySelector } from '@/shared/js/identity-selector.js';
+        import {
+            renderIdentitySelector,
+            getSelectedIdentityData,
+            resetIdentitySelector,
+            renderOrientationSelector,
+            getSelectedOrientation,
+            resetOrientationSelector,
+        } from '@/shared/js/identity-selector.js';
         import { showLoading, hideLoading } from '@/shared/js/loading.js';
 
         // ===== 跳转目标（从 URL 参数获取，默认首页） =====
@@ -347,6 +355,9 @@
             if (tab === 'register') {
                 resetIdentitySelector();
                 renderIdentitySelector('identity-selector-container');
+                resetOrientationSelector();
+                renderOrientationSelector('orientation-selector-container');
+        renderOrientationSelector('orientation-selector-container');
             }
         }
 
@@ -372,6 +383,7 @@
 
         // ===== 渲染身份选择器 =====
         renderIdentitySelector('identity-selector-container');
+        renderOrientationSelector('orientation-selector-container');
 
         // ============================================================
         // ★★★ 关键修复：不再在页面加载时主动跳转 ★★★
@@ -419,6 +431,14 @@
                 return showMsg(identityData.error, 'error');
             }
 
+            const orientationId = getSelectedOrientation();
+            if (!orientationId) {
+                return showMsg('请选择取向', 'error');
+            }
+            const orientationLabel = ({
+                hetero: '异性', homo: '同性', bi: '双性', unsure: '未定',
+            })[orientationId] || orientationId;
+
             showLoading('注册中', '创建你的专属身份…');
             try {
                 const { data, error } = await supabase.auth.signUp({
@@ -433,6 +453,8 @@
                             gender: identityData.gender,
                             role_type: identityData.type,
                             secondary_identities: identityData.secondaryIds,
+                            orientation: orientationId,
+                            orientation_label: orientationLabel,
                             points: 0,
                         }
                     }

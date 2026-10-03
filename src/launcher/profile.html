@@ -323,6 +323,16 @@
             <span class="v" id="secondaryIdentity">—</span>
           </div>
           <div class="info-row">
+            <span class="k">取向</span>
+            <span class="v" id="orientationInfo">—</span>
+          </div>
+          <div class="info-row" id="orientationEditorRow">
+            <span class="k">修改取向</span>
+            <span class="v">
+              <span class="orient-picks" id="orientationPicks"></span>
+            </span>
+          </div>
+          <div class="info-row">
             <span class="k">当前等级</span>
             <span class="v" id="levelInfo">—</span>
           </div>
@@ -331,8 +341,8 @@
             <span class="v" id="roleInfo">—</span>
           </div>
           <div class="hint" style="font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 14px; line-height: 1.7">
-            身份决定你的等级路径，角色决定你的平台权限。<br />
-            主身份与副身份目前需联系管理员调整，后续会开放自助修改。
+            <b style="color: rgba(255,255,255,0.3)">身份</b>决定你的等级路径，<b style="color: rgba(255,255,255,0.3)">角色</b>决定你的平台权限，<b style="color: rgba(255,255,255,0.3)">取向</b>决定档案馆默认展示谁。<br />
+            取向可自助修改；主身份与副身份目前需联系管理员调整，后续会开放自助修改。
           </div>
         </div>
 
@@ -357,7 +367,8 @@
       import { uploadAvatar } from '@/shared/js/avatar.js';
       import { calculateLevel } from '@/shared/js/level.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
-      import { IDENTITIES } from '@/shared/config/identity-config.js';
+      import { showToast } from '@/shared/js/ui-helpers.js';
+      import { IDENTITIES, ORIENTATIONS, getOrientation } from '@/shared/config/identity-config.js';
 
       const ROLE_MAP = {
         guest: '访客',
@@ -383,6 +394,7 @@
 
       /** 当前登录用户（渲染基准） */
       let currentUser = null;
+      let identity = null;
       /** 原始昵称，用于比对与「还原」 */
       let originalNickname = '';
       /** 是否正在提交 */
@@ -440,6 +452,9 @@
           ? secDefs.map((d) => `<span class="tag gray">${d.icon} ${d.label}</span>`).join('')
           : `<span class="v dim">未设置</span>`;
 
+        // 取向（可自助修改）
+        renderOrientation();
+
         // 等级
         const points = currentUser?.user_metadata?.points ?? 0;
         if (primaryId) {
@@ -454,6 +469,54 @@
 
         // 角色
         document.getElementById('roleInfo').textContent = ROLE_MAP[role] || role;
+      }
+
+      // ──────────────────────────────────────────────
+      // 取向：展示 + 自助修改
+      // ──────────────────────────────────────────────
+      let currentOrientation = null;
+
+      function renderOrientation() {
+        currentOrientation = identity?.orientationId || null;
+        const cur = currentOrientation ? getOrientation(currentOrientation) : null;
+
+        document.getElementById('orientationInfo').innerHTML = cur
+          ? `<span class="tag">${cur.icon} ${cur.label}</span><span style="color:rgba(255,255,255,0.35);font-size:12px;">${cur.desc}</span>`
+          : `<span class="v dim">未设置</span><span style="color:rgba(255,255,255,0.25);font-size:12px;margin-left:8px;">（未设置时档案馆不按性别筛选）</span>`;
+
+        // 供选择的取向胶囊
+        const picks = document.getElementById('orientationPicks');
+        picks.innerHTML = ORIENTATIONS.map((o) =>
+          `<button type="button" class="orient-pick${o.id === currentOrientation ? ' on' : ''}" data-oid="${o.id}">${o.icon} ${o.label}</button>`
+        ).join('');
+        picks.querySelectorAll('.orient-pick').forEach((b) => {
+          b.addEventListener('click', () => saveOrientation(b.dataset.oid));
+        });
+      }
+
+      async function saveOrientation(oid) {
+        if (oid === currentOrientation) return;
+        const label = getOrientation(oid).label;
+        try {
+          showLoading('保存中', '正在更新取向…');
+          const meta = currentUser?.user_metadata || {};
+          const { error } = await supabase.auth.updateUser({
+            data: { ...meta, orientation: oid, orientation_label: label },
+          });
+          if (error) throw error;
+
+          // 同步本地会话缓存，供其他页面即时读取
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) localStorage.setItem('foxsir_session', JSON.stringify(session));
+
+          identity = await getUserIdentity();
+          renderOrientation();
+          showToast(`取向已更新为「${label}」`);
+        } catch (err) {
+          showToast('保存失败：' + err.message, 'error');
+        } finally {
+          hideLoading(false);
+        }
       }
 
       function refreshDirty() {
@@ -572,7 +635,7 @@
 
           currentUser = user;
           const role = await getUserRole();
-          const identity = await getUserIdentity();
+          identity = await getUserIdentity();
 
           guestCard.style.display = 'none';
           memberArea.style.display = 'block';
@@ -597,3 +660,31 @@
     </script>
   </body>
 </html>
+
+/* ══════════ 取向自助修改（资料页）══════════ */
+.orient-picks { display: inline-flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.orient-pick {
+  padding: 5px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+.orient-pick:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+.orient-pick.on {
+  background: rgba(106, 159, 181, 0.14);
+  border-color: rgba(106, 159, 181, 0.45);
+  color: #b0d8e8;
+  font-weight: 500;
+}
+@media (max-width: 600px) {
+  .orient-picks { justify-content: flex-start; }
+}

@@ -3,12 +3,14 @@
 // 从全局实例配置读取下位者档案馆配置
 // ============================================================
 
-import { SUB_ARCHIVE_CONFIG } from '@/shared/config/archive/instances.js';
+// 说明：这里用相对路径而非 `@/` 别名，以便本模块的纯逻辑代码
+// 能被 Node 直接导入做单元验证（见 tools/check-affiliation-filter.mjs）。
+import { SUB_ARCHIVE_CONFIG } from '../../../shared/config/archive/instances.js';
 import {
   isPrivacyApproved,
   isFieldVisibleForRole,
   isPrivacyApprovedForField,
-} from '@/shared/config/archive/schema.js';
+} from '../../../shared/config/archive/schema.js';
 
 // ---- 导出实例配置 ----
 export const FIELD_LABELS = SUB_ARCHIVE_CONFIG.FIELD_LABELS;
@@ -22,6 +24,9 @@ export const EXTRA_EXCLUDED_FIELD_IDS = SUB_ARCHIVE_CONFIG.EXTRA_EXCLUDED_FIELD_
 export const PRIVACY_RULES = SUB_ARCHIVE_CONFIG.PRIVACY_RULES;
 export const PRIVACY_DEPENDENCIES = SUB_ARCHIVE_CONFIG.PRIVACY_DEPENDENCIES;
 export const ROLE_FIELD_VISIBILITY = SUB_ARCHIVE_CONFIG.ROLE_FIELD_VISIBILITY;
+export const ARCHIVE_TYPE = SUB_ARCHIVE_CONFIG.ARCHIVE_TYPE;
+export const ARCHIVE_TYPE_LABEL = SUB_ARCHIVE_CONFIG.ARCHIVE_TYPE_LABEL;
+export const FILTER_FIELDS = SUB_ARCHIVE_CONFIG.FILTER_FIELDS;
 
 // ---- 导出辅助函数 ----
 export { isPrivacyApproved, isFieldVisibleForRole, isPrivacyApprovedForField };

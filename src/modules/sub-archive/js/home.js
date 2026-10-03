@@ -1,7 +1,13 @@
-import { CONFIG, SEARCH_FIELDS, PAGE_SIZE } from './config.js';
+import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, ARCHIVE_TYPE_LABEL } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
-import { getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo } from './utils.js';
+import {
+  getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo,
+  filterRecordsByAffiliation, countByAffiliation, getRecordPositionGender,
+  hasRealIdentityData,
+} from './utils.js';
 import { getUserRole } from '@/shared/js/identity.js';
+import { getUserIdentity } from '@/shared/js/auth.js';
+import { deriveArchiveFilter, getOrientation } from '@/shared/config/identity-config.js';
 
 const grid = document.getElementById('gridContainer');
 const searchInput = document.getElementById('searchInput');
@@ -17,6 +23,19 @@ let isLoading = false;
 let hasMore = true;
 let searchKeyword = '';
 let currentRole = 'guest';
+
+// ============================================================
+// ★★★ 归属筛选状态 ★★★
+//   position  top | bottom | all
+//   gender    male | female | all
+//   isDefault true 表示当前是「按身份推导的默认视图」
+// ============================================================
+const affFilter = {
+  position: 'all',
+  gender: 'all',
+  isDefault: false,
+  reason: '',
+};
 
 // ============================================================
 // 判断记录是否公开
@@ -65,7 +84,7 @@ function isVerified(value) {
 }
 
 // ============================================================
-// ★★★ 渲染所有卡片（不再追加，每次全量重绘） ★★★
+// ★★★ 渲染所有卡片（归属筛选 + 搜索，每次全量重绘） ★★★
 // ============================================================
 function renderAllCards() {
   if (!allRecords || allRecords.length === 0) {
@@ -73,11 +92,16 @@ function renderAllCards() {
     return;
   }
 
-  // 如果有搜索关键词，过滤
-  let displayRecords = allRecords;
+  // ① 归属筛选（identity / orientation）
+  let displayRecords = filterRecordsByAffiliation(allRecords, {
+    position: affFilter.position === 'all' ? null : affFilter.position,
+    gender: affFilter.gender === 'all' ? null : affFilter.gender,
+  });
+
+  // ② 搜索关键词过滤
   if (searchKeyword.trim()) {
     const lower = searchKeyword.trim().toLowerCase();
-    displayRecords = allRecords.filter(record => {
+    displayRecords = displayRecords.filter((record) => {
       for (const fieldId of SEARCH_FIELDS) {
         const value = getFieldValue(record, fieldId);
         if (value && String(value).toLowerCase().includes(lower)) {
@@ -89,7 +113,13 @@ function renderAllCards() {
   }
 
   if (displayRecords.length === 0) {
-    grid.innerHTML = `<div class="state-message" style="grid-column:1/-1;"><p>😕 没有找到匹配的资料</p></div>`;
+    const tip = affFilter.isDefault
+      ? '当前是按你的身份推导的默认视图，可点击上方「全部」查看所有档案'
+      : '试试清空筛选条件或换个关键词';
+    grid.innerHTML = `<div class="state-message" style="grid-column:1/-1;">
+      <p>😕 没有找到匹配的资料</p>
+      <p style="font-size:12px;color:#94a3b8;margin-top:6px;">${tip}</p>
+    </div>`;
     updateStats(0);
     return;
   }
@@ -180,6 +210,7 @@ async function loadPage(page, reset = false) {
     hasMore = allRecords.length < totalRecords;
     currentPage = page;
     renderAllCards(); // 全量重绘
+    renderFilterBar(); // 计数随数据更新
 
     stateMsg.style.display = 'none';
 
@@ -281,6 +312,89 @@ function setupScrollListener() {
 }
 
 // ============================================================
+// ★★★ 归属筛选条 ★★★
+// ============================================================
+
+/** 依据「用户身份 + 取向」推导默认筛选 */
+async function applyDefaultFilter() {
+  let identity = null;
+  try {
+    identity = await getUserIdentity();
+  } catch {
+    /* 未登录或读取失败 → 保持全部 */
+  }
+
+  const d = deriveArchiveFilter(identity?.primaryId || null, identity?.orientationId || null);
+
+  affFilter.position = d.position || 'all';
+  affFilter.gender = d.gender || 'all';
+  affFilter.isDefault = !!(d.position || d.gender);
+  affFilter.reason = d.reason || '';
+}
+
+/** 渲染筛选条 */
+function renderFilterBar() {
+  const bar = document.getElementById('filterBar');
+  if (!bar) return;
+
+  const c = countByAffiliation(allRecords);
+  // 位置筛选是否生效：取决于档案是否带真实身份数据
+  const positionTrusted = hasRealIdentityData(allRecords);
+
+  const active = (k, v) => (affFilter[k] === v ? ' active' : '');
+  const notes = [];
+  if (c.unknown) notes.push(`${c.unknown} 条未标注归属，默认一并展示`);
+  if (!positionTrusted) {
+    notes.push('档案尚未填写身份字段，位置维度暂不可用（表单补齐后自动生效）');
+  }
+
+  bar.innerHTML = `
+    <div class="fb-row">
+      <span class="fb-label">位置</span>
+      <button class="fb-btn${active('position', 'all')}" data-dim="position" data-val="all">全部 <i>${c.total}</i></button>
+      <button class="fb-btn${active('position', 'bottom')}" data-dim="position" data-val="bottom">下位者 <i>${c.bottom}</i></button>
+      <button class="fb-btn${active('position', 'top')}" data-dim="position" data-val="top">上位者 <i>${c.top}</i></button>
+    </div>
+    <div class="fb-row">
+      <span class="fb-label">性别</span>
+      <button class="fb-btn${active('gender', 'all')}" data-dim="gender" data-val="all">全部</button>
+      <button class="fb-btn${active('gender', 'female')}" data-dim="gender" data-val="female">女 <i>${c.female}</i></button>
+      <button class="fb-btn${active('gender', 'male')}" data-dim="gender" data-val="male">男 <i>${c.male}</i></button>
+    </div>
+    <div class="fb-row fb-meta">
+      <span class="fb-tag">${ARCHIVE_TYPE_LABEL}</span>
+      ${affFilter.isDefault
+        ? `<span class="fb-default">默认视图：${affFilter.reason} <button class="fb-reset" id="fbReset">看全部</button></span>`
+        : `<span class="fb-note">当前为手动筛选</span>`}
+      ${notes.length ? `<span class="fb-note">${notes.join('；')}</span>` : ''}
+    </div>
+  `;
+
+  bar.querySelectorAll('.fb-btn').forEach((b) => {
+    b.addEventListener('click', () => {
+      affFilter[b.dataset.dim] = b.dataset.val;
+      affFilter.isDefault = false;
+      affFilter.reason = '';
+      renderFilterBar();
+      renderAllCards();
+    });
+  });
+
+  const reset = document.getElementById('fbReset');
+  if (reset) {
+    reset.addEventListener('click', () => {
+      affFilter.position = 'all';
+      affFilter.gender = 'all';
+      affFilter.isDefault = false;
+      affFilter.reason = '';
+      renderFilterBar();
+      renderAllCards();
+    });
+  }
+  void positionTrusted;
+}
+
+// ============================================================
 // 初始化
 // ============================================================
 async function init() {
@@ -290,8 +404,16 @@ async function init() {
     console.warn('获取角色失败，使用 guest');
   }
 
+  // 先按身份+取向推导默认筛选，再加载数据
+  try {
+    await applyDefaultFilter();
+  } catch (e) {
+    console.warn('默认筛选推导失败，使用全部', e);
+  }
+
   stateMsg.style.display = 'flex';
   grid.innerHTML = '';
+  renderFilterBar();
 
   await loadPage(1, true);
 
