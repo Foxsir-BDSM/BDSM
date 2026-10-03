@@ -51,9 +51,10 @@ const PAGES = [
   ['/landing.html', ['欲界之门', '了解规则'], false],
   ['/about.html', ['欢迎来到', '权限速查表'], false],
   ['/auth.html', ['进入欲界', '主身份'], false],
-  ['/index.html', ['SELECT YOUR PATH', '探索'], true],
-  ['/module.html', ['module-detail-card'], true],
-  ['/admin.html', ['管理面板', '下位档案'], true],
+  ['/index.html', ['SELECT YOUR PATH', '探索'], false],
+  ['/profile.html', ['个人资料'], false],
+  ['/module.html', ['module-detail-card'], false],
+  ['/admin.html', ['管理面板', '下位档案'], false],
   ['/admin-article.html', ['内容管理', '已发布内容'], true],
   ['/admin-article-simple.html', ['简易内容管理'], false],
   ['/modules/sub-archive/index.html', ['母の曝光', 'grid-container'], false],
@@ -320,6 +321,20 @@ try {
     if (maybeRedirect && hitLanding) {
       pass++;
       console.log(`  ✓ ${p.padEnd(40)} ${String(ms).padStart(6)}ms  重定向→landing（预期）`);
+      continue;
+    }
+
+    // 路由管控放宽后，未登录访问受保护页不会再被 guard 跳走，
+    // 而是由页面自身的鉴权逻辑弹出提示框（如 admin-article 的「需要管理员权限」）。
+    // 此时页面被对话框阻塞、DOM 停在初始态，属预期行为。
+    const authDialog =
+      dialogs.length > 0 &&
+      dialogs.some((d) => /权限|管理员|登录|alert/i.test(d));
+    if (maybeRedirect && authDialog) {
+      pass++;
+      console.log(
+        `  ✓ ${p.padEnd(40)} ${String(ms).padStart(6)}ms  鉴权提示框已自动关闭（预期：${dialogs[0]}）`
+      );
       continue;
     }
 

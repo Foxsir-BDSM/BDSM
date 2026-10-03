@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <title>个人资料 · Foxsir</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0f0e17;
+        color: #fffffe;
+        min-height: 100vh;
+        padding: 24px 16px 60px;
+        background-image:
+          radial-gradient(ellipse at 50% 20%, rgba(212, 165, 116, 0.07) 0%, transparent 60%),
+          radial-gradient(ellipse at 80% 70%, rgba(212, 165, 116, 0.04) 0%, transparent 55%);
+        background-attachment: fixed;
+      }
+
+      .wrap { max-width: 720px; margin: 0 auto; }
+
+      /* ---- 顶部条 ---- */
+      .page-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+        flex-wrap: wrap;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        font-size: 13px;
+        transition: all 0.25s ease;
+      }
+      .back-link:hover {
+        background: rgba(212, 165, 116, 0.1);
+        border-color: rgba(212, 165, 116, 0.22);
+        color: #d4a574;
+      }
+      .page-title {
+        font-family: 'Georgia', serif;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, #f5d6a8, #d4a574);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ---- 卡片 ---- */
+      .card {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 22px;
+        padding: 26px 28px;
+        margin-bottom: 18px;
+      }
+      .card-title {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.3);
+        letter-spacing: 0.5px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      /* ---- 头像区 ---- */
+      .avatar-row {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        flex-wrap: wrap;
+      }
+      .avatar-big {
+        position: relative;
+        width: 96px;
+        height: 96px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #1a1a2e;
+        border: 1px solid rgba(212, 165, 116, 0.18);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .avatar-big:hover {
+        border-color: rgba(212, 165, 116, 0.45);
+        box-shadow: 0 0 30px rgba(212, 165, 116, 0.12);
+      }
+      .avatar-big img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .avatar-big .letter {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 34px;
+        color: rgba(255, 255, 255, 0.22);
+      }
+      .avatar-big .overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(3px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.85);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+      .avatar-big:hover .overlay { opacity: 1; }
+      .avatar-big .overlay .ico { font-size: 20px; }
+
+      .avatar-hint { flex: 1; min-width: 200px; }
+      .avatar-hint .t1 { font-size: 14px; color: rgba(255, 255, 255, 0.75); margin-bottom: 5px; }
+      .avatar-hint .t2 { font-size: 12px; color: rgba(255, 255, 255, 0.25); line-height: 1.7; }
+
+      /* ---- 表单 ---- */
+      .field { margin-bottom: 16px; }
+      .field label {
+        display: block;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.25);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-bottom: 6px;
+      }
+      .field input {
+        width: 100%;
+        padding: 11px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+        color: #fffffe;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.25s ease;
+      }
+      .field input:focus { outline: none; border-color: rgba(212, 165, 116, 0.35); }
+      .field input::placeholder { color: rgba(255, 255, 255, 0.12); }
+      .field input:disabled {
+        color: rgba(255, 255, 255, 0.35);
+        cursor: not-allowed;
+        background: rgba(255, 255, 255, 0.01);
+      }
+      .field .hint { font-size: 11px; color: rgba(255, 255, 255, 0.18); margin-top: 6px; }
+
+      /* ---- 只读信息行 ---- */
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 11px 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+        font-size: 13.5px;
+      }
+      .info-row:last-child { border-bottom: none; }
+      .info-row .k { color: rgba(255, 255, 255, 0.35); flex-shrink: 0; }
+      .info-row .v { color: rgba(255, 255, 255, 0.8); text-align: right; word-break: break-all; }
+      .info-row .v.dim { color: rgba(255, 255, 255, 0.25); }
+
+      .tag {
+        display: inline-block;
+        padding: 2px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        background: rgba(212, 165, 116, 0.12);
+        border: 1px solid rgba(212, 165, 116, 0.18);
+        color: #d4a574;
+        margin: 0 4px 4px 0;
+      }
+      .tag.gray {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      /* ---- 按钮 ---- */
+      .actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+      .btn {
+        padding: 11px 28px;
+        border-radius: 40px;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: inherit;
+      }
+      .btn-primary { background: linear-gradient(135deg, #d4a574, #b8946a); color: #0f0e17; }
+      .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212, 165, 116, 0.22); }
+      .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+      .btn-ghost {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .btn-ghost:hover:not(:disabled) { background: rgba(255, 255, 255, 0.05); color: #fffffe; }
+      .btn-danger { background: rgba(239, 68, 68, 0.08); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.08); }
+      .btn-danger:hover { background: rgba(239, 68, 68, 0.16); }
+
+      /* ---- 状态提示条 ---- */
+      .notice {
+        display: none;
+        margin-top: 14px;
+        padding: 10px 15px;
+        border-radius: 11px;
+        font-size: 12.5px;
+      }
+      .notice.show { display: block; }
+      .notice.info { background: rgba(212, 165, 116, 0.07); border: 1px solid rgba(212, 165, 116, 0.14); color: #d4a574; }
+      .notice.ok { background: rgba(34, 197, 94, 0.07); border: 1px solid rgba(34, 197, 94, 0.14); color: #22c55e; }
+      .notice.err { background: rgba(239, 68, 68, 0.07); border: 1px solid rgba(239, 68, 68, 0.14); color: #f87171; }
+
+      /* 未登录状态 */
+      .guest-box { text-align: center; padding: 42px 20px; }
+      .guest-box .ico { font-size: 46px; margin-bottom: 14px; opacity: 0.5; }
+      .guest-box p { color: rgba(255, 255, 255, 0.4); font-size: 14px; margin-bottom: 22px; line-height: 1.7; }
+
+      @media (max-width: 480px) {
+        .card { padding: 20px 18px; border-radius: 18px; }
+        .avatar-big { width: 78px; height: 78px; }
+        .avatar-big .letter { font-size: 28px; }
+        .info-row { font-size: 12.5px; flex-direction: column; align-items: flex-start; gap: 3px; }
+        .info-row .v { text-align: left; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="page-top">
+        <a href="/index.html" class="back-link">← 返回控制中心</a>
+        <div class="page-title">个人资料</div>
+      </div>
+
+      <!-- 未登录提示 -->
+      <div class="card" id="guestCard" style="display: none">
+        <div class="guest-box">
+          <div class="ico">👤</div>
+          <p>你当前是<b>游客模式</b><br />登录后可以设置头像、昵称与个人身份</p>
+          <div class="actions" style="justify-content: center">
+            <a href="/auth.html" class="btn btn-primary" style="text-decoration: none">🌿 注册 / 登录</a>
+            <a href="/index.html" class="btn btn-ghost" style="text-decoration: none">先去逛逛</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 已登录内容 -->
+      <div id="memberArea" style="display: none">
+        <!-- 头像 -->
+        <div class="card">
+          <div class="card-title">头像</div>
+          <div class="avatar-row">
+            <div class="avatar-big" id="avatarBox" title="点击更换头像">
+              <div id="avatarInner"></div>
+              <div class="overlay">
+                <span class="ico">📷</span>
+                <span>更换头像</span>
+              </div>
+            </div>
+            <input type="file" id="avatarFile" accept="image/*" style="display: none" />
+            <div class="avatar-hint">
+              <div class="t1">点击左侧头像即可更换</div>
+              <div class="t2">
+                支持 JPG / PNG / WebP，单张不超过 5MB<br />
+                系统会自动压缩为 200×200 的 WebP，控制在最小体积
+              </div>
+            </div>
+          </div>
+          <div class="notice" id="avatarNotice"></div>
+        </div>
+
+        <!-- 基本资料 -->
+        <div class="card">
+          <div class="card-title">基本资料</div>
+
+          <div class="field">
+            <label for="nicknameInput">昵称</label>
+            <input type="text" id="nicknameInput" placeholder="你的圈内称呼" maxlength="24" />
+            <div class="hint">将显示在控制中心右上角与文章作者署名处</div>
+          </div>
+
+          <div class="field">
+            <label for="emailInput">邮箱（不可修改）</label>
+            <input type="text" id="emailInput" disabled />
+            <div class="hint">邮箱作为登录凭据，如需更换请联系管理员</div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="saveBtn" disabled>保存修改</button>
+            <button type="button" class="btn btn-ghost" id="resetBtn">还原</button>
+          </div>
+          <div class="notice" id="saveNotice"></div>
+        </div>
+
+        <!-- 身份与等级 -->
+        <div class="card">
+          <div class="card-title">身份与等级</div>
+          <div class="info-row">
+            <span class="k">主身份</span>
+            <span class="v" id="primaryIdentity">—</span>
+          </div>
+          <div class="info-row">
+            <span class="k">副身份</span>
+            <span class="v" id="secondaryIdentity">—</span>
+          </div>
+          <div class="info-row">
+            <span class="k">当前等级</span>
+            <span class="v" id="levelInfo">—</span>
+          </div>
+          <div class="info-row">
+            <span class="k">平台角色</span>
+            <span class="v" id="roleInfo">—</span>
+          </div>
+          <div class="hint" style="font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 14px; line-height: 1.7">
+            身份决定你的等级路径，角色决定你的平台权限。<br />
+            主身份与副身份目前需联系管理员调整，后续会开放自助修改。
+          </div>
+        </div>
+
+        <!-- 账号操作 -->
+        <div class="card">
+          <div class="card-title">账号</div>
+          <div class="actions">
+            <button type="button" class="btn btn-danger" id="logoutBtn">退出登录</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+
+    <script type="module">
+      import { supabase } from '@/shared/js/supabase-client.js';
+      import { getCurrentUser, signOut, getUserIdentity } from '@/shared/js/auth.js';
+      import { getUserRole } from '@/shared/js/identity.js';
+      import { uploadAvatar } from '@/shared/js/avatar.js';
+      import { calculateLevel } from '@/shared/js/level.js';
+      import { showLoading, hideLoading } from '@/shared/js/loading.js';
+      import { IDENTITIES } from '@/shared/config/identity-config.js';
+
+      const ROLE_MAP = {
+        guest: '访客',
+        self: '普通用户',
+        verified: '认证用户',
+        subadmin: '次级管理',
+        admin: '根源管理',
+      };
+
+      // DOM
+      const guestCard = document.getElementById('guestCard');
+      const memberArea = document.getElementById('memberArea');
+      const avatarBox = document.getElementById('avatarBox');
+      const avatarInner = document.getElementById('avatarInner');
+      const avatarFile = document.getElementById('avatarFile');
+      const avatarNotice = document.getElementById('avatarNotice');
+      const nicknameInput = document.getElementById('nicknameInput');
+      const emailInput = document.getElementById('emailInput');
+      const saveBtn = document.getElementById('saveBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const saveNotice = document.getElementById('saveNotice');
+      const logoutBtn = document.getElementById('logoutBtn');
+
+      /** 当前登录用户（渲染基准） */
+      let currentUser = null;
+      /** 原始昵称，用于比对与「还原」 */
+      let originalNickname = '';
+      /** 是否正在提交 */
+      let saving = false;
+
+      // ────────────────────────────────────────── 工具
+      function showAvatarNotice(text, kind = 'info') {
+        avatarNotice.className = 'notice show ' + kind;
+        avatarNotice.textContent = text;
+        setTimeout(() => avatarNotice.classList.remove('show'), 3600);
+      }
+
+      function showSaveNotice(text, kind = 'info') {
+        saveNotice.className = 'notice show ' + kind;
+        saveNotice.textContent = text;
+        if (kind !== 'info') setTimeout(() => saveNotice.classList.remove('show'), 3200);
+      }
+
+      function displayNameOf(user) {
+        const n = user?.user_metadata?.nickname;
+        if (n && n.trim()) return n.trim();
+        return user?.email || '游客';
+      }
+
+      function avatarLetterOf(user) {
+        const name = displayNameOf(user);
+        const first = name.charAt(0).toUpperCase();
+        return /[A-Za-z]/.test(first) ? first : '👤';
+      }
+
+      // ────────────────────────────────────────── 渲染
+      function renderAvatar() {
+        const url = currentUser?.user_metadata?.avatar_url;
+        if (url) {
+          avatarInner.innerHTML = `<img src="${url}" alt="头像" />`;
+        } else {
+          avatarInner.innerHTML = `<div class="letter">${avatarLetterOf(currentUser)}</div>`;
+        }
+      }
+
+      function renderInfo(identity, role) {
+        // 主身份
+        const primaryId = identity?.primaryId;
+        const primaryDef = IDENTITIES.find((i) => i.id === primaryId);
+        document.getElementById('primaryIdentity').innerHTML = primaryDef
+          ? `<span class="tag">${primaryDef.icon} ${primaryDef.label}</span><span style="color:rgba(255,255,255,0.35);font-size:12px;">${primaryDef.desc} · ${
+              primaryDef.gender === 'male' ? '男' : '女'
+            } · ${primaryDef.type === 'top' ? '上位' : '下位'}</span>`
+          : `<span class="v dim">未设置</span>`;
+
+        // 副身份
+        const secIds = identity?.secondaryIds || [];
+        const secDefs = secIds.map((id) => IDENTITIES.find((i) => i.id === id)).filter(Boolean);
+        document.getElementById('secondaryIdentity').innerHTML = secDefs.length
+          ? secDefs.map((d) => `<span class="tag gray">${d.icon} ${d.label}</span>`).join('')
+          : `<span class="v dim">未设置</span>`;
+
+        // 等级
+        const points = currentUser?.user_metadata?.points ?? 0;
+        if (primaryId) {
+          const lv = calculateLevel(primaryId, points);
+          const nextText = lv.isMaxLevel ? '已满级' : `距下一级还需 ${lv.nextThreshold - points} 积分`;
+          document.getElementById('levelInfo').innerHTML =
+            `<span class="tag">Lv.${lv.level} · ${lv.title}</span>` +
+            `<span style="color:rgba(255,255,255,0.35);font-size:12px;">${points} 积分 · ${nextText}</span>`;
+        } else {
+          document.getElementById('levelInfo').innerHTML = `<span class="v dim">—</span>`;
+        }
+
+        // 角色
+        document.getElementById('roleInfo').textContent = ROLE_MAP[role] || role;
+      }
+
+      function refreshDirty() {
+        const changed = nicknameInput.value.trim() !== originalNickname;
+        saveBtn.disabled = !changed || saving;
+        resetBtn.disabled = !changed || saving;
+      }
+
+      nicknameInput.addEventListener('input', refreshDirty);
+
+      resetBtn.addEventListener('click', () => {
+        nicknameInput.value = originalNickname;
+        refreshDirty();
+        saveNotice.classList.remove('show');
+      });
+
+      // ────────────────────────────────────────── 头像上传
+      avatarBox.addEventListener('click', () => avatarFile.click());
+
+      avatarFile.addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        avatarFile.value = '';
+
+        if (!file.type.startsWith('image/')) {
+          showAvatarNotice('请选择图片文件', 'err');
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          showAvatarNotice('图片大小请勿超过 5MB', 'err');
+          return;
+        }
+        if (!currentUser?.id) {
+          showAvatarNotice('登录状态异常，请重新登录', 'err');
+          return;
+        }
+
+        showAvatarNotice('上传中…', 'info');
+        try {
+          const result = await uploadAvatar(file, currentUser.id);
+          if (result.error) {
+            showAvatarNotice('上传失败：' + (result.error.message || result.error), 'err');
+            return;
+          }
+          showAvatarNotice('头像更新成功 🎉', 'ok');
+          // 重新拉取用户，拿到最新的 avatar_url
+          currentUser = await getCurrentUser();
+          renderAvatar();
+        } catch (err) {
+          showAvatarNotice('上传异常：' + err.message, 'err');
+        }
+      });
+
+      // ────────────────────────────────────────── 保存昵称
+      saveBtn.addEventListener('click', async () => {
+        const next = nicknameInput.value.trim();
+        if (!next) {
+          showSaveNotice('昵称不能为空', 'err');
+          return;
+        }
+        if (next.length > 24) {
+          showSaveNotice('昵称最长 24 个字符', 'err');
+          return;
+        }
+        if (next === originalNickname) return;
+
+        saving = true;
+        refreshDirty();
+        showSaveNotice('保存中…', 'info');
+
+        try {
+          const { data, error } = await supabase.auth.updateUser({
+            data: { ...(currentUser.user_metadata || {}), nickname: next },
+          });
+          if (error) throw error;
+
+          // 同步本地会话缓存，保证其他页面立即读到新昵称
+          const stored = localStorage.getItem('foxsir_session');
+          if (stored) {
+            try {
+              const session = JSON.parse(stored);
+              session.user = data.user;
+              localStorage.setItem('foxsir_session', JSON.stringify(session));
+            } catch {
+              /* 忽略解析失败 */
+            }
+          }
+
+          currentUser = data.user;
+          originalNickname = next;
+          showSaveNotice('昵称已保存 ✅', 'ok');
+        } catch (err) {
+          showSaveNotice('保存失败：' + (err.message || err), 'err');
+        } finally {
+          saving = false;
+          refreshDirty();
+        }
+      });
+
+      // ────────────────────────────────────────── 退出登录
+      logoutBtn.addEventListener('click', async () => {
+        await signOut();
+      });
+
+      // ────────────────────────────────────────── 初始化
+      async function init() {
+        showLoading('读取资料', '正在加载…');
+        try {
+          const user = await getCurrentUser();
+
+          if (!user) {
+            guestCard.style.display = 'block';
+            memberArea.style.display = 'none';
+            return;
+          }
+
+          currentUser = user;
+          const role = await getUserRole();
+          const identity = await getUserIdentity();
+
+          guestCard.style.display = 'none';
+          memberArea.style.display = 'block';
+
+          originalNickname = (user.user_metadata?.nickname || '').trim();
+          nicknameInput.value = originalNickname;
+          nicknameInput.placeholder = user.email?.split('@')[0] || '你的圈内称呼';
+          emailInput.value = user.email || '';
+
+          renderAvatar();
+          renderInfo(identity, role);
+          refreshDirty();
+        } catch (err) {
+          console.error('[profile] 初始化失败:', err);
+          showSaveNotice('资料加载失败：' + err.message, 'err');
+        } finally {
+          hideLoading(false);
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -1,14 +1,24 @@
 // ================================================================
-// assets/js/guard.js
+// src/shared/js/guard.js
 // 功能：权限路由守卫（访客仅限 Landing/About/Auth）
 // 优化：增加防重入保护，避免无限重定向循环
 // ================================================================
 
 import { getCurrentUser } from '@/shared/js/auth.js';
 import { getUserRole } from '@/shared/js/identity.js';
+import { RELAXED_ACCESS } from '@/shared/config/access.js';
 
-// ===== 公开路由白名单（访客可访问） =====
-// 访客仅能访问展示页、关于页、登录页
+// ================================================================
+// ★★★ 路由管控总开关 ★★★
+// ----------------------------------------------------------------
+// 开关已统一收敛到 src/shared/config/access.js 的 RELAXED_ACCESS：
+//   true  = 全站放宽：不做任何重定向，所有页面任何人可访问
+//   false = 恢复管控：访客仅可访问下方 PUBLIC_ROUTES，
+//           已登录用户访问 landing/auth 自动跳转控制中心
+// ================================================================
+export const ENFORCE_ROUTE_GUARD = !RELAXED_ACCESS;
+
+// ===== 公开路由白名单（管控开启时，访客可访问） =====
 const PUBLIC_ROUTES = [
   '/landing.html',
   '/about.html',
@@ -45,6 +55,9 @@ function getRedirectUrl(target = '/landing.html') {
  * 初始化路由守卫
  */
 export async function initGuard() {
+  // 管控关闭时直接放行（全站可访问）
+  if (!ENFORCE_ROUTE_GUARD) return;
+
   // 防止同一页面多次同时执行守卫
   if (guardRunning) return;
   guardRunning = true;
@@ -125,4 +138,13 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initGuard);
 } else {
   initGuard();
+}
+
+// 放宽状态下给出提示，便于确认当前处于「无管控」模式
+if (!ENFORCE_ROUTE_GUARD) {
+  console.info(
+    '%c[guard] 路由管控已放宽：全站页面不做限制。' +
+      '恢复请把 src/shared/js/guard.js 的 ENFORCE_ROUTE_GUARD 改为 true',
+    'color:#d4a574'
+  );
 }

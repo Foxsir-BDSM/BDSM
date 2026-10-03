@@ -120,6 +120,18 @@
             background: rgba(255, 255, 255, 0.08);
             color: #fffffe;
         }
+        /* 「随便逛逛」—— 弱化的第三入口，虚线描边，与主/次按钮区分层级 */
+        .cta-group .btn-ghost {
+            background: transparent;
+            color: rgba(212, 165, 116, 0.55);
+            border: 1px dashed rgba(212, 165, 116, 0.25);
+        }
+        .cta-group .btn-ghost:hover {
+            background: rgba(212, 165, 116, 0.06);
+            border-color: rgba(212, 165, 116, 0.45);
+            color: #d4a574;
+            transform: translateY(-3px);
+        }
 
         /* ============================================================
            社交区域：分割线 + 引导语 + 图标（黑金配色）
@@ -285,6 +297,7 @@
         <div class="cta-group">
             <a href="/auth.html" class="btn btn-primary">🌿 立即加入</a>
             <a href="/about.html" class="btn btn-secondary">📖 了解规则 →</a>
+            <a href="/index.html" class="btn btn-ghost">🚪 随便逛逛</a>
         </div>
 
         <!-- ============================================================

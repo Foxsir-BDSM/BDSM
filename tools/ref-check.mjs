@@ -135,7 +135,7 @@ function lineOf(text, index) {
  * 因此根绝对引用 /xxx 应按下列规则落盘。
  */
 const ROUTE_RULES = [
-  [/^\/(404|about|auth|index|landing|module)\.html$/, 'src/launcher/$1.html'],
+  [/^\/(404|about|auth|index|landing|module|profile)\.html$/, 'src/launcher/$1.html'],
   [/^\/(admin|admin-article|admin-article-simple)\.html$/, 'src/admin/$1.html'],
   [/^\/modules\/([^/]+)\/(.*)$/, 'src/modules/$1/$2'],
   [/^\/modules\/([^/]+)\/?$/, 'src/modules/$1/index.html'],

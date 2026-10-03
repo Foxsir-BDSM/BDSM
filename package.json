@@ -22,9 +22,13 @@
     "runtime:dist": "node tools/runtime-check.mjs --port 5601",
     "shots": "node tools/runtime-check.mjs --port 5601 --shot --wait 3000",
 
+    "check:menu": "node tools/check-menu.mjs",
+    "check:auth": "node tools/check-auth-flow.mjs",
+    "check:avatar": "node tools/check-avatar-upload.mjs",
+
     "flatten": "node tools/flatten-dist.mjs",
     "verify": "npm run check && npm run build && npm run smoke:dist",
-    "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist"
+    "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist && npm run check:menu -- --port 5601"
   },
   "keywords": [],
   "author": "",

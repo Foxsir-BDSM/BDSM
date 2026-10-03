@@ -133,95 +133,219 @@
         -webkit-text-fill-color: rgba(255, 255, 255, 0.12);
       }
 
-      /* ---- 顶栏右侧：用户信息 ---- */
-      .top-bar .user-info-bar {
+      /* ============================================================
+         顶栏右侧：用户菜单（类微信右上角）
+         收起态仅「头像 + 昵称 + 身份」，点击展开下拉菜单
+         ============================================================ */
+      .top-bar .user-menu {
+        position: relative;
+        flex-shrink: 0;
+      }
+
+      /* ---- 触发区 ---- */
+      .top-bar .user-menu .um-trigger {
         display: flex;
         align-items: center;
-        gap: 6px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
+        gap: 8px;
+        padding: 4px 12px 4px 4px;
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.02);
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        user-select: none;
+        font-family: inherit;
       }
-      .top-bar .user-info-bar .avatar-wrapper {
-        width: 36px;
-        height: 36px;
+      .top-bar .user-menu .um-trigger:hover,
+      .top-bar .user-menu.open .um-trigger {
+        background: rgba(212, 165, 116, 0.08);
+        border-color: rgba(212, 165, 116, 0.22);
+      }
+
+      /* 头像 */
+      .top-bar .user-menu .um-avatar {
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         overflow: hidden;
         flex-shrink: 0;
-        border: 1px solid rgba(212, 165, 116, 0.1);
-        background: #1a1a2e;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
-        transition: border-color 0.3s ease;
+        background: #1a1a2e;
+        border: 1px solid rgba(212, 165, 116, 0.12);
         position: relative;
       }
-      .top-bar .user-info-bar .avatar-wrapper:hover {
-        border-color: rgba(212, 165, 116, 0.3);
-      }
-      .top-bar .user-info-bar .avatar-wrapper img {
+      .top-bar .user-menu .um-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
       }
-      .top-bar .user-info-bar .avatar-wrapper .avatar-letter {
-        font-size: 14px;
+      .top-bar .user-menu .um-avatar .um-letter {
+        font-size: 13px;
         font-weight: 500;
-        color: rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.3);
       }
-      .top-bar .user-info-bar .uname {
+      /* 未登录头像占位 */
+      .top-bar .user-menu .um-avatar.is-guest {
+        border-style: dashed;
+        border-color: rgba(212, 165, 116, 0.25);
+      }
+      .top-bar .user-menu .um-avatar.is-guest .um-letter {
+        font-size: 15px;
+        color: rgba(212, 165, 116, 0.5);
+      }
+
+      /* 文字区 */
+      .top-bar .user-menu .um-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1px;
+        line-height: 1.25;
+        min-width: 0;
+      }
+      .top-bar .user-menu .um-name {
+        font-size: 13px;
         font-weight: 500;
-        font-size: 14px;
         color: #fffffe;
         white-space: nowrap;
+        max-width: 132px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
-      .top-bar .user-info-bar .level-title {
+      .top-bar .user-menu .um-identity {
+        font-size: 10px;
+        color: rgba(212, 165, 116, 0.75);
+        white-space: nowrap;
+        max-width: 132px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .top-bar .user-menu .um-identity.is-empty {
+        color: rgba(255, 255, 255, 0.18);
+      }
+
+      /* 展开箭头 */
+      .top-bar .user-menu .um-caret {
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.25);
+        transition: transform 0.25s ease;
+        margin-left: 2px;
+      }
+      .top-bar .user-menu.open .um-caret {
+        transform: rotate(180deg);
+      }
+
+      /* ---- 下拉菜单 ---- */
+      .top-bar .user-menu .um-panel {
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        min-width: 232px;
+        background: rgba(20, 18, 28, 0.97);
+        backdrop-filter: blur(20px) saturate(1.4);
+        -webkit-backdrop-filter: blur(20px) saturate(1.4);
+        border: 1px solid rgba(212, 165, 116, 0.14);
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+        padding: 6px;
+        z-index: 200;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-8px) scale(0.98);
+        transform-origin: top right;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .top-bar .user-menu.open .um-panel {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+      }
+
+      .top-bar .user-menu .um-panel-head {
+        padding: 12px 14px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        margin-bottom: 6px;
+      }
+      .top-bar .user-menu .um-panel-head .h-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fffffe;
+        margin-bottom: 3px;
+        word-break: break-all;
+      }
+      .top-bar .user-menu .um-panel-head .h-sub {
         font-size: 11px;
+        color: rgba(255, 255, 255, 0.35);
+        word-break: break-all;
+      }
+      .top-bar .user-menu .um-panel-head .h-ident {
+        display: inline-block;
+        margin-top: 6px;
+        font-size: 10px;
         color: #d4a574;
         background: rgba(212, 165, 116, 0.12);
-        padding: 1px 10px;
-        border-radius: 20px;
         border: 1px solid rgba(212, 165, 116, 0.18);
-        white-space: nowrap;
+        padding: 1px 9px;
+        border-radius: 20px;
       }
-      .top-bar .user-info-bar .no-identity {
-        font-size: 11px;
-        color: rgba(255, 255, 255, 0.12);
-        white-space: nowrap;
-      }
-      .top-bar .user-info-bar .btn {
-        padding: 3px 12px;
-        font-size: 11px;
-        border-radius: 30px;
-        border: none;
+
+      .top-bar .user-menu .um-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.18s ease;
         text-decoration: none;
+        border: none;
+        background: transparent;
+        width: 100%;
+        text-align: left;
         font-family: inherit;
-        font-weight: 500;
-        white-space: nowrap;
       }
-      .top-bar .user-info-bar .btn-secondary {
-        background: rgba(255, 255, 255, 0.04);
-        color: rgba(255, 255, 255, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-      }
-      .top-bar .user-info-bar .btn-secondary:hover {
-        background: rgba(255, 255, 255, 0.08);
+      .top-bar .user-menu .um-item:hover {
+        background: rgba(212, 165, 116, 0.1);
         color: #fffffe;
       }
-      .top-bar .user-info-bar .btn-danger {
-        background: rgba(239, 68, 68, 0.08);
+      .top-bar .user-menu .um-item .um-ico {
+        font-size: 14px;
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .top-bar .user-menu .um-item.is-danger {
         color: #f87171;
-        border: 1px solid rgba(239, 68, 68, 0.06);
       }
-      .top-bar .user-info-bar .btn-danger:hover {
-        background: rgba(239, 68, 68, 0.16);
+      .top-bar .user-menu .um-item.is-danger:hover {
+        background: rgba(239, 68, 68, 0.12);
+        color: #fca5a5;
       }
-      .top-bar .user-info-bar .guest-label {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.15);
+      .top-bar .user-menu .um-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        margin: 5px 8px;
+      }
+      .top-bar .user-menu .um-tip {
+        padding: 8px 14px 10px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.25);
+        line-height: 1.5;
+      }
+
+      @media (max-width: 480px) {
+        .top-bar .user-menu .um-name,
+        .top-bar .user-menu .um-identity {
+          max-width: 76px;
+        }
+        .top-bar .user-menu .um-panel {
+          min-width: 200px;
+        }
       }
 
       /* ============================================================
@@ -562,9 +686,11 @@
           gap: 8px;
           padding-bottom: 14px;
         }
-        .top-bar .user-info-bar {
-          justify-content: flex-start;
-          gap: 4px;
+        .top-bar .user-menu {
+          align-self: flex-end;
+        }
+        .top-bar .user-menu .um-panel {
+          right: 0;
         }
 
         .welcome-card {
@@ -623,20 +749,24 @@
           width: 38px;
           height: 38px;
         }
-        .top-bar .user-info-bar .avatar-wrapper {
-          width: 30px;
-          height: 30px;
+        .top-bar .user-menu .um-avatar {
+          width: 28px;
+          height: 28px;
         }
-        .top-bar .user-info-bar .uname {
+        .top-bar .user-menu .um-avatar .um-letter {
           font-size: 12px;
         }
-        .top-bar .user-info-bar .level-title {
-          font-size: 10px;
-          padding: 0 8px;
+        .top-bar .user-menu .um-name {
+          font-size: 12px;
+          max-width: 70px;
         }
-        .top-bar .user-info-bar .btn {
-          font-size: 10px;
-          padding: 2px 10px;
+        .top-bar .user-menu .um-identity {
+          font-size: 9px;
+          max-width: 70px;
+        }
+        .top-bar .user-menu .um-trigger {
+          padding: 3px 9px 3px 3px;
+          gap: 6px;
         }
 
         .welcome-card {
@@ -759,8 +889,8 @@
             <div class="tagline">BDSM · 安全 · 尊重 · 共识</div>
           </div>
         </div>
-        <!-- 用户信息由 JS 渲染 -->
-        <div class="user-info-bar" id="topUserInfo"></div>
+        <!-- 用户菜单（类微信右上角，由 JS 渲染） -->
+        <div class="user-menu" id="topUserInfo"></div>
       </header>
 
       <!-- ============================================================
@@ -821,8 +951,7 @@
       import { signOut, getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { getVisibleProjects } from '@/shared/js/registry.js';
-      import { calculateLevel, getLevelBadge, getLevelProgressBar, formatPoints } from '@/shared/js/level.js';
-      import { uploadAvatar } from '@/shared/js/avatar.js';
+      import { calculateLevel } from '@/shared/js/level.js';
 
       const topUserInfo = document.getElementById('topUserInfo');
       const projectGrid = document.getElementById('projectGrid');
@@ -867,97 +996,173 @@
       }
 
       // ============================================================
-      // 渲染顶栏用户信息
+      // 渲染顶栏用户菜单（类微信右上角）
+      //   收起态：头像 + 昵称 + 身份
+      //   点击展开：个人资料 / 管理面板（管理员）/ 登出
+      //   未登录：头像占位 + 注册入口
       // ============================================================
+
+      /** 组装身份显示文案：主身份标签（如「男S」），无主身份返回空串 */
+      function buildIdentityText(identity) {
+        if (!identity) return '';
+        return identity.primaryLabel || '';
+      }
+
+      /** 主身份标签 + 当前等级称号，如「男S · 试鞭」 */
+      function buildIdentityLine(identity, user) {
+        const label = buildIdentityText(identity);
+        if (!label) return '';
+        if (identity?.primaryId) {
+          const points = user?.user_metadata?.points ?? 0;
+          const lv = calculateLevel(identity.primaryId, points);
+          return `${label} · ${lv.title}`;
+        }
+        return label;
+      }
+
       async function renderTopUser() {
         const user = await getCurrentUser();
         const role = await getUserRole();
 
+        // ───────── 未登录：头像占位 + 注册入口 ─────────
         if (!user) {
           topUserInfo.innerHTML = `
-            <span class="guest-label">👤 未登录</span>
+            <div class="um-trigger" id="umTrigger" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false">
+              <div class="um-avatar is-guest"><span class="um-letter">👤</span></div>
+              <div class="um-text">
+                <span class="um-name">未登录</span>
+                <span class="um-identity is-empty">点此注册 / 登录</span>
+              </div>
+              <span class="um-caret">▼</span>
+            </div>
+            <div class="um-panel" id="umPanel" role="menu">
+              <div class="um-panel-head">
+                <div class="h-name">游客模式</div>
+                <div class="h-sub">注册后可保存身份、等级与个人资料</div>
+              </div>
+              <a href="/auth.html" class="um-item" role="menuitem">
+                <span class="um-ico">🌿</span> 注册 / 登录
+              </a>
+              <a href="/about.html" class="um-item" role="menuitem">
+                <span class="um-ico">📖</span> 了解规则
+              </a>
+              <div class="um-divider"></div>
+              <a href="/landing.html" class="um-item" role="menuitem">
+                <span class="um-ico">🚪</span> 返回引导页
+              </a>
+              <div class="um-tip">当前为游客浏览，部分内容与操作受限</div>
+            </div>
           `;
+          wireUserMenu();
           return;
         }
 
+        // ───────── 已登录 ─────────
         const identity = await getUserIdentity();
         const displayName = getDisplayName(user);
-        const userId = user.id;
-
         const avatarUrl = identity?.avatarUrl || null;
         const avatarLetter = getAvatarLetter(user);
-        let avatarHtml = '';
-        if (avatarUrl) {
-          avatarHtml = `<img src="${avatarUrl}" alt="${displayName}" />`;
-        } else {
-          avatarHtml = `<span class="avatar-letter">${avatarLetter}</span>`;
-        }
+        const identityText = buildIdentityText(identity);
+        const identityLine = buildIdentityLine(identity, user);
+        const roleLabel = ROLE_MAP[role] || role;
 
-        let levelTitleHtml = '';
-        if (identity && identity.primaryId) {
-          const points = user.user_metadata?.points ?? 0;
-          const levelInfo = calculateLevel(identity.primaryId, points);
-          levelTitleHtml = `<span class="level-title">${levelInfo.title}</span>`;
-        } else {
-          levelTitleHtml = `<span class="no-identity">—</span>`;
-        }
+        const avatarHtml = avatarUrl
+          ? `<img src="${avatarUrl}" alt="${displayName}" />`
+          : `<span class="um-letter">${avatarLetter}</span>`;
 
         const isAdmin = ['admin', 'subadmin'].includes(role);
-        const adminBtn = isAdmin
-          ? `<a href="/admin.html" class="btn btn-secondary">⚙️ 管理</a>`
+        const adminItem = isAdmin
+          ? `<a href="/admin.html" class="um-item" role="menuitem">
+               <span class="um-ico">⚙️</span> 管理面板
+             </a>`
           : '';
 
+        const identityBadge = identityLine
+          ? `<span class="h-ident">${identityLine}</span>`
+          : `<span class="h-ident" style="color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06);">未设置身份</span>`;
+
         topUserInfo.innerHTML = `
-          <div class="avatar-wrapper" id="topAvatarWrapper">
-            ${avatarHtml}
-            <input type="file" id="topAvatarInput" accept="image/*" style="display:none;" />
+          <div class="um-trigger" id="umTrigger" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false" title="个人菜单">
+            <div class="um-avatar">${avatarHtml}</div>
+            <div class="um-text">
+              <span class="um-name">${displayName}</span>
+              <span class="um-identity${identityLine ? '' : ' is-empty'}">${identityLine || '未设置身份'}</span>
+            </div>
+            <span class="um-caret">▼</span>
           </div>
-          <span class="uname">${displayName}</span>
-          ${levelTitleHtml}
-          ${adminBtn}
-          <button id="topLogoutBtn" class="btn btn-danger">登出</button>
+          <div class="um-panel" id="umPanel" role="menu">
+            <div class="um-panel-head">
+              <div class="h-name">${displayName}</div>
+              <div class="h-sub">${user.email || ''}</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">${identityBadge}
+                <span class="h-ident" style="color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06);">${roleLabel}</span>
+              </div>
+            </div>
+            <a href="/profile.html" class="um-item" role="menuitem">
+              <span class="um-ico">👤</span> 个人资料
+            </a>
+            ${adminItem}
+            <div class="um-divider"></div>
+            <button type="button" class="um-item is-danger" id="umLogoutBtn" role="menuitem">
+              <span class="um-ico">🚪</span> 退出登录
+            </button>
+          </div>
         `;
 
-        // 头像上传
-        const avatarWrapper = document.getElementById('topAvatarWrapper');
-        const avatarInput = document.getElementById('topAvatarInput');
-        if (avatarWrapper && avatarInput) {
-          avatarWrapper.addEventListener('click', () => {
-            avatarInput.click();
-          });
-          avatarInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            if (!file.type.startsWith('image/')) {
-              showToast('请选择图片文件', 'error');
-              avatarInput.value = '';
-              return;
-            }
-            if (file.size > 5 * 1024 * 1024) {
-              showToast('图片大小请勿超过 5MB', 'error');
-              avatarInput.value = '';
-              return;
-            }
-            try {
-              showToast('上传中...', 'info');
-              const result = await uploadAvatar(file, userId);
-              if (result.error) {
-                showToast('上传失败: ' + result.error.message, 'error');
-              } else {
-                showToast('头像更新成功 🎉', 'success');
-                setTimeout(() => renderAll(), 300);
-              }
-            } catch (err) {
-              showToast('上传异常: ' + err.message, 'error');
-            } finally {
-              avatarInput.value = '';
-            }
-          });
-        }
+        wireUserMenu();
 
-        document.getElementById('topLogoutBtn')?.addEventListener('click', async () => {
+        document.getElementById('umLogoutBtn')?.addEventListener('click', async () => {
+          closeUserMenu();
           await signOut();
         });
+      }
+
+      // ───────── 用户菜单交互 ─────────
+      // topUserInfo 本身就是 .user-menu（见 .top-bar 内的结构），open 类直接加在它上面
+      function openUserMenu() {
+        topUserInfo.classList.add('open');
+        topUserInfo.querySelector('.um-trigger')?.setAttribute('aria-expanded', 'true');
+      }
+      function closeUserMenu() {
+        topUserInfo.classList.remove('open');
+        topUserInfo.querySelector('.um-trigger')?.setAttribute('aria-expanded', 'false');
+      }
+      function toggleUserMenu() {
+        if (topUserInfo.classList.contains('open')) closeUserMenu();
+        else openUserMenu();
+      }
+
+      // 全局关闭逻辑只需注册一次；而每次重渲染都会生成新的 #umTrigger，
+      // 因此用 data 标记避免对同一元素重复绑定。
+      let umGlobalWired = false;
+      function wireUserMenu() {
+        const trigger = topUserInfo.querySelector('#umTrigger');
+        if (!trigger || trigger.dataset.wired === '1') return;
+        trigger.dataset.wired = '1';
+
+        // 触发区点击/键盘
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleUserMenu();
+        });
+        trigger.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleUserMenu();
+          }
+        });
+
+        // 全局关闭逻辑仅注册一次
+        if (umGlobalWired) return;
+        umGlobalWired = true;
+
+        document.addEventListener('click', (e) => {
+          if (!topUserInfo.contains(e.target)) closeUserMenu();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeUserMenu();
+        });
+        window.addEventListener('resize', closeUserMenu);
       }
 
       // ============================================================
