@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <title>发布 · 欲炼之途</title>
+    <link rel="stylesheet" href="./css/editor.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="page-top">
+        <a href="./index.html" class="back-link">← 返回欲炼之途</a>
+        <div class="page-title">发布内容</div>
+        <div class="top-right">
+          <span class="draft-tip" id="draftTip"></span>
+          <button type="button" class="btn btn-ghost sm" id="clearDraftBtn">清空</button>
+          <button type="button" class="btn btn-primary sm" id="publishBtn">🚀 发布</button>
+        </div>
+      </div>
+
+      <div class="pub-msg" id="pubMsg"></div>
+
+      <!-- 未登录 -->
+      <div class="card" id="guestCard" style="display: none">
+        <div class="guest-box">
+          <div class="ico">✍️</div>
+          <p>发布内容需要先登录<br /><span class="dim">登录后可以发布玩法、合集、清单与见解</span></p>
+          <div class="row-center">
+            <a href="/auth.html" class="btn btn-primary">🌿 注册 / 登录</a>
+            <a href="./index.html" class="btn btn-ghost">先去看看</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 编辑器主体 -->
+      <div id="editorArea" style="display: none">
+        <!-- 1) 选择类型 -->
+        <section class="card">
+          <div class="card-head">
+            <span>① 选择发布类型</span>
+            <span class="dim sm">不同类型用不同结构承载，切换会重置类型专属字段</span>
+          </div>
+          <div class="type-tabs" id="typeTabs"></div>
+        </section>
+
+        <div class="editor-grid">
+          <!-- 左：表单 -->
+          <div class="col-form">
+            <!-- 2) 基础信息 -->
+            <section class="card">
+              <div class="card-head"><span>② 基础信息</span></div>
+              <div class="meta-box" id="metaBox"></div>
+            </section>
+
+            <!-- 2.5) 安全字段（高/极高风险时出现） -->
+            <div id="safetyBox" style="display: none"></div>
+
+            <!-- 3) 类型专属字段 -->
+            <div id="sectionBox"></div>
+          </div>
+
+          <!-- 右：实时预览 -->
+          <aside class="col-preview">
+            <div class="preview-sticky">
+              <div class="card">
+                <div class="card-head">
+                  <span>③ 实时预览</span>
+                  <span class="dim sm"><span id="pvLen">0</span> 字</span>
+                </div>
+                <div class="preview-box" id="previewBox"></div>
+              </div>
+              <div class="tip-card">
+                <b>填写建议</b>
+                <ul>
+                  <li><b>场景准备</b>越具体，读者越容易判断自己是否适合</li>
+                  <li><b>道具清单</b>请标注可替代方案</li>
+                  <li><b>后护理</b>最容易被忽略，但决定体验是否完整</li>
+                  <li>风险等级会决定详情页的警示强度</li>
+                </ul>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+
+    <script type="module">
+      import { initEditor } from './js/editor.js';
+      initEditor();
+    </script>
+  </body>
+</html>

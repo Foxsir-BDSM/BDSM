@@ -29,10 +29,9 @@ const PAGES = [
   '/modules/sub-archive/index.html',
   '/modules/sub-archive/detail.html',
   '/modules/sub-archive/admin.html',
-  '/modules/knowledge/index.html',
-  '/modules/knowledge/article.html',
-  '/modules/mission/index.html',
-  '/modules/mission/detail.html',
+  '/modules/content/index.html',
+  '/modules/content/post-editor.html',
+  '/modules/content/post.html',
   '/modules/dom-archive/index.html',
   '/modules/random/index.html',
 ];

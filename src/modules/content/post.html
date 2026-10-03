@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <title>内容详情 · 欲炼之途</title>
+    <link rel="stylesheet" href="./css/content.css" />
+  </head>
+  <body>
+    <div class="wrap narrow">
+      <div class="page-top">
+        <a href="./index.html" class="back-link">← 返回欲炼之途</a>
+        <div class="top-actions">
+          <button type="button" class="btn btn-ghost sm" id="copyBtn">🔗 复制链接</button>
+        </div>
+      </div>
+
+      <article class="detail" id="detailBox">
+        <div class="state">
+          <div class="spinner"></div>
+          <p>加载详情…</p>
+        </div>
+      </article>
+    </div>
+
+    <script type="importmap">
+      { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+
+    <script type="module">
+      import { CONTENT_STORE, RISK_COLLAPSED } from './js/content-types.js';
+      import { normalizePost, renderDetail } from './js/render.js';
+      import { fetchContentList, parseFrontmatter, getToken } from '@/admin/content-manager.js';
+      import { getCurrentUser } from '@/shared/js/auth.js';
+      import { showLoading, hideLoading } from '@/shared/js/loading.js';
+
+      const box = document.getElementById('detailBox');
+
+      function showError(ico, title, desc, action) {
+        box.innerHTML = `<div class="state">
+          <div class="st-ico">${ico}</div>
+          <div class="st-t1">${title}</div>
+          <div class="st-t2">${desc || ''}</div>
+          ${action || ''}
+        </div>`;
+      }
+
+      function getSlug() {
+        return new URLSearchParams(location.search).get('slug');
+      }
+
+      async function load() {
+        const slug = getSlug();
+        if (!slug) {
+          showError('⚠️', '缺少 slug 参数', '请从列表页进入，或检查链接是否完整。',
+            '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+          return;
+        }
+
+        showLoading('加载内容', '正在读取…');
+        try {
+          if (!getToken()) {
+            showError('🔑', '未配置 GitHub Token', '内容读取需要 Token。可在 <a href="/admin.html">管理后台</a> 的 Token 设置里填入，或配置环境变量 VITE_GITHUB_TOKEN。',
+              '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+            return;
+          }
+
+          const files = await fetchContentList(CONTENT_STORE.branch, CONTENT_STORE.path);
+          const target = (files || []).find((f) => f.name.replace(/\.md$/, '') === slug);
+          if (!target) {
+            showError('🔍', '找不到这篇内容', `未在内容仓库中找到 slug 为「${slug}」的文件。`,
+              '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+            return;
+          }
+
+          const res = await fetch(target.download_url + '?t=' + Date.now());
+          const raw = await res.text();
+          const parsed = parseFrontmatter(raw, target.name);
+          const post = normalizePost(target.name, raw, parsed);
+
+          if (!post) {
+            showError('⚠️', '内容格式异常', '该文件不是本板块的结构化格式（缺少 JSON 区块）。',
+              '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+            return;
+          }
+
+          // 可见性控制
+          if (post.visibility !== 'public') {
+            const me = await getCurrentUser();
+            if (!me) {
+              showError('🔐', '这篇内容需要登录后查看', '请先登录再访问。',
+                '<a href="/auth.html" class="btn btn-primary" style="margin-top:14px">去登录</a>');
+              return;
+            }
+            if (post.visibility === 'private' && post.meta.authorEmail && post.meta.authorEmail !== me.email) {
+              showError('🔒', '这是仅作者本人可见的内容', '你没有查看权限。',
+                '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+              return;
+            }
+          }
+
+          document.title = post.title + ' · 欲炼之途';
+          box.innerHTML = renderDetail(post);
+
+          // 极高风险折叠展开
+          const expandBtn = document.getElementById('expandBtn');
+          if (expandBtn) {
+            expandBtn.addEventListener('click', () => {
+              document.getElementById('collapsedBox').style.display = 'none';
+              document.getElementById('bodyBox').style.display = 'block';
+            });
+          }
+        } catch (err) {
+          showError('⚠️', '加载失败', err.message,
+            '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
+        } finally {
+          hideLoading(false);
+        }
+      }
+
+      document.getElementById('copyBtn').addEventListener('click', async (e) => {
+        try {
+          await navigator.clipboard.writeText(location.href);
+          e.currentTarget.textContent = '✅ 已复制';
+        } catch {
+          e.currentTarget.textContent = '❌ 复制失败';
+        }
+        setTimeout(() => { e.currentTarget.textContent = '🔗 复制链接'; }, 1500);
+      });
+
+      void RISK_COLLAPSED;
+      load();
+    </script>
+  </body>
+</html>

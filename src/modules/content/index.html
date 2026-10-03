@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <title>欲炼之途 · Foxsir</title>
+    <link rel="stylesheet" href="./css/content.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="page-head">
+        <div class="brand">
+          <h1>⛓️ 欲炼之途</h1>
+          <p class="sub">玩法 · 见闻 · 见解 —— 一个可以发布自己玩法与见解的地方</p>
+        </div>
+        <div class="head-actions" id="headActions">
+          <a href="/index.html" class="btn btn-ghost">← 返回控制中心</a>
+          <button type="button" class="btn btn-ghost" id="refreshBtn">🔄 刷新</button>
+          <a href="./post-editor.html" class="btn btn-primary" id="writeBtn" style="display: none">✍️ 发布内容</a>
+        </div>
+      </header>
+
+      <!-- 类型筛选 -->
+      <nav class="filters" id="typeFilters">
+        <button class="fbtn active" data-type="all">全部</button>
+        <button class="fbtn" data-type="task">⛓️ 玩法任务</button>
+        <button class="fbtn" data-type="collection">🗂️ 主题合集</button>
+        <button class="fbtn" data-type="checklist">📊 分级清单</button>
+        <button class="fbtn" data-type="note">✍️ 见解随笔</button>
+      </nav>
+
+      <!-- 工具条 -->
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="s-ico">🔍</span>
+          <input type="text" id="searchInput" placeholder="搜索标题、摘要、标签…" />
+          <span class="s-clear" id="searchClear">✕</span>
+        </div>
+        <div class="tool-right">
+          <label class="chk"><input type="checkbox" id="showHighRisk" /><span>显示高风险</span></label>
+          <label class="chk"><input type="checkbox" id="hidePrivate" checked /><span>隐藏「仅自己」</span></label>
+          <span class="count" id="countLabel">共 0 篇</span>
+        </div>
+      </div>
+
+      <!-- 标签筛选 -->
+      <div class="tagbar" id="tagBar"></div>
+
+      <!-- 列表 -->
+      <main class="grid" id="grid"></main>
+
+      <div class="state" id="stateBox">
+        <div class="spinner"></div>
+        <p>加载中…</p>
+      </div>
+    </div>
+
+    <script type="importmap">
+      { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+
+    <script type="module">
+      import { CONTENT_STORE, TAG_GROUPS, RISK_COLLAPSED } from './js/content-types.js';
+      import { normalizePost, renderCard, esc } from './js/render.js';
+      import { fetchContentList, fetchContentListForce, parseFrontmatter, getToken } from '@/admin/content-manager.js';
+      import { getCurrentUser } from '@/shared/js/auth.js';
+      import { getUserRole } from '@/shared/js/identity.js';
+      import { showLoading, hideLoading } from '@/shared/js/loading.js';
+
+      const grid = document.getElementById('grid');
+      const stateBox = document.getElementById('stateBox');
+      const countLabel = document.getElementById('countLabel');
+      const searchInput = document.getElementById('searchInput');
+      const searchClear = document.getElementById('searchClear');
+
+      const state = {
+        all: [],
+        type: 'all',
+        tags: [],
+        keyword: '',
+        showHighRisk: false,
+        hidePrivate: true,
+        me: null,
+      };
+
+      // ─────────────────────────── 初始化
+      async function init() {
+        showLoading('加载内容', '正在读取…');
+        try {
+          state.me = await getCurrentUser();
+          const role = await getUserRole();
+          if (state.me) document.getElementById('writeBtn').style.display = 'inline-block';
+          await loadList();
+          renderTagBar();
+          bindEvents();
+        } catch (err) {
+          showState('⚠️', '加载失败', err.message);
+        } finally {
+          hideLoading(false);
+        }
+      }
+
+      async function loadList(force = false) {
+        showState(null);
+        if (!getToken()) {
+          showState('🔑', '未配置 GitHub Token', '内容读取需要 Token。可在 <a href="/admin.html">管理后台</a> 的 Token 设置里填入，或配置环境变量 VITE_GITHUB_TOKEN。');
+          countLabel.textContent = '共 0 篇';
+          return;
+        }
+        let files = [];
+        try {
+          files = force
+            ? await fetchContentListForce(CONTENT_STORE.branch, CONTENT_STORE.path)
+            : await fetchContentList(CONTENT_STORE.branch, CONTENT_STORE.path);
+        } catch (err) {
+          showState('⚠️', '读取列表失败', err.message);
+          return;
+        }
+
+        const posts = [];
+        await Promise.all((files || []).map(async (f) => {
+          try {
+            const res = await fetch(f.download_url + '?t=' + Date.now());
+            const raw = await res.text();
+            const parsed = parseFrontmatter(raw, f.name);
+            const post = normalizePost(f.name, raw, parsed);
+            if (post) posts.push(post);
+          } catch { /* 单篇失败不影响整体 */ }
+        }));
+
+        posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        state.all = posts;
+        render();
+      }
+
+      // ─────────────────────────── 渲染
+      function visiblePosts() {
+        return state.all.filter((p) => {
+          if (state.type !== 'all' && p.type !== state.type) return false;
+          if (state.tags.length && !state.tags.every((t) => p.tags.includes(t))) return false;
+          if (state.hidePrivate && p.visibility === 'private') return false;
+          if (!state.showHighRisk && RISK_COLLAPSED.includes(p.risk)) return false;
+          if (state.keyword) {
+            const hay = [p.title, p.summary, p.tags.join(' '), p.author].join(' ').toLowerCase();
+            if (!hay.includes(state.keyword)) return false;
+          }
+          return true;
+        });
+      }
+
+      function render() {
+        const list = visiblePosts();
+        countLabel.textContent = `共 ${list.length} 篇` + (state.hidePrivate && state.all.length !== list.length ? `（已过滤）` : '');
+        if (!list.length) {
+          const empty = state.all.length
+            ? { ico: '🔍', t1: '没有匹配的内容', t2: '试试换个类型或清空搜索条件' }
+            : { ico: '🌱', t1: '这里还是一片空白', t2: '成为第一个发布玩法或见解的人吧' };
+          grid.innerHTML = '';
+          showState(empty.ico, empty.t1, empty.t2);
+          return;
+        }
+        showState(null);
+        grid.innerHTML = list.map(renderCard).join('');
+      }
+
+      function showState(ico, t1, t2) {
+        if (!ico) { stateBox.style.display = 'none'; return; }
+        stateBox.style.display = 'flex';
+        stateBox.innerHTML = `<div class="st-ico">${ico}</div><div class="st-t1">${t1}</div>${t2 ? `<div class="st-t2">${t2}</div>` : ''}`;
+      }
+
+      // ─────────────────────────── 标签栏
+      function renderTagBar() {
+        const used = new Set(state.all.flatMap((p) => p.tags));
+        const bar = document.getElementById('tagBar');
+        const groups = TAG_GROUPS.map((g) => {
+          const tags = g.tags.filter((t) => used.has(t));
+          if (!tags.length) return '';
+          return `<div class="tb-group"><span class="tb-name">${esc(g.group)}</span>${
+            tags.map((t) => `<button class="tb-tag${state.tags.includes(t) ? ' on' : ''}" data-tag="${esc(t)}">${esc(t)}</button>`).join('')
+          }</div>`;
+        }).join('');
+        bar.innerHTML = groups || '';
+        bar.querySelectorAll('.tb-tag').forEach((b) => {
+          b.addEventListener('click', () => {
+            const t = b.dataset.tag;
+            if (state.tags.includes(t)) state.tags = state.tags.filter((x) => x !== t);
+            else state.tags.push(t);
+            b.classList.toggle('on', state.tags.includes(t));
+            render();
+          });
+        });
+      }
+
+      // ─────────────────────────── 事件
+      function bindEvents() {
+        document.querySelectorAll('#typeFilters .fbtn').forEach((b) => {
+          b.addEventListener('click', () => {
+            document.querySelectorAll('#typeFilters .fbtn').forEach((x) => x.classList.remove('active'));
+            b.classList.add('active');
+            state.type = b.dataset.type;
+            render();
+          });
+        });
+
+        let t = null;
+        searchInput.addEventListener('input', (e) => {
+          const v = e.target.value.trim();
+          searchClear.classList.toggle('visible', !!v);
+          clearTimeout(t);
+          t = setTimeout(() => { state.keyword = v.toLowerCase(); render(); }, 200);
+        });
+        searchClear.addEventListener('click', () => {
+          searchInput.value = '';
+          searchClear.classList.remove('visible');
+          state.keyword = '';
+          render();
+        });
+
+        document.getElementById('showHighRisk').addEventListener('change', (e) => {
+          state.showHighRisk = e.target.checked;
+          render();
+        });
+        document.getElementById('hidePrivate').addEventListener('change', (e) => {
+          state.hidePrivate = e.target.checked;
+          render();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', async (e) => {
+          const btn = e.currentTarget;
+          const old = btn.textContent;
+          btn.textContent = '⏳ 刷新中…';
+          btn.disabled = true;
+          try {
+            await loadList(true);
+            renderTagBar();
+            btn.textContent = '✅ 已更新';
+          } catch {
+            btn.textContent = '❌ 失败';
+          } finally {
+            setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1200);
+          }
+        });
+      }
+
+      init();
+    </script>
+  </body>
+</html>

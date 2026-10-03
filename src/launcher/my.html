@@ -482,7 +482,7 @@
                   接取任务、提交返图与完成进度都会留痕在这里。<br />
                   任务接取与返图功能正在开发中。
                 </div>
-                <a href="/modules/mission/" class="cta">先去任务区看看 →</a>
+                <a href="/modules/content/" class="cta">先去欲炼之途看看 →</a>
               </div>
             </div>
           </div>
@@ -500,9 +500,9 @@
                 <div class="ico">📖</div>
                 <div class="t1">还没有发布记录</div>
                 <div class="t2">
-                  你在知识区与任务区发布的文章会按作者昵称归集到这里。
+                  你在欲炼之途发布的玩法、合集、清单与见解都会归集到这里。
                 </div>
-                <a href="/modules/knowledge/" class="cta">去知识区发布 →</a>
+                <a href="/modules/content/post-editor.html" class="cta">去发布内容 →</a>
               </div>
             </div>
           </div>
@@ -747,33 +747,24 @@
         box.innerHTML = `<div style="padding:20px 0"><div class="sk" style="height:14px;width:60%;margin-bottom:10px"></div><div class="sk" style="height:14px;width:40%"></div></div>`;
 
         try {
-          const { CONTENT_CONFIG } = await import('@/admin/content-config.js');
+          const { CONTENT_STORE } = await import('@/modules/content/js/content-types.js');
+          const { normalizePost } = await import('@/modules/content/js/render.js');
           const { fetchContentList, parseFrontmatter } = await import('@/admin/content-manager.js');
 
-          const sources = [
-            { key: 'knowledge', name: '📖 知识区', branch: CONTENT_CONFIG.branches.knowledge, path: CONTENT_CONFIG.paths.knowledge, detail: '/modules/knowledge/article.html?slug=' },
-            { key: 'tasks', name: '⛓️ 任务区', branch: CONTENT_CONFIG.branches.tasks, path: CONTENT_CONFIG.paths.tasks, detail: '/modules/mission/detail.html?slug=' },
-          ];
+          const files = await fetchContentList(CONTENT_STORE.branch, CONTENT_STORE.path).catch(() => []);
 
           const mine = [];
-          for (const s of sources) {
-            let files = [];
+          for (const f of files) {
             try {
-              files = await fetchContentList(s.branch, s.path);
+              const res = await fetch(f.download_url + '?t=' + Date.now());
+              const raw = await res.text();
+              const parsed = parseFrontmatter(raw, f.name);
+              const post = normalizePost(f.name, raw, parsed);
+              if (!post) continue;
+              // 按作者昵称归集；匿名发布归到「匿名」名下
+              if ((post.author || '').trim() === name) mine.push(post);
             } catch {
-              files = [];
-            }
-            for (const f of files) {
-              try {
-                const res = await fetch(f.download_url + '?t=' + Date.now());
-                const raw = await res.text();
-                const parsed = parseFrontmatter(raw, f.name);
-                if ((parsed.author_nickname || '').trim() === name) {
-                  mine.push({ ...parsed, source: s });
-                }
-              } catch {
-                /* 单篇失败不影响整体 */
-              }
+              /* 单篇失败不影响整体 */
             }
           }
 
@@ -782,26 +773,26 @@
           if (!mine.length) {
             box.innerHTML = `
               <div class="empty">
-                <div class="ico">📖</div>
+                <div class="ico">📝</div>
                 <div class="t1">还没有发布记录</div>
                 <div class="t2">
-                  已按作者昵称「${esc(name)}」检索知识区与任务区，未找到你发布的内容。<br />
+                  已按作者昵称「${esc(name)}」检索欲炼之途，未找到你发布的内容。<br />
                   发布后会自动归集到这里。
                 </div>
-                <a href="/modules/knowledge/" class="cta">去知识区发布 →</a>
+                <a href="/modules/content/post-editor.html" class="cta">去发布内容 →</a>
               </div>`;
             return;
           }
 
-          mine.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          mine.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           box.innerHTML = mine
             .map(
               (p) => `
-              <a class="list-row" href="${p.source.detail}${encodeURIComponent(p.slug)}" style="text-decoration:none;color:inherit">
-                <div class="thumb">${p.source.name.slice(0, 2)}</div>
+              <a class="list-row" href="/modules/content/post.html?slug=${encodeURIComponent(p.slug)}" style="text-decoration:none;color:inherit">
+                <div class="thumb">${p.typeInfo.icon}</div>
                 <div class="body">
                   <div class="t">${esc(p.title || '未命名')}</div>
-                  <div class="m">${esc(p.source.name)} ｜ ${esc(p.category || '未分类')} ｜ ${new Date(p.created_at).toLocaleDateString('zh-CN')}</div>
+                  <div class="m">${esc(p.typeInfo.label)} ｜ ${p.riskInfo.icon} ${esc(p.riskInfo.label)} ｜ ${new Date(p.createdAt).toLocaleDateString('zh-CN')}${p.visibility === 'private' ? ' ｜ 🔒 仅自己' : ''}</div>
                 </div>
                 <div style="color:rgba(255,255,255,0.2);font-size:12px">→</div>
               </a>`
