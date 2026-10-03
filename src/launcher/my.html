@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
+    <title>我的 · Foxsir</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0f0e17;
+        color: #fffffe;
+        min-height: 100vh;
+        padding: 20px 16px 60px;
+        background-image:
+          radial-gradient(ellipse at 50% 12%, rgba(212, 165, 116, 0.08) 0%, transparent 58%),
+          radial-gradient(ellipse at 85% 65%, rgba(212, 165, 116, 0.035) 0%, transparent 55%);
+        background-attachment: fixed;
+      }
+
+      .wrap { max-width: 860px; margin: 0 auto; }
+
+      /* ══════════ 顶部条 ══════════ */
+      .page-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 16px;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        font-size: 13px;
+        transition: all 0.25s ease;
+      }
+      .back-link:hover {
+        background: rgba(212, 165, 116, 0.1);
+        border-color: rgba(212, 165, 116, 0.22);
+        color: #d4a574;
+      }
+      .page-title {
+        font-family: 'Georgia', serif;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, #f5d6a8, #d4a574);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ══════════ 个人名片（类抖音个人页头部）══════════ */
+      .hero {
+        position: relative;
+        border-radius: 24px;
+        border: 1px solid rgba(212, 165, 116, 0.13);
+        background:
+          linear-gradient(135deg, rgba(212, 165, 116, 0.07) 0%, rgba(212, 165, 116, 0.01) 55%),
+          rgba(255, 255, 255, 0.02);
+        padding: 26px 28px 22px;
+        margin-bottom: 16px;
+        overflow: hidden;
+      }
+      .hero::after {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -60px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(212, 165, 116, 0.12) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .hero-main {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hero-avatar {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #1a1a2e;
+        border: 2px solid rgba(212, 165, 116, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 30px rgba(212, 165, 116, 0.08);
+      }
+      .hero-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .hero-avatar .letter { font-size: 30px; color: rgba(255, 255, 255, 0.22); }
+
+      .hero-info { flex: 1; min-width: 200px; }
+      .hero-name {
+        font-size: 21px;
+        font-weight: 600;
+        color: #fffffe;
+        margin-bottom: 5px;
+        letter-spacing: 0.3px;
+        word-break: break-all;
+      }
+      .hero-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+      .chip {
+        display: inline-block;
+        padding: 2px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        background: rgba(212, 165, 116, 0.13);
+        border: 1px solid rgba(212, 165, 116, 0.2);
+        color: #d4a574;
+        white-space: nowrap;
+      }
+      .chip.gray {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.07);
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .chip.role {
+        background: rgba(255, 255, 255, 0.03);
+        border-color: rgba(255, 255, 255, 0.06);
+        color: rgba(255, 255, 255, 0.4);
+      }
+      .hero-sub {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.22);
+        margin-top: 9px;
+        line-height: 1.6;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ══════════ 数据栏（粉丝 / 关注 / 积分）══════════ */
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 18px;
+      }
+      .stat {
+        background: rgba(15, 14, 23, 0.85);
+        padding: 16px 10px;
+        text-align: center;
+        transition: background 0.25s ease;
+      }
+      .stat:hover { background: rgba(212, 165, 116, 0.05); }
+      .stat .num {
+        font-size: 22px;
+        font-weight: 600;
+        color: #fffffe;
+        font-family: 'Georgia', serif;
+        line-height: 1.25;
+      }
+      .stat .num.pending { color: rgba(255, 255, 255, 0.2); font-size: 20px; }
+      .stat .lbl { font-size: 11.5px; color: rgba(255, 255, 255, 0.3); margin-top: 3px; }
+      .stat .sub { font-size: 10px; color: rgba(212, 165, 116, 0.45); margin-top: 2px; }
+
+      /* ══════════ 内容 Tab ══════════ */
+      .tabs {
+        display: flex;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 14px;
+        padding: 4px;
+        margin-bottom: 16px;
+        overflow-x: auto;
+      }
+      .tab {
+        flex: 1;
+        min-width: 88px;
+        padding: 10px 6px;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.35);
+        font-size: 13.5px;
+        font-family: inherit;
+        border-radius: 11px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        white-space: nowrap;
+      }
+      .tab:hover:not(.active) { color: rgba(255, 255, 255, 0.65); }
+      .tab.active {
+        background: rgba(212, 165, 116, 0.13);
+        color: #d4a574;
+        font-weight: 500;
+      }
+      .tab .cnt {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.25);
+      }
+      .tab.active .cnt { color: rgba(212, 165, 116, 0.7); }
+
+      .panel { display: none; }
+      .panel.active { display: block; animation: fadeUp 0.3s ease; }
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* ══════════ 卡片 / 列表 ══════════ */
+      .card {
+        background: rgba(255, 255, 255, 0.022);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 18px;
+        padding: 20px 22px;
+        margin-bottom: 14px;
+      }
+      .card-head {
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.28);
+        letter-spacing: 0.5px;
+        margin-bottom: 14px;
+        padding-bottom: 11px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 96px 1fr;
+        gap: 9px 16px;
+        font-size: 13.5px;
+      }
+      .kv .k { color: rgba(255, 255, 255, 0.3); }
+      .kv .v { color: rgba(255, 255, 255, 0.82); word-break: break-word; }
+      .kv .v.dim { color: rgba(255, 255, 255, 0.2); }
+
+      /* 空态 */
+      .empty {
+        text-align: center;
+        padding: 46px 20px;
+      }
+      .empty .ico { font-size: 40px; opacity: 0.35; margin-bottom: 12px; }
+      .empty .t1 { font-size: 14px; color: rgba(255, 255, 255, 0.42); margin-bottom: 6px; }
+      .empty .t2 {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.2);
+        line-height: 1.75;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .empty .cta {
+        display: inline-block;
+        margin-top: 16px;
+        padding: 8px 22px;
+        border-radius: 40px;
+        font-size: 13px;
+        text-decoration: none;
+        background: rgba(212, 165, 116, 0.12);
+        border: 1px solid rgba(212, 165, 116, 0.22);
+        color: #d4a574;
+        transition: all 0.25s ease;
+      }
+      .empty .cta:hover { background: rgba(212, 165, 116, 0.2); transform: translateY(-1px); }
+
+      /* 预留标签 */
+      .soon {
+        display: inline-block;
+        padding: 1px 9px;
+        border-radius: 20px;
+        font-size: 10px;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.18);
+        color: #f59e0b;
+        margin-left: 6px;
+      }
+
+      /* 列表行（为后续真实数据预留） */
+      .list-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 13px 0;
+        border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+      }
+      .list-row:last-child { border-bottom: none; }
+      .list-row .thumb {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .list-row .body { flex: 1; min-width: 0; }
+      .list-row .t { font-size: 13.5px; color: rgba(255, 255, 255, 0.8); margin-bottom: 3px; }
+      .list-row .m { font-size: 11.5px; color: rgba(255, 255, 255, 0.25); }
+
+      /* 按钮 */
+      .btn {
+        padding: 10px 24px;
+        border-radius: 40px;
+        border: none;
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: inherit;
+        text-decoration: none;
+        display: inline-block;
+      }
+      .btn-primary { background: linear-gradient(135deg, #d4a574, #b8946a); color: #0f0e17; }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212, 165, 116, 0.2); }
+      .btn-ghost {
+        background: transparent;
+        color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+      .btn-ghost:hover { background: rgba(255, 255, 255, 0.05); color: #fffffe; }
+
+      /* 未登录 */
+      .guest-box { text-align: center; padding: 50px 20px; }
+      .guest-box .ico { font-size: 46px; margin-bottom: 14px; opacity: 0.5; }
+      .guest-box p { color: rgba(255, 255, 255, 0.4); font-size: 14px; margin-bottom: 22px; line-height: 1.75; }
+
+      /* 骨架屏 */
+      .sk {
+        background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0.03) 75%);
+        background-size: 200% 100%;
+        animation: skShimmer 1.4s infinite;
+        border-radius: 8px;
+      }
+      @keyframes skShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      @media (max-width: 560px) {
+        .hero { padding: 20px 18px 18px; border-radius: 20px; }
+        .hero-avatar { width: 68px; height: 68px; }
+        .hero-avatar .letter { font-size: 24px; }
+        .hero-name { font-size: 18px; }
+        .stat .num { font-size: 19px; }
+        .card { padding: 16px 16px; border-radius: 15px; }
+        .kv { grid-template-columns: 76px 1fr; font-size: 13px; }
+        .tab { font-size: 12.5px; min-width: 74px; padding: 9px 4px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="page-top">
+        <a href="/index.html" class="back-link">← 返回控制中心</a>
+        <div class="page-title">我的</div>
+      </div>
+
+      <!-- ══════════ 未登录 ══════════ -->
+      <div class="card" id="guestCard" style="display: none">
+        <div class="guest-box">
+          <div class="ico">🗂️</div>
+          <p>
+            这里会沉淀你在平台内的所有留痕<br />
+            <span style="font-size: 12.5px; color: rgba(255,255,255,0.25)">
+              档案 · 任务 · 内容 · 关注与粉丝
+            </span>
+          </p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap">
+            <a href="/auth.html" class="btn btn-primary">🌿 注册 / 登录</a>
+            <a href="/index.html" class="btn btn-ghost">先去逛逛</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════ 已登录 ══════════ -->
+      <div id="memberArea" style="display: none">
+        <!-- 个人名片 -->
+        <section class="hero">
+          <div class="hero-main">
+            <div class="hero-avatar" id="heroAvatar"><span class="letter">—</span></div>
+            <div class="hero-info">
+              <div class="hero-name" id="heroName">—</div>
+              <div class="hero-tags" id="heroTags"></div>
+              <div class="hero-sub" id="heroSub"></div>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a href="/profile.html" class="btn btn-primary">✏️ 编辑资料</a>
+            <a href="/modules/sub-archive/" class="btn btn-ghost">🌊 去档案馆</a>
+          </div>
+        </section>
+
+        <!-- 数据栏 -->
+        <section class="stats">
+          <div class="stat">
+            <div class="num pending" id="statFollowing">—</div>
+            <div class="lbl">关注</div>
+            <div class="sub">待开放</div>
+          </div>
+          <div class="stat">
+            <div class="num pending" id="statFollowers">—</div>
+            <div class="lbl">粉丝</div>
+            <div class="sub">待开放</div>
+          </div>
+          <div class="stat">
+            <div class="num" id="statPoints">0</div>
+            <div class="lbl">积分</div>
+            <div class="sub" id="statLevel">—</div>
+          </div>
+        </section>
+
+        <!-- 内容 Tab -->
+        <nav class="tabs" id="tabs">
+          <button class="tab active" data-tab="archive">我的档案</button>
+          <button class="tab" data-tab="missions">接取的任务<span class="cnt" id="cntMissions">0</span></button>
+          <button class="tab" data-tab="posts">发布的内容<span class="cnt" id="cntPosts">0</span></button>
+          <button class="tab" data-tab="relation">关系<span class="soon" style="margin-left:0">预留</span></button>
+        </nav>
+
+        <!-- ── Tab 1：我的档案 ── -->
+        <div class="panel active" id="panel-archive">
+          <div class="card" id="archiveCard">
+            <div class="card-head">
+              <span>平台内档案留痕</span>
+              <span style="font-size: 11px; color: rgba(255,255,255,0.18)">档案数据由管理员在后台维护</span>
+            </div>
+            <div class="kv" id="archiveKv">
+              <div class="k">档案状态</div><div class="v dim">读取中…</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">身份信息</div>
+            <div class="kv" id="identityKv">
+              <div class="k">主身份</div><div class="v dim">读取中…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Tab 2：接取的任务 ── -->
+        <div class="panel" id="panel-missions">
+          <div class="card">
+            <div class="card-head">
+              <span>接取的任务记录</span>
+              <span class="soon" style="margin: 0">待开放</span>
+            </div>
+            <div id="missionList">
+              <div class="empty">
+                <div class="ico">⛓️</div>
+                <div class="t1">还没有接取记录</div>
+                <div class="t2">
+                  接取任务、提交返图与完成进度都会留痕在这里。<br />
+                  任务接取与返图功能正在开发中。
+                </div>
+                <a href="/modules/mission/" class="cta">先去任务区看看 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Tab 3：发布的内容 ── -->
+        <div class="panel" id="panel-posts">
+          <div class="card">
+            <div class="card-head">
+              <span>我发布的内容</span>
+              <span style="font-size: 11px; color: rgba(255,255,255,0.18)">按作者昵称匹配</span>
+            </div>
+            <div id="postList">
+              <div class="empty">
+                <div class="ico">📖</div>
+                <div class="t1">还没有发布记录</div>
+                <div class="t2">
+                  你在知识区与任务区发布的文章会按作者昵称归集到这里。
+                </div>
+                <a href="/modules/knowledge/" class="cta">去知识区发布 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Tab 4：关系（预留）── -->
+        <div class="panel" id="panel-relation">
+          <div class="card">
+            <div class="card-head">
+              <span>关注与粉丝</span>
+              <span class="soon" style="margin: 0">待开放</span>
+            </div>
+            <div class="empty">
+              <div class="ico">👥</div>
+              <div class="t1">关系系统尚未开放</div>
+              <div class="t2">
+                后续这里会展示关注列表、粉丝列表与互动记录。<br />
+                需要先完成账号关系数据模型。
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <span>互动留痕</span>
+              <span class="soon" style="margin: 0">待开放</span>
+            </div>
+            <div class="empty">
+              <div class="ico">💬</div>
+              <div class="t1">暂无互动记录</div>
+              <div class="t2">点赞、评论、收藏等互动痕迹会归集在这里。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      { "imports": { "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2" } }
+    </script>
+
+    <script type="module">
+      import { getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
+      import { getUserRole } from '@/shared/js/identity.js';
+      import { calculateLevel, formatPoints } from '@/shared/js/level.js';
+      import { showLoading, hideLoading } from '@/shared/js/loading.js';
+      import { IDENTITIES } from '@/shared/config/identity-config.js';
+
+      const ROLE_MAP = {
+        guest: '访客',
+        self: '普通用户',
+        verified: '认证用户',
+        subadmin: '次级管理',
+        admin: '根源管理',
+      };
+
+      /** 档案字段 ID（与共享配置一致，避免硬编码散落） */
+      const ARCHIVE_NAME_FIELD = 'fqidTsBW5js';
+
+      const guestCard = document.getElementById('guestCard');
+      const memberArea = document.getElementById('memberArea');
+
+      // ────────────────────────────────── 工具
+      function esc(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function displayNameOf(user) {
+        const n = user?.user_metadata?.nickname;
+        if (n && n.trim()) return n.trim();
+        return user?.email?.split('@')[0] || '未命名';
+      }
+
+      function letterOf(name) {
+        const first = String(name || '').trim().charAt(0).toUpperCase();
+        return /[A-Za-z]/.test(first) ? first : '👤';
+      }
+
+      function setKv(container, rows) {
+        container.innerHTML = rows
+          .map(
+            ([k, v, dim]) =>
+              `<div class="k">${esc(k)}</div><div class="v${dim ? ' dim' : ''}">${v}</div>`
+          )
+          .join('');
+      }
+
+      // ────────────────────────────────── Tab 切换
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabs.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+          document.getElementById('panel-' + btn.dataset.tab)?.classList.add('active');
+        });
+      });
+
+      // ────────────────────────────────── 渲染：个人名片
+      function renderHero(user, identity, role) {
+        const name = displayNameOf(user);
+
+        const avatarUrl = identity?.avatarUrl;
+        document.getElementById('heroAvatar').innerHTML = avatarUrl
+          ? `<img src="${esc(avatarUrl)}" alt="头像" />`
+          : `<span class="letter">${letterOf(name)}</span>`;
+
+        document.getElementById('heroName').textContent = name;
+
+        // 标签行：主身份 · 等级 · 角色 · 副身份
+        const chips = [];
+        const primary = IDENTITIES.find((i) => i.id === identity?.primaryId);
+        if (primary) chips.push(`<span class="chip">${primary.icon} ${esc(primary.label)}</span>`);
+
+        const points = user?.user_metadata?.points ?? 0;
+        if (identity?.primaryId) {
+          const lv = calculateLevel(identity.primaryId, points);
+          chips.push(`<span class="chip">Lv.${lv.level} · ${esc(lv.title)}</span>`);
+        }
+        chips.push(`<span class="chip role">${esc(ROLE_MAP[role] || role)}</span>`);
+
+        const secDefs = (identity?.secondaryIds || [])
+          .map((id) => IDENTITIES.find((i) => i.id === id))
+          .filter(Boolean);
+        for (const d of secDefs) chips.push(`<span class="chip gray">${d.icon} ${esc(d.label)}</span>`);
+
+        document.getElementById('heroTags').innerHTML = chips.join('');
+
+        document.getElementById('heroSub').innerHTML =
+          `${esc(user?.email || '')}` +
+          (identity?.primaryId
+            ? ` ｜ 加入于 ${new Date(user?.created_at || Date.now()).toLocaleDateString('zh-CN')}`
+            : ` ｜ <span style="color:rgba(245,158,11,0.6)">尚未设置主身份</span>`);
+      }
+
+      // ────────────────────────────────── 渲染：数据栏
+      function renderStats(user, identity) {
+        const points = user?.user_metadata?.points ?? 0;
+        document.getElementById('statPoints').textContent = formatPoints(points);
+        document.getElementById('statLevel').textContent = identity?.primaryId
+          ? calculateLevel(identity.primaryId, points).title
+          : '未设身份';
+        // 关注 / 粉丝：数据模型未建，保持占位
+        document.getElementById('statFollowing').textContent = '—';
+        document.getElementById('statFollowers').textContent = '—';
+      }
+
+      // ────────────────────────────────── 渲染：身份信息
+      function renderIdentity(user, identity, role) {
+        const primary = IDENTITIES.find((i) => i.id === identity?.primaryId);
+        const secDefs = (identity?.secondaryIds || [])
+          .map((id) => IDENTITIES.find((i) => i.id === id))
+          .filter(Boolean);
+        const points = user?.user_metadata?.points ?? 0;
+        const lv = identity?.primaryId ? calculateLevel(identity.primaryId, points) : null;
+
+        setKv(document.getElementById('identityKv'), [
+          [
+            '主身份',
+            primary
+              ? `${primary.icon} ${esc(primary.label)} <span style="color:rgba(255,255,255,0.35);font-size:12px;">${esc(primary.desc)} · ${
+                  primary.gender === 'male' ? '男' : '女'
+                } · ${primary.type === 'top' ? '上位' : '下位'}</span>`
+              : '未设置',
+            !primary,
+          ],
+          [
+            '副身份',
+            secDefs.length
+              ? secDefs.map((d) => `<span class="chip gray">${d.icon} ${esc(d.label)}</span>`).join(' ')
+              : '未设置',
+            !secDefs.length,
+          ],
+          ['等级', lv ? `Lv.${lv.level} · ${esc(lv.title)}` : '—', !lv],
+          ['积分', `${points}${lv && !lv.isMaxLevel ? `（距下一级还需 ${lv.nextThreshold - points}）` : ''}`, false],
+          ['平台角色', esc(ROLE_MAP[role] || role), false],
+        ]);
+      }
+
+      // ────────────────────────────────── 渲染：档案状态
+      /**
+       * 说明：档案馆数据由 Fillout 维护，与平台账号暂无关联字段，
+       * 因此这里只能按「昵称」尝试匹配，匹配不到就如实告知，
+       * 不编造数据。后续打通账号↔档案关联后替换此函数即可。
+       */
+      async function renderArchive(user) {
+        const kv = document.getElementById('archiveKv');
+        const name = displayNameOf(user);
+
+        setKv(kv, [['档案状态', '查询中…', true]]);
+
+        try {
+          const { fetchRecords } = await import('@/modules/sub-archive/js/api.js');
+          const records = await fetchRecords(false);
+          const hit = (records || []).find((r) => {
+            const v = r?.data?.[ARCHIVE_NAME_FIELD] ?? r?.fields?.['姓名'];
+            return typeof v === 'string' && v.trim() === name;
+          });
+
+          if (hit) {
+            const d = hit.data || {};
+            setKv(kv, [
+              ['档案状态', '<span style="color:#22c55e">✅ 已建档（按昵称匹配）</span>', false],
+              ['姓名', esc(d[ARCHIVE_NAME_FIELD] || name), false],
+              ['记录 ID', `<span style="font-family:monospace;font-size:12px">${esc(hit.id)}</span>`, false],
+              ['', `<a href="/modules/sub-archive/detail.html?id=${esc(hit.id)}" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px;margin-top:6px">查看我的档案 →</a>`, false],
+            ]);
+          } else {
+            setKv(kv, [
+              ['档案状态', '未找到匹配档案', true],
+              ['匹配依据', `按昵称「${esc(name)}」匹配`, true],
+              ['', `<div style="color:rgba(255,255,255,0.25);font-size:12px;line-height:1.7;margin-top:2px">
+                      账号与档案暂未建立关联字段，因此只能按昵称推测。<br />
+                      如需建档或修改，请通过档案馆的「母の曝光」提交。
+                    </div>
+                    <a href="/modules/sub-archive/" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px;margin-top:8px">前往档案馆 →</a>`, false],
+            ]);
+          }
+        } catch (err) {
+          setKv(kv, [
+            ['档案状态', `读取失败：${esc(err.message)}`, true],
+            ['', `<a href="/modules/sub-archive/" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px">前往档案馆 →</a>`, false],
+          ]);
+        }
+      }
+
+      // ────────────────────────────────── 渲染：我发布的内容
+      /**
+       * 说明：知识区/任务区的内容存在 GitHub，frontmatter 里有 author_nickname，
+       * 因此可以按昵称真实匹配。这里做的是「读取 + 匹配」，不编造。
+       */
+      async function renderPosts(user) {
+        const box = document.getElementById('postList');
+        const cntEl = document.getElementById('cntPosts');
+        const name = displayNameOf(user);
+
+        box.innerHTML = `<div style="padding:20px 0"><div class="sk" style="height:14px;width:60%;margin-bottom:10px"></div><div class="sk" style="height:14px;width:40%"></div></div>`;
+
+        try {
+          const { CONTENT_CONFIG } = await import('@/admin/content-config.js');
+          const { fetchContentList, parseFrontmatter } = await import('@/admin/content-manager.js');
+
+          const sources = [
+            { key: 'knowledge', name: '📖 知识区', branch: CONTENT_CONFIG.branches.knowledge, path: CONTENT_CONFIG.paths.knowledge, detail: '/modules/knowledge/article.html?slug=' },
+            { key: 'tasks', name: '⛓️ 任务区', branch: CONTENT_CONFIG.branches.tasks, path: CONTENT_CONFIG.paths.tasks, detail: '/modules/mission/detail.html?slug=' },
+          ];
+
+          const mine = [];
+          for (const s of sources) {
+            let files = [];
+            try {
+              files = await fetchContentList(s.branch, s.path);
+            } catch {
+              files = [];
+            }
+            for (const f of files) {
+              try {
+                const res = await fetch(f.download_url + '?t=' + Date.now());
+                const raw = await res.text();
+                const parsed = parseFrontmatter(raw, f.name);
+                if ((parsed.author_nickname || '').trim() === name) {
+                  mine.push({ ...parsed, source: s });
+                }
+              } catch {
+                /* 单篇失败不影响整体 */
+              }
+            }
+          }
+
+          cntEl.textContent = String(mine.length);
+
+          if (!mine.length) {
+            box.innerHTML = `
+              <div class="empty">
+                <div class="ico">📖</div>
+                <div class="t1">还没有发布记录</div>
+                <div class="t2">
+                  已按作者昵称「${esc(name)}」检索知识区与任务区，未找到你发布的内容。<br />
+                  发布后会自动归集到这里。
+                </div>
+                <a href="/modules/knowledge/" class="cta">去知识区发布 →</a>
+              </div>`;
+            return;
+          }
+
+          mine.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          box.innerHTML = mine
+            .map(
+              (p) => `
+              <a class="list-row" href="${p.source.detail}${encodeURIComponent(p.slug)}" style="text-decoration:none;color:inherit">
+                <div class="thumb">${p.source.name.slice(0, 2)}</div>
+                <div class="body">
+                  <div class="t">${esc(p.title || '未命名')}</div>
+                  <div class="m">${esc(p.source.name)} ｜ ${esc(p.category || '未分类')} ｜ ${new Date(p.created_at).toLocaleDateString('zh-CN')}</div>
+                </div>
+                <div style="color:rgba(255,255,255,0.2);font-size:12px">→</div>
+              </a>`
+            )
+            .join('');
+        } catch (err) {
+          cntEl.textContent = '0';
+          box.innerHTML = `
+            <div class="empty">
+              <div class="ico">⚠️</div>
+              <div class="t1">内容读取失败</div>
+              <div class="t2">${esc(err.message)}<br />（未配置 GitHub Token 时无法读取内容列表）</div>
+            </div>`;
+        }
+      }
+
+      // ────────────────────────────────── 初始化
+      async function init() {
+        showLoading('读取我的留痕', '正在加载…');
+        try {
+          const user = await getCurrentUser();
+
+          if (!user) {
+            guestCard.style.display = 'block';
+            memberArea.style.display = 'none';
+            return;
+          }
+
+          const role = await getUserRole();
+          const identity = await getUserIdentity();
+
+          guestCard.style.display = 'none';
+          memberArea.style.display = 'block';
+
+          renderHero(user, identity, role);
+          renderStats(user, identity);
+          renderIdentity(user, identity, role);
+
+          // 任务记录：数据模型未建，保持空态
+          document.getElementById('cntMissions').textContent = '0';
+
+          // 异步加载真实数据（不阻塞首屏）
+          renderArchive(user);
+          renderPosts(user);
+        } catch (err) {
+          console.error('[my] 初始化失败:', err);
+        } finally {
+          hideLoading(false);
+        }
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -25,6 +25,7 @@
     "check:menu": "node tools/check-menu.mjs",
     "check:auth": "node tools/check-auth-flow.mjs",
     "check:avatar": "node tools/check-avatar-upload.mjs",
+    "check:my": "node tools/check-my-page.mjs",
 
     "flatten": "node tools/flatten-dist.mjs",
     "verify": "npm run check && npm run build && npm run smoke:dist",

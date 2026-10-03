@@ -1,0 +1,131 @@
+#!/usr/bin/env node
+/**
+ * tools/gen-feature-delta.mjs
+ *
+ * 产出「功能点全量梳理表」的增量补丁：
+ *   · 功能点全量梳理表_增量补丁.md   —— 新增/变更的功能行，附合并说明
+ *   · 功能点全量梳理表_增量补丁.csv  —— 同内容 CSV（UTF-8 BOM）
+ *
+ * 用途：主表可能正在 Excel 中被编辑（文件被锁），不改动它，
+ *       改为单独产出补丁，由使用者自行合并。
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+const COLS = ['文件名', '归属板块', '具体功能', '与哪个功能具有联动效果', '在哪个页面的容器或按钮进行交互'];
+
+/** 本轮变更涉及的区块标题（用于在主表中定位插入位置） */
+const ROWS = {
+  '启动器 · landing.html': [
+    ['启动器', 'landing.html', '「随便逛逛」第三入口', '→ /index.html 控制中心（访客可直接进入）', '/landing.html 页 .cta-group > a.btn-ghost「🚪 随便逛逛」'],
+  ],
+  '启动器 · index.html（顶栏改造，替换原 10 行）': [
+    ['启动器', 'index.html', '顶栏用户菜单（类微信右上角）', '收起态仅头像+昵称+身份；展开含 我的/个人资料/管理面板/退出登录', '/index.html 页 .top-bar > .user-menu#topUserInfo（触发区 #umTrigger）'],
+    ['启动器', 'index.html', '用户菜单展开', '点击触发区；Enter/Space 亦可；aria-expanded 同步', '/index.html 页 #umTrigger'],
+    ['启动器', 'index.html', '用户菜单关闭', '点外部 / Esc / 窗口 resize 三种方式', '/index.html 页 #umTrigger + document 全局监听'],
+    ['启动器', 'index.html', '菜单：我的入口', '→ my.html（个人留痕中心）', '/index.html 页 .um-item[href="/my.html"]「🗂️ 我的」'],
+    ['启动器', 'index.html', '菜单：个人资料入口', '→ profile.html', '/index.html 页 .um-item[href="/profile.html"]「👤 个人资料」'],
+    ['启动器', 'index.html', '菜单：管理面板入口', '角色 admin/subadmin 时出现 → admin.html', '/index.html 页 .um-item「⚙️ 管理面板」'],
+    ['启动器', 'index.html', '菜单：退出登录', 'signOut → 清 foxsir_session → 跳 landing', '/index.html 页 .um-item.is-danger#umLogoutBtn「🚪 退出登录」'],
+    ['启动器', 'index.html', '菜单：游客态', '虚线头像占位 + 注册/登录 + 了解规则 + 返回引导页', '/index.html 页 .um-panel（未登录时）'],
+    ['启动器', 'index.html', '头像上传（已迁出顶栏）', '⚠️ 该功能已移到 profile.html，顶栏不再直接上传', '原 #topAvatarWrapper / #topAvatarInput 已移除'],
+  ],
+  '启动器 · my.html（新增）': [
+    ['启动器', 'my.html', '★ 个人留痕中心（类抖音个人页）', '后续承载账号在平台内的全部留痕：粉丝/关注/档案/任务/内容', '/my.html 页整页'],
+    ['启动器', 'my.html', '个人名片头部', '头像 + 昵称 + 标签行（主身份/等级/角色/副身份）+ 邮箱与加入日期', '/my.html 页 section.hero（#heroAvatar / #heroName / #heroTags / #heroSub）'],
+    ['启动器', 'my.html', '数据栏 · 关注', '🔲 待开放（占位 —，数据模型未建）', '/my.html 页 #statFollowing'],
+    ['启动器', 'my.html', '数据栏 · 粉丝', '🔲 待开放（占位 —，数据模型未建）', '/my.html 页 #statFollowers'],
+    ['启动器', 'my.html', '数据栏 · 积分与等级', 'formatPoints 格式化 + calculateLevel 称号', '/my.html 页 #statPoints / #statLevel'],
+    ['启动器', 'my.html', 'Tab：我的档案', '按昵称匹配 Fillout 档案 → 命中显示姓名/记录 ID/查看入口；未命中如实告知匹配依据', '/my.html 页 .tab[data-tab=archive] + #archiveKv'],
+    ['启动器', 'my.html', 'Tab：接取的任务', '🔲 空态（接取/返图/进度留痕待开发），计数 0', '/my.html 页 .tab[data-tab=missions] + #cntMissions + #missionList'],
+    ['启动器', 'my.html', 'Tab：发布的内容', '★ 真实读取 GitHub 内容，按 author_nickname 归集知识区+任务区并跳详情', '/my.html 页 .tab[data-tab=posts] + #cntPosts + #postList'],
+    ['启动器', 'my.html', 'Tab：关系（预留）', '🔲 关注列表/粉丝列表/互动留痕 三块占位', '/my.html 页 .tab[data-tab=relation] + #panel-relation'],
+    ['启动器', 'my.html', '身份信息区', '主身份（标签+定位+性别+上下位）/ 副身份 / 等级 / 积分含距下一级 / 平台角色', '/my.html 页 #identityKv'],
+    ['启动器', 'my.html', '未登录态', '游客卡：说明留痕定位 + 注册登录 + 先去逛逛', '/my.html 页 #guestCard'],
+    ['启动器', 'my.html', '编辑资料入口', '→ profile.html', '/my.html 页 .hero-actions > a.btn-primary「✏️ 编辑资料」'],
+    ['启动器', 'my.html', '去档案馆入口', '→ /modules/sub-archive/', '/my.html 页 .hero-actions > a.btn-ghost「🌊 去档案馆」'],
+    ['启动器', 'my.html', '骨架屏', '发布内容加载中显示 shimmer 占位（.sk）', '/my.html 页 #postList 加载态'],
+  ],
+  '启动器 · profile.html（新增）': [
+    ['启动器', 'profile.html', '个人资料页', '头像更换 / 昵称编辑 / 身份等级只读展示 / 登出', '/profile.html 页整页'],
+    ['启动器', 'profile.html', '头像更换', 'hover 遮罩 → 类型与大小校验（≤5MB）→ Canvas 压缩 200×200 WebP → Storage → metadata', '/profile.html 页 .avatar-big#avatarBox + 隐藏 input#avatarFile'],
+    ['启动器', 'profile.html', '昵称编辑与保存', '≤24 字；改动启用保存；保存后同步 localStorage 会话供其他页面即时读取', '/profile.html 页 input#nicknameInput + button#saveBtn「保存修改」'],
+    ['启动器', 'profile.html', '昵称还原', '回到原始昵称并禁用保存', '/profile.html 页 button#resetBtn「还原」'],
+    ['启动器', 'profile.html', '邮箱只读展示', '作为登录凭据，不可修改', '/profile.html 页 input#emailInput（disabled）'],
+    ['启动器', 'profile.html', '身份与等级展示', '主身份/副身份/等级含积分与距下一级/平台角色（只读信息行，为后续自助修改预留）', '/profile.html 页 #primaryIdentity / #secondaryIdentity / #levelInfo / #roleInfo'],
+    ['启动器', 'profile.html', '退出登录', 'signOut → 跳转', '/profile.html 页 button#logoutBtn「退出登录」'],
+    ['启动器', 'profile.html', '未登录态', '游客卡 + 注册登录 + 先去逛逛', '/profile.html 页 #guestCard'],
+  ],
+  '共享层 · 新增访问控制开关': [
+    ['共享层', 'config/access.js', '★ 访问控制总开关', 'RELAXED_ACCESS 单一开关；被 guard.js 与 registry.js 读取', '无 UI（改一行即全局生效）'],
+    ['共享层', 'js/guard.js', '路由管控（放宽/收紧）', 'RELAXED_ACCESS=true 时 initGuard 直接 return，零重定向；false 时恢复白名单与跳转', '被 /index.html 引入；控制台输出当前模式提示'],
+    ['共享层', 'js/registry.js', '模块可见性', '放宽时跳过角色白名单与维护态，向所有人展示全部非 offline 模块', '影响 /index.html 探索区与 /module.html'],
+  ],
+};
+
+const now = new Date().toISOString().slice(0, 16).replace('T', ' ');
+
+const lines = [];
+lines.push('# 功能点全量梳理表 · 增量补丁');
+lines.push('');
+lines.push(`> **生成时间**：${now}`);
+lines.push('> **背景**：主表 `功能点全量梳理表.csv` 当前被 Excel 占用（文件锁），未改动。');
+lines.push('> **用法**：按下方各区块的「合并位置」提示，把对应行插入主表；或直接用本表作为补充清单。');
+lines.push(`> **列定义**：${COLS.join(' ｜ ')}`);
+lines.push('');
+
+let total = 0;
+for (const [section, rows] of Object.entries(ROWS)) {
+  lines.push(`## ${section}`);
+  lines.push('');
+  lines.push(`共 ${rows.length} 行。`);
+  lines.push('');
+  lines.push('| ' + COLS.join(' | ') + ' |');
+  lines.push('|:---|:---|:---|:---|:---|');
+  for (const r of rows) {
+    lines.push('| ' + r.map((c) => String(c).replace(/\|/g, '\\|')).join(' | ') + ' |');
+    total++;
+  }
+  lines.push('');
+}
+
+lines.push('---');
+lines.push('');
+lines.push('## 合并说明');
+lines.push('');
+lines.push('| 区块 | 合并动作 |');
+lines.push('|:---|:---|');
+lines.push('| 启动器 · landing.html | **新增** 1 行到 landing.html 段落 |');
+lines.push('| 启动器 · index.html | **新增** 8 行；并把原「顶栏未登录占位 / 顶栏头像展示 / 顶栏昵称展示 / 顶栏等级称号 / 顶栏无身份占位 / 顶栏管理入口 / 头像上传 / 头像上传类型校验 / 头像上传大小校验 / 登出」这 **10 行标记为「已废弃」**（顶栏结构已重写） |');
+lines.push('| 启动器 · my.html | **新增** 14 行（新页面） |');
+lines.push('| 启动器 · profile.html | **新增** 8 行（新页面） |');
+lines.push('| 共享层 · 访问控制 | **新增** 3 行；并更新原 `js/guard.js` 与 `js/registry.js` 两行的「具体功能」描述 |');
+lines.push('');
+lines.push(`**本补丁合计新增 ${total} 行。**`);
+lines.push('');
+lines.push('*主表可由 `node tools/gen-feature-table.mjs` 重新生成（需先关闭 Excel）。*');
+
+const mdOut = path.join(ROOT, '功能点全量梳理表_增量补丁.md');
+fs.writeFileSync(mdOut, lines.join('\n'), 'utf8');
+
+// CSV（UTF-8 BOM），跳过锁定文件
+const csvCell = (s) => {
+  const v = String(s).replace(/\r?\n/g, ' ').replace(/"/g, '""');
+  return /[",]/.test(v) ? `"${v}"` : v;
+};
+const csv = [['区块', '合并动作', ...COLS].map(csvCell).join(',')];
+for (const [section, rows] of Object.entries(ROWS)) {
+  for (const r of rows) csv.push([section, '新增', ...r].map(csvCell).join(','));
+}
+const csvOut = path.join(ROOT, '功能点全量梳理表_增量补丁.csv');
+try {
+  fs.writeFileSync(csvOut, '\ufeff' + csv.join('\r\n'), 'utf8');
+  console.log(`已生成: ${path.relative(ROOT, csvOut)}  (${csv.length - 1} 行)`);
+} catch (e) {
+  console.log(`⚠️ CSV 写入失败（${e.code}），仅产出 Markdown`);
+}
+console.log(`已生成: ${path.relative(ROOT, mdOut)}`);
+console.log(`补丁行数: ${total}`);

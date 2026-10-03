@@ -56,7 +56,7 @@ const JS_ENTRIES = [
 //  生产构建由 Vite 自动重写为扁平结构，但 dev server 按磁盘路径解析，
 //  因此需要在 dev 模式下做一次 URL → 磁盘文件 的映射，否则所有页面 404。
 // ================================================================
-const LAUNCHER_PAGES = ['404', 'about', 'auth', 'index', 'landing', 'module', 'profile'];
+const LAUNCHER_PAGES = ['404', 'about', 'auth', 'index', 'landing', 'module', 'my', 'profile'];
 const ADMIN_PAGES = ['admin', 'admin-article', 'admin-article-simple'];
 
 function devRoutePlugin() {

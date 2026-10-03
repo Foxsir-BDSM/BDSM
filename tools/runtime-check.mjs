@@ -53,6 +53,7 @@ const PAGES = [
   ['/auth.html', ['进入欲界', '主身份'], false],
   ['/index.html', ['SELECT YOUR PATH', '探索'], false],
   ['/profile.html', ['个人资料'], false],
+  ['/my.html', ['我的'], false],
   ['/module.html', ['module-detail-card'], false],
   ['/admin.html', ['管理面板', '下位档案'], false],
   ['/admin-article.html', ['内容管理', '已发布内容'], true],
