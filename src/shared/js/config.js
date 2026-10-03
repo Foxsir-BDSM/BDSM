@@ -5,23 +5,19 @@ export const SUPABASE_ANON_KEY =
 
 // ★★★ 项目注册表（新可见性矩阵） ★★★
 // 访客(guest) 无权访问任何板块
-// 普通用户(self) 可访问全部六大板块
-// 认证用户(verified) 可访问全部六大板块
-// 次级管理(subadmin) 可访问全部六大板块
-// 根源管理(admin) 可访问全部六大板块
+// 普通用户(self) 可访问全部板块
+// 认证用户(verified) 可访问全部板块
+// 次级管理(subadmin) 可访问全部板块
+// 根源管理(admin) 可访问全部板块
+//
+// 2026-10-03：原「欲主之殿(dom-archive)」与「欲渊之庭(sub-archive)」
+// 已合并为单一档案库，不再按上下位分馆；S 与 M 的区分由档案的
+// 「身份」字段承担，列表页据用户身份与取向筛选。
 export const PROJECTS = [
-  {
-    id: 'dom-archive',
-    name: '👑 欲主之殿',
-    description: '主宰者的殿堂，上位者的欲望档案',
-    url: '/modules/dom-archive/',
-    status: 'online',
-    requiredRoles: ['self', 'verified', 'subadmin', 'admin'],
-  },
   {
     id: 'sub-archive',
     name: '🌊 欲渊之庭',
-    description: '深渊的庭院，交付身体与灵魂的归所',
+    description: '统一档案库，提交真实信息建立属于你的档案',
     url: '/modules/sub-archive/',
     status: 'online',
     requiredRoles: ['self', 'verified', 'subadmin', 'admin'],

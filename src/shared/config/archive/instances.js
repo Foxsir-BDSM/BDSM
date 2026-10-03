@@ -112,34 +112,30 @@ export const SUB_ARCHIVE_CONFIG = {
   },
 
   // ============================================================
-  // ★★★ 档案类型（ARCHIVE_TYPE）★★★
-  // 当前 57 个字段为「女馆」配置。
-  // 男馆待表单补齐后新增一套实例（instances['male-archive']）即可，
-  // 筛选逻辑与渲染层无需改动。
-  // ============================================================
-  ARCHIVE_TYPE: 'female',
-  ARCHIVE_TYPE_LABEL: '女馆',
-
-  // ============================================================
   // ★★★ 筛选字段（FILTER_FIELDS）★★★
   // 目的：按「身份 + 取向」做默认过滤。
   //
-  // ⚠️ 当前为占位状态：FORM 字段 ID 尚未在 Fillout 表单中建立，
-  //    因此 filloutId 为 null。此时筛选逻辑会走「无字段」降级路径：
-  //      · 身份筛选 → 退化为按 ARCHIVE_TYPE 分区（当前全部记录视为女馆）
-  //      · 取向筛选 → 不生效（无可读字段）
-  //    表单补齐后，只需把 filloutId 换成真实字段 ID，
-  //    并在 HOME_ONLY_FIELD_IDS / DETAIL_GROUPS 中按需登记，逻辑即刻生效。
+  // 统一档案库不再区分上下位或男女馆别：
+  //   · 档案的「身份」字段标明该条记录属于 男S/女S/男M/女M
+  //   · 列表页据访问者的「身份 + 取向」筛选出对应记录
+  //
+  // ⚠️ 当前为占位状态：两个字段 ID 尚未在 Fillout 表单中建立，
+  //    因此 filloutId 为 null。此时筛选逻辑走「无字段」降级路径：
+  //      · 身份筛选 → 不生效（含位置与性别两个维度）
+  //      · 取向筛选 → 不生效
+  //    列表页会明示「档案尚未填写身份字段」。
+  //    表单补齐后，把 filloutId 换成真实字段 ID 即生效，
+  //    并在 HOME_ONLY_FIELD_IDS / DETAIL_GROUPS 中按需登记。
   // ============================================================
   FILTER_FIELDS: {
     identity: {
-      filloutId: null,            // ← 待补：Fillout 字段 ID
+      filloutId: null,            // ← 待补：Fillout 字段 ID（男S/女S/男M/女M）
       label: '身份',
       options: ['男S', '女S', '男M', '女M'],
       placeholder: true,
     },
     orientation: {
-      filloutId: null,            // ← 待补：Fillout 字段 ID
+      filloutId: null,            // ← 待补：Fillout 字段 ID（异性/同性/双性/未定）
       label: '取向',
       options: ['异性', '同性', '双性', '未定'],
       placeholder: true,
@@ -553,30 +549,17 @@ export const SUB_ARCHIVE_CONFIG = {
 };
 
 // ============================================================
-// 实例 2：上位者档案馆（欲主之殿）- 暂未配置（占位）
-// ============================================================
-export const DOM_ARCHIVE_CONFIG = {
-  id: 'dom-archive',
-  name: '上位者档案馆',
-  FIELD_LABELS: {},
-  CARD_FIELDS: { photo: '', name: '', age: '', area: '', height: '', weight: '' },
-  SEARCH_FIELDS: [],
-  DETAIL_GROUPS: [],
-  DETAIL_FIELD_ORDER: [],
-  SYSTEM_FIELD_IDS: {},
-  HOME_ONLY_FIELD_IDS: [],
-  EXTRA_EXCLUDED_FIELD_IDS: [],
-  PRIVACY_RULES: [],
-  PRIVACY_DEPENDENCIES: {},
-  ROLE_FIELD_VISIBILITY: { guest: [], self: [], verified: [], subadmin: [], admin: [] },
-};
-
-// ============================================================
 // 统一导出
+// ------------------------------------------------------------
+// 设计（2026-10-03 定稿）：上位者档案馆与下位者档案馆已合并为
+// 单一档案库，只保留一套字段配置。原本的 DOM_ARCHIVE_CONFIG
+// 是空占位（各项配置全为 0），已删除。
+//
+// 档案不再区分「馆别」；S 与 M 的区分由表单的「身份」字段承担，
+// 列表页据用户身份与取向筛选（见 FILTER_FIELDS）。
 // ============================================================
 export const ARCHIVE_INSTANCES = {
   'sub-archive': SUB_ARCHIVE_CONFIG,
-  'dom-archive': DOM_ARCHIVE_CONFIG,
 };
 
 export function getArchiveConfig(instanceId) {

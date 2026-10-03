@@ -50,7 +50,7 @@ if (!CHROME) {
 const PAGES = [
   ['/landing.html', ['欲界之门', '了解规则'], false],
   ['/about.html', ['欢迎来到', '权限速查表'], false],
-  ['/auth.html', ['进入欲界', '主身份'], false],
+  ['/auth.html', ['进入欲界', '取向'], false],
   ['/index.html', ['SELECT YOUR PATH', '探索'], false],
   ['/profile.html', ['个人资料'], false],
   ['/my.html', ['我的'], false],
@@ -64,7 +64,6 @@ const PAGES = [
   ['/modules/content/index.html', ['欲炼之途'], false],
   ['/modules/content/post-editor.html', ['发布内容', '选择发布类型'], false],
   ['/modules/content/post.html', ['缺少 slug'], false],
-  ['/modules/dom-archive/index.html', ['上位档案馆'], false],
   ['/modules/random/index.html', ['随机模块'], false],
   ['/404.html', ['404'], false],
 ];

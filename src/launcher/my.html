@@ -547,9 +547,9 @@
     <script type="module">
       import { getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
-      import { calculateLevel, formatPoints } from '@/shared/js/level.js';
+      import { getRoleTitle, getRoleInfo, formatPoints } from '@/shared/js/level.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
-      import { IDENTITIES } from '@/shared/config/identity-config.js';
+      import { IDENTITIES, getOrientation } from '@/shared/config/identity-config.js';
 
       const ROLE_MAP = {
         guest: '访客',
@@ -617,22 +617,17 @@
 
         document.getElementById('heroName').textContent = name;
 
-        // 标签行：主身份 · 等级 · 角色 · 副身份
+        // 标签行：身份 · 角色 · 平台角色
         const chips = [];
         const primary = IDENTITIES.find((i) => i.id === identity?.primaryId);
         if (primary) chips.push(`<span class="chip">${primary.icon} ${esc(primary.label)}</span>`);
 
         const points = user?.user_metadata?.points ?? 0;
         if (identity?.primaryId) {
-          const lv = calculateLevel(identity.primaryId, points);
-          chips.push(`<span class="chip">Lv.${lv.level} · ${esc(lv.title)}</span>`);
+          const role = getRoleTitle(identity.primaryId);
+          if (role) chips.push(`<span class="chip">${esc(role)}</span>`);
         }
         chips.push(`<span class="chip role">${esc(ROLE_MAP[role] || role)}</span>`);
-
-        const secDefs = (identity?.secondaryIds || [])
-          .map((id) => IDENTITIES.find((i) => i.id === id))
-          .filter(Boolean);
-        for (const d of secDefs) chips.push(`<span class="chip gray">${d.icon} ${esc(d.label)}</span>`);
 
         document.getElementById('heroTags').innerHTML = chips.join('');
 
@@ -640,16 +635,15 @@
           `${esc(user?.email || '')}` +
           (identity?.primaryId
             ? ` ｜ 加入于 ${new Date(user?.created_at || Date.now()).toLocaleDateString('zh-CN')}`
-            : ` ｜ <span style="color:rgba(245,158,11,0.6)">尚未设置主身份</span>`);
+            : ` ｜ <span style="color:rgba(245,158,11,0.6)">尚未设置身份</span>`);
       }
 
       // ────────────────────────────────── 渲染：数据栏
       function renderStats(user, identity) {
         const points = user?.user_metadata?.points ?? 0;
         document.getElementById('statPoints').textContent = formatPoints(points);
-        document.getElementById('statLevel').textContent = identity?.primaryId
-          ? calculateLevel(identity.primaryId, points).title
-          : '未设身份';
+        const roleTitle = identity?.primaryId ? getRoleTitle(identity.primaryId) : '';
+        document.getElementById('statLevel').textContent = roleTitle || '未设身份';
         // 关注 / 粉丝：数据模型未建，保持占位
         document.getElementById('statFollowing').textContent = '—';
         document.getElementById('statFollowers').textContent = '—';
@@ -658,15 +652,13 @@
       // ────────────────────────────────── 渲染：身份信息
       function renderIdentity(user, identity, role) {
         const primary = IDENTITIES.find((i) => i.id === identity?.primaryId);
-        const secDefs = (identity?.secondaryIds || [])
-          .map((id) => IDENTITIES.find((i) => i.id === id))
-          .filter(Boolean);
         const points = user?.user_metadata?.points ?? 0;
-        const lv = identity?.primaryId ? calculateLevel(identity.primaryId, points) : null;
+        const roleInfo = identity?.primaryId ? getRoleInfo(identity.primaryId) : null;
+        const orientation = identity?.orientationId ? getOrientation(identity.orientationId) : null;
 
         setKv(document.getElementById('identityKv'), [
           [
-            '主身份',
+            '身份',
             primary
               ? `${primary.icon} ${esc(primary.label)} <span style="color:rgba(255,255,255,0.35);font-size:12px;">${esc(primary.desc)} · ${
                   primary.gender === 'male' ? '男' : '女'
@@ -675,14 +667,14 @@
             !primary,
           ],
           [
-            '副身份',
-            secDefs.length
-              ? secDefs.map((d) => `<span class="chip gray">${d.icon} ${esc(d.label)}</span>`).join(' ')
+            '取向',
+            orientation
+              ? `<span class="chip">${orientation.icon} ${esc(orientation.label)}</span>`
               : '未设置',
-            !secDefs.length,
+            !orientation,
           ],
-          ['等级', lv ? `Lv.${lv.level} · ${esc(lv.title)}` : '—', !lv],
-          ['积分', `${points}${lv && !lv.isMaxLevel ? `（距下一级还需 ${lv.nextThreshold - points}）` : ''}`, false],
+          ['角色', roleInfo?.title ? `<span class="chip">${esc(roleInfo.title)}</span> <span style="color:rgba(255,255,255,0.35);font-size:12px;">${esc(roleInfo.desc)}</span>` : '—', !roleInfo?.title],
+          ['积分', `${points}`, false],
           ['平台角色', esc(ROLE_MAP[role] || role), false],
         ]);
       }

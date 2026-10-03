@@ -951,7 +951,7 @@
       import { signOut, getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { getVisibleProjects } from '@/shared/js/registry.js';
-      import { calculateLevel } from '@/shared/js/level.js';
+      import { getRoleTitle } from '@/shared/js/level.js';
 
       const topUserInfo = document.getElementById('topUserInfo');
       const projectGrid = document.getElementById('projectGrid');
@@ -1008,14 +1008,13 @@
         return identity.primaryLabel || '';
       }
 
-      /** 主身份标签 + 当前等级称号，如「男S · 试鞭」 */
+      /** 主身份标签 + 角色称谓，如「男S · 主」 */
       function buildIdentityLine(identity, user) {
         const label = buildIdentityText(identity);
         if (!label) return '';
         if (identity?.primaryId) {
-          const points = user?.user_metadata?.points ?? 0;
-          const lv = calculateLevel(identity.primaryId, points);
-          return `${label} · ${lv.title}`;
+          const role = getRoleTitle(identity.primaryId);
+          return role ? `${label} · ${role}` : label;
         }
         return label;
       }

@@ -313,14 +313,10 @@
 
         <!-- 身份与等级 -->
         <div class="card">
-          <div class="card-title">身份与等级</div>
+          <div class="card-title">身份与角色</div>
           <div class="info-row">
             <span class="k">主身份</span>
             <span class="v" id="primaryIdentity">—</span>
-          </div>
-          <div class="info-row">
-            <span class="k">副身份</span>
-            <span class="v" id="secondaryIdentity">—</span>
           </div>
           <div class="info-row">
             <span class="k">取向</span>
@@ -333,7 +329,7 @@
             </span>
           </div>
           <div class="info-row">
-            <span class="k">当前等级</span>
+            <span class="k">角色</span>
             <span class="v" id="levelInfo">—</span>
           </div>
           <div class="info-row">
@@ -341,8 +337,8 @@
             <span class="v" id="roleInfo">—</span>
           </div>
           <div class="hint" style="font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 14px; line-height: 1.7">
-            <b style="color: rgba(255,255,255,0.3)">身份</b>决定你的等级路径，<b style="color: rgba(255,255,255,0.3)">角色</b>决定你的平台权限，<b style="color: rgba(255,255,255,0.3)">取向</b>决定档案馆默认展示谁。<br />
-            取向可自助修改；主身份与副身份目前需联系管理员调整，后续会开放自助修改。
+            <b style="color: rgba(255,255,255,0.3)">身份</b>决定你的角色（主 / 奴），<b style="color: rgba(255,255,255,0.3)">角色</b>决定你的平台权限，<b style="color: rgba(255,255,255,0.3)">取向</b>决定档案馆默认展示谁。<br />
+            取向可自助修改；身份目前需联系管理员调整，后续会开放自助修改。
           </div>
         </div>
 
@@ -365,7 +361,7 @@
       import { getCurrentUser, signOut, getUserIdentity } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { uploadAvatar } from '@/shared/js/avatar.js';
-      import { calculateLevel } from '@/shared/js/level.js';
+      import { getRoleInfo } from '@/shared/js/level.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
       import { showToast } from '@/shared/js/ui-helpers.js';
       import { IDENTITIES, ORIENTATIONS, getOrientation } from '@/shared/config/identity-config.js';
@@ -445,24 +441,17 @@
             } · ${primaryDef.type === 'top' ? '上位' : '下位'}</span>`
           : `<span class="v dim">未设置</span>`;
 
-        // 副身份
-        const secIds = identity?.secondaryIds || [];
-        const secDefs = secIds.map((id) => IDENTITIES.find((i) => i.id === id)).filter(Boolean);
-        document.getElementById('secondaryIdentity').innerHTML = secDefs.length
-          ? secDefs.map((d) => `<span class="tag gray">${d.icon} ${d.label}</span>`).join('')
-          : `<span class="v dim">未设置</span>`;
-
         // 取向（可自助修改）
         renderOrientation();
 
-        // 等级
+        // 角色（主 / 奴）
         const points = currentUser?.user_metadata?.points ?? 0;
         if (primaryId) {
-          const lv = calculateLevel(primaryId, points);
-          const nextText = lv.isMaxLevel ? '已满级' : `距下一级还需 ${lv.nextThreshold - points} 积分`;
-          document.getElementById('levelInfo').innerHTML =
-            `<span class="tag">Lv.${lv.level} · ${lv.title}</span>` +
-            `<span style="color:rgba(255,255,255,0.35);font-size:12px;">${points} 积分 · ${nextText}</span>`;
+          const roleInfo = getRoleInfo(primaryId);
+          document.getElementById('levelInfo').innerHTML = roleInfo.title
+            ? `<span class="tag">${roleInfo.title}</span>` +
+              `<span style="color:rgba(255,255,255,0.35);font-size:12px;">${roleInfo.desc} · ${points} 积分</span>`
+            : `<span class="v dim">—</span>`;
         } else {
           document.getElementById('levelInfo').innerHTML = `<span class="v dim">—</span>`;
         }

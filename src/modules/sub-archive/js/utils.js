@@ -11,7 +11,6 @@ import {
   PRIVACY_DEPENDENCIES,
   DETAIL_GROUPS,
   FILTER_FIELDS,
-  ARCHIVE_TYPE,
 } from './config.js';
 
 // ============================================================
@@ -145,26 +144,28 @@ export function getCardInfo(record) {
 }
 
 // ============================================================
-// ★★★ 档案归属与筛选（身份 / 取向 / 馆别）★★★
+// ★★★ 档案归属与筛选（身份 / 取向）★★★
 // ------------------------------------------------------------
-// 背景：档案表单目前尚未建立「身份」「取向」字段（FILTER_FIELDS 为占位），
-// 因此这里做三层降级，保证字段补齐前后都能正常工作：
+// 统一档案库不再区分馆别：每条记录的身份由表单的「身份」字段标明。
 //
-//   层级 1：表单有对应字段 → 直接读取，精确筛选
-//   层级 2：无字段但记录归某馆 → 按馆别判定身份（当前 57 字段为女馆 → 女M）
-//   层级 3：都判定不出 → 归入「未标注」，默认不过滤掉（避免看到空白）
+// 字段尚未建立时（FILTER_FIELDS 为占位），做两层降级：
 //
-// 表单补齐后，只需在 instances.js 里把 FILTER_FIELDS.*.filloutId 换成真实 ID。
+//   层级 1：表单有「身份」字段 → 直接读取，精确筛选
+//   层级 2：无字段 → 归属未知，默认不过滤掉（避免看到空白）
+//
+// 与旧版差异：删除了「按馆别推测身份」这一层。
+// 档案已合并为单一库，馆别概念不存在，因此不再做任何推测；
+// 表单补齐身份字段后，筛选立即生效。
 // ============================================================
 
-/** 从文本里宽松识别身份（用于表单字段值可能是「女M」「女m」「M」等情况） */
+/** 从文本里宽松识别身份（容错「女M」「女m」「M」「female_M」等写法） */
 function parseIdentityText(text) {
   const s = String(text || '').trim();
   if (!s) return null;
-  const isFemale = /女|female|f(?![a-z])/i.test(s);
-  const isMale = /男|male|m(?![a-z])/i.test(s);
-  const isTop = /s(?![a-z])|dom|主|上位|攻/i.test(s);
-  const isBottom = /m(?![a-z])|sub|奴|下位|受|贝/i.test(s);
+  const isFemale = /女|female/i.test(s);
+  const isMale = /男|male/i.test(s);
+  const isTop = /S(?!ub)/i.test(s) || /dom|主|上位|攻/i.test(s);
+  const isBottom = /M(?!ale)/i.test(s) || /sub|奴|下位|受|贝/i.test(s);
   if (!isTop && !isBottom) return null;
   const gender = isFemale ? 'female' : (isMale ? 'male' : null);
   if (!gender) return null;
@@ -182,31 +183,23 @@ function parseOrientationText(text) {
   return null;
 }
 
-/** 馆别 → 默认身份（当前只有女馆；男馆配置好后在此登记） */
-const ARCHIVE_TYPE_IDENTITY = {
-  female: 'female_M',
-  male: 'male_M',
-};
-
 /**
  * 解析一条记录的归属
- * @returns {{identity:string|null, orientation:string|null, source:string, archiveType:string}}
+ * @returns {{identity:string|null, orientation:string|null, source:string}}
+ *   source: 'form' 表示来自表单字段；'unknown' 表示字段缺失、无法判定
  */
 export function getRecordAffiliation(record) {
   const idField = FILTER_FIELDS?.identity?.filloutId;
   const orField = FILTER_FIELDS?.orientation?.filloutId;
 
-  let identity = idField ? parseIdentityText(getFieldValue(record, idField)) : null;
-  let orientation = orField ? parseOrientationText(getFieldValue(record, orField)) : null;
-  let source = 'form';
+  const identity = idField ? parseIdentityText(getFieldValue(record, idField)) : null;
+  const orientation = orField ? parseOrientationText(getFieldValue(record, orField)) : null;
 
-  if (!identity) {
-    identity = ARCHIVE_TYPE_IDENTITY[ARCHIVE_TYPE] || null;
-    source = identity ? 'archiveType' : 'unknown';
-  }
-  if (!orientation) source = source === 'form' ? 'form-no-orientation' : source;
-
-  return { identity, orientation, source, archiveType: ARCHIVE_TYPE };
+  return {
+    identity,
+    orientation,
+    source: identity ? 'form' : 'unknown',
+  };
 }
 
 /** 记录的身份拆分：位置 + 性别 */
@@ -218,8 +211,8 @@ export function getRecordPositionGender(record) {
 }
 
 /**
- * 判断记录的身份是否来自真实表单字段（而非馆别推测）
- * 用于决定「位置筛选」是否可信
+ * 判断记录的身份是否来自真实表单字段
+ * 用于决定「身份筛选」是否可信 —— 字段未建时应明示不可用而非静默失效
  */
 export function hasRealIdentityData(records) {
   if (!records || !records.length) return false;
@@ -231,36 +224,34 @@ export function hasRealIdentityData(records) {
 /**
  * 按「访问者身份 + 取向」过滤记录
  *
- * 重要：位置筛选只在「档案带真实身份数据」时生效。
- * 原因：当身份来自馆别推测（单馆状态）时，位置维度没有区分度，
- *       若仍按其过滤，会出现「女M 看女馆 → 位置为上位者 → 空列表」的糟糕体验。
- *       表单补齐身份字段后，本函数自动启用位置筛选。
+ * 身份筛选（位置 + 性别）只在档案带真实身份字段时生效。
+ * 字段未建时不按身份过滤，避免出现空白页；
+ * 界面上会明确提示「档案尚未填写身份字段」。
  *
  * @param {Array} records 记录数组
  * @param {{position:string|null, gender:string|null}} filter deriveArchiveFilter() 的结果
- * @returns {Array} 过滤后的记录（未标注的记录默认保留）
+ * @returns {Array} 过滤后的记录（归属未知的记录默认保留）
  */
 export function filterRecordsByAffiliation(records, filter) {
   if (!filter || (!filter.position && !filter.gender)) return records;
 
-  const trustPosition = hasRealIdentityData(records);
-  const wantPosition = trustPosition ? filter.position : null;
-  const wantGender = filter.gender;
+  const trust = hasRealIdentityData(records);
+  const wantPosition = trust ? filter.position : null;
+  const wantGender = trust ? filter.gender : null;
 
   const apply = (pos, gen) => records.filter((r) => {
     const { position, gender } = getRecordPositionGender(r);
-    // 判定不出归属 → 保留（避免因字段缺失造成空白）
+    // 归属未知 → 保留（避免因字段缺失造成空白）
     if (!position && !gender) return true;
     if (pos && position && position !== pos) return false;
     if (gen && gender && gender !== gen) return false;
     return true;
   });
 
-  let out = apply(wantPosition, wantGender);
+  const out = apply(wantPosition, wantGender);
 
   // ★ 兜底：默认筛选绝不能把列表清空
-  //   场景：女M+异性 → 找男性，但当前只有女馆 → 性别筛掉全部。
-  //   此时放宽性别限制，改为「只按身份」，让用户先看到内容，再由筛选条自行收窄。
+  //   若筛选后为空，放宽为「只按位置」，让用户先看到内容，再由筛选条自行收窄。
   if (out.length === 0) {
     const relaxed = apply(wantPosition, null);
     if (relaxed.length > 0) return relaxed;

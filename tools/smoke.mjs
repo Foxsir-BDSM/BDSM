@@ -35,8 +35,6 @@ const PAGES = [
   ['/modules/content/index.html', '欲炼之途'],
   ['/modules/content/post-editor.html', '发布'],
   ['/modules/content/post.html', '内容详情'],
-  ['/modules/dom-archive/', '上位档案馆'],
-  ['/modules/dom-archive/index.html', '建设中'],
   ['/modules/random/', '随机模块'],
   ['/modules/random/index.html', '开发中'],
 ];

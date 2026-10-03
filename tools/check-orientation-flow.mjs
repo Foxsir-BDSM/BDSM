@@ -156,11 +156,21 @@ try {
   check('注册成功并取得会话', regState !== 'NO_SESSION' && !!meta, true);
   if (!meta) throw new Error('注册失败，无法继续：' + regState);
   check('身份已写入', !!meta.id, true);
+  check('身份为新模型（4 身份之一）', ['male_S', 'female_S', 'male_M', 'female_M'].includes(meta.id), true);
   check('取向已写入（hetero）', meta.or, 'hetero');
   check('取向标签已写入', meta.orLabel, '异性');
 
-  // ── 3. 资料页展示与修改
-  console.log('\n── 3. 资料页取向展示与自助修改 ──');
+  // ── 3. 身份选择器：应为 4 种
+  console.log('\n── 3. 身份选择器（4 身份模型）──');
+  await send('Page.navigate', { url: BASE + '/auth.html' });
+  await sleep(2500);
+  await js(`document.querySelector('[data-tab="register"]')?.click()`);
+  await sleep(700);
+  check('身份卡片 4 个', await js(`document.querySelectorAll('.primary-grid .identity-card').length`), 4);
+  const idLabels = await js(`[...document.querySelectorAll('.primary-grid .identity-card .label')].map(e=>e.textContent)`);
+  check('身份标签正确', idLabels, ['男S', '女S', '男M', '女M']);
+  check('已无副身份区块', await js(`!document.querySelector('.secondary-grid')`), true);
+  check('页面无 Dom/Z/Sub/B 选项', await js(`/Dom|Sub|男Z|女Z|男B|女B/.test(document.querySelector('.primary-grid')?.textContent||'')`), false);
   await send('Page.navigate', { url: BASE + '/profile.html' });
   await sleep(3500);
   check('显示取向行', await js(`document.getElementById('orientationInfo').textContent.includes('异性')`), true);
@@ -183,16 +193,21 @@ try {
   await send('Page.navigate', { url: BASE + '/modules/sub-archive/' });
   await sleep(6000);
   check('筛选条已渲染', await js(`!!document.querySelector('#filterBar .fb-row')`), true);
-  check('位置维度 3 个按钮', await js(`document.querySelectorAll('#filterBar [data-dim="position"]').length`), 3);
+  check('身份维度 3 个按钮', await js(`document.querySelectorAll('#filterBar [data-dim="position"]').length`), 3);
   check('性别维度 3 个按钮', await js(`document.querySelectorAll('#filterBar [data-dim="gender"]').length`), 3);
-  check('馆别标签存在', await js(`document.querySelector('#filterBar .fb-tag')?.textContent.trim()`), '女馆');
+  check('已无「馆别」标签', await js(`!document.querySelector('#filterBar .fb-tag')`), true);
   check('默认视图说明存在', await js(`!!document.querySelector('#filterBar .fb-default')`), true);
   console.log('      · 默认视图文案: ' + await js(`document.querySelector('#filterBar .fb-default')?.textContent.replace(/\\s+/g,' ').trim()`));
   check('提供「看全部」按钮', await js(`!!document.getElementById('fbReset')`), true);
+  check('明示身份筛选暂不可用（字段未建）',
+    await js(`/尚未填写身份字段/.test(document.getElementById('filterBar').textContent)`), true);
 
-  // 默认：男S + 同性 → 下位者 + 男
-  check('默认位置为下位者（男S的互补位）', await js(`document.querySelector('#filterBar [data-dim="position"].active')?.dataset.val`), 'bottom');
+  // 默认：男S + 同性 → M 侧 + 男（但字段未建 → 实际不生效，筛选条仍显示推导结果）
+  check('默认位置为 M 侧（男S的互补位）', await js(`document.querySelector('#filterBar [data-dim="position"].active')?.dataset.val`), 'bottom');
   check('默认性别为男（同性取向）', await js(`document.querySelector('#filterBar [data-dim="gender"].active')?.dataset.val`), 'male');
+  check('筛选条按钮文案为 S / M',
+    await js(`[...document.querySelectorAll('#filterBar [data-dim="position"]')].map(b=>b.textContent.trim().split(' ')[0])`),
+    ['全部', 'S', 'M']);
 
   // 点「看全部」
   await js(`document.getElementById('fbReset').click()`);

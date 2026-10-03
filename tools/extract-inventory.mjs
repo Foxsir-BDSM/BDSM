@@ -33,7 +33,6 @@ function moduleOf(p) {
   const r = rel(p);
   if (r.startsWith('src/launcher/')) return '启动器';
   if (r.startsWith('src/admin/')) return '管理后台';
-  if (r.startsWith('src/modules/dom-archive/')) return '模块·欲主之殿';
   if (r.startsWith('src/modules/sub-archive/')) return '模块·欲渊之庭';
   if (r.startsWith('src/modules/knowledge/')) return '模块·欲识之海';
   if (r.startsWith('src/modules/mission/')) return '模块·欲炼之途';

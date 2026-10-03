@@ -131,7 +131,6 @@ export async function getUserIdentity() {
         primaryLabel: meta.primary_label || null,
         gender: meta.gender || null,
         roleType: meta.role_type || null,
-        secondaryIds: meta.secondary_identities || [],
         // ★ 取向（决定档案馆默认展示谁）
         orientationId: meta.orientation || null,
         orientationLabel: meta.orientation_label || null,

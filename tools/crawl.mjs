@@ -32,7 +32,6 @@ const PAGES = [
   '/modules/content/index.html',
   '/modules/content/post-editor.html',
   '/modules/content/post.html',
-  '/modules/dom-archive/index.html',
   '/modules/random/index.html',
 ];
 

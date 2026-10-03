@@ -1,4 +1,4 @@
-import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, ARCHIVE_TYPE_LABEL } from './config.js';
+import { CONFIG, SEARCH_FIELDS, PAGE_SIZE } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
 import {
   getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo,
@@ -338,22 +338,23 @@ function renderFilterBar() {
   if (!bar) return;
 
   const c = countByAffiliation(allRecords);
-  // 位置筛选是否生效：取决于档案是否带真实身份数据
-  const positionTrusted = hasRealIdentityData(allRecords);
+  // 身份筛选是否生效：取决于档案是否带真实身份字段
+  const identityTrusted = hasRealIdentityData(allRecords);
 
   const active = (k, v) => (affFilter[k] === v ? ' active' : '');
   const notes = [];
-  if (c.unknown) notes.push(`${c.unknown} 条未标注归属，默认一并展示`);
-  if (!positionTrusted) {
-    notes.push('档案尚未填写身份字段，位置维度暂不可用（表单补齐后自动生效）');
+  if (!identityTrusted) {
+    notes.push('档案尚未填写身份字段，身份筛选暂不可用（表单补齐后自动生效）');
+  } else if (c.unknown) {
+    notes.push(`${c.unknown} 条未标注归属，默认一并展示`);
   }
 
   bar.innerHTML = `
     <div class="fb-row">
-      <span class="fb-label">位置</span>
+      <span class="fb-label">身份</span>
       <button class="fb-btn${active('position', 'all')}" data-dim="position" data-val="all">全部 <i>${c.total}</i></button>
-      <button class="fb-btn${active('position', 'bottom')}" data-dim="position" data-val="bottom">下位者 <i>${c.bottom}</i></button>
-      <button class="fb-btn${active('position', 'top')}" data-dim="position" data-val="top">上位者 <i>${c.top}</i></button>
+      <button class="fb-btn${active('position', 'top')}" data-dim="position" data-val="top">S <i>${c.top}</i></button>
+      <button class="fb-btn${active('position', 'bottom')}" data-dim="position" data-val="bottom">M <i>${c.bottom}</i></button>
     </div>
     <div class="fb-row">
       <span class="fb-label">性别</span>
@@ -362,7 +363,6 @@ function renderFilterBar() {
       <button class="fb-btn${active('gender', 'male')}" data-dim="gender" data-val="male">男 <i>${c.male}</i></button>
     </div>
     <div class="fb-row fb-meta">
-      <span class="fb-tag">${ARCHIVE_TYPE_LABEL}</span>
       ${affFilter.isDefault
         ? `<span class="fb-default">默认视图：${affFilter.reason} <button class="fb-reset" id="fbReset">看全部</button></span>`
         : `<span class="fb-note">当前为手动筛选</span>`}
@@ -391,7 +391,7 @@ function renderFilterBar() {
       renderAllCards();
     });
   }
-  void positionTrusted;
+  void identityTrusted;
 }
 
 // ============================================================
