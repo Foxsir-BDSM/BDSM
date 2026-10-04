@@ -10,6 +10,14 @@ dist/
 .shots/
 _BDSM_*
 
+# ★ 密钥文件 —— 绝不入库
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.wrangler/
+
 # _dev/ 存放开发资料与历史归档，**纳入版本控制**（文档需随项目保留），
 # 但不参与构建 —— 见 vite.config.js 的 watch ignore。
 # 以下为脚本生成的临时产物，不入库：

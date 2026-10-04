@@ -1,0 +1,41 @@
+# ============================================================
+# cloudflare/wrangler.toml —— 任务与媒体后端的部署配置
+# ============================================================
+# 部署步骤见同目录 README.md
+# ============================================================
+
+name = "foxsir-task-api"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# ── 环境变量（非密钥）─────────────────────────────────────
+[vars]
+# 内容仓库定位（与 src/admin/content-config.js 保持一致）
+CONTENT_OWNER  = "Foxsir-BDSM"
+CONTENT_REPO   = "foxsir-content"
+CONTENT_DIR    = "posts"
+# ★ 注意：代码里原配置写的是 "content"，但仓库实际只有 main / tasks 两个分支。
+#   jsDelivr 实测 @content 返回 404、@main 返回 200，故此处用 main。
+#   如果你后来新建了 content 分支，把这里和 content-config.js 一起改回去。
+CONTENT_BRANCH = "main"
+
+# R2 公开访问地址（绑定自定义域名后填，例如 https://media.foxsir.top）
+# 留空时上传可用，但返回的 url 为空，前端拿不到地址。
+R2_PUBLIC_BASE = ""
+
+# ── D1 数据库 ─────────────────────────────────────────────
+# 执行 `wrangler d1 create foxsir` 后，把输出的 database_id 填到这里
+[[d1_databases]]
+binding = "DB"
+database_name = "foxsir"
+database_id = "9128e7ae-d82a-4103-9151-9361b6d21d91"
+
+# ── R2 存储桶 ─────────────────────────────────────────────
+# 执行 `wrangler r2 bucket create foxsir-media` 后即可用
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "foxsir-media"
+
+# ── 观察日志 ──────────────────────────────────────────────
+[observability]
+enabled = true
