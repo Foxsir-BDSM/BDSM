@@ -959,6 +959,35 @@
         /* 原先手机端把入口整个隐藏了 —— 那等于没有入口，故保留并加大热区 */
         .ms-submit { padding: 9px 14px; font-size: 12px; min-height: 38px; display: inline-flex; align-items: center; }
       }
+
+      /* ============================================================
+         手机端：去掉外层「边框」，改为满宽
+         ------------------------------------------------------------
+         PC 上 body 有 20px 内边距、.app-container 还有 32/40px 内边距 +
+         48px 圆角边框，是为了在大屏克制留白。
+         但手机上这两层叠加会吃掉左右各约 60px，再算上浏览器自身的
+         地址栏/工具栏，正文被挤到接近屏幕中央 —— 故窄屏下全部还原。
+         ============================================================ */
+      @media (max-width: 768px) {
+        body {
+          padding: 0;
+          align-items: stretch;
+        }
+        .app-container {
+          max-width: 100%;
+          padding: 14px 15px 34px;
+          border-radius: 0;
+          border-left: none;
+          border-right: none;
+          box-shadow: none;
+          backdrop-filter: none;
+          -webkit-backdrop-filter: none;
+          background: rgba(15, 14, 23, 0.55);
+        }
+        .top-bar { padding-bottom: 14px; margin-bottom: 16px; }
+        .welcome-card { border-radius: 18px; margin-bottom: 22px; }
+        .project-card { border-radius: 16px; }
+      }
     </style>
     <script type="importmap">
       {

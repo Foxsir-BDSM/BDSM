@@ -11,23 +11,60 @@ import { getCache, setCache, clearCache, getCacheWithMeta, setCacheWithMeta, DEF
 
 // ===== 获取 Token（环境变量优先） =====
 export function getToken() {
-    console.log('⚙️ getToken 被调用');
-
     // 优先从环境变量读取（Vercel 生产环境）
     if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_GITHUB_TOKEN) {
-        console.log('✅ 从环境变量获取 token');
         return import.meta.env.VITE_GITHUB_TOKEN;
     }
 
     // 降级：从 localStorage 读取（本地开发备用）
     const token = localStorage.getItem('foxsir_github_token');
     if (token && token.length > 10) {
-        console.log('✅ 从 localStorage 获取 token');
         return token;
     }
 
-    console.warn('❌ 未找到任何 token');
     return null;
+}
+
+/**
+ * 公开读取回退（无需 Token）
+ *
+ * 背景：仓库是公开的，列目录与读取正文本不需要鉴权。
+ *       之前 list/read 一律要求 Token，导致未配置 Token 的环境
+ *       （或在浏览器里没有手动填过 Token 的普通访客）看到的是
+ *       「未配置 GitHub Token」而不是内容。
+ *
+ * 实现：走 jsDelivr 的公开元数据接口取文件清单，
+ *       文件内容用 cdn.jsdelivr.net 直取。
+ *
+ * 返回结构与 GitHub contents API 对齐（name / download_url），
+ * 便于上层代码无差别使用；download_url 指向 jsDelivr，
+ * 故 fetchContentText 需能识别并直接以文本读取（见该函数注释）。
+ */
+async function fetchListViaCdn(branch, path) {
+    const meta = 'https://data.jsdelivr.com/v1/packages/gh/'
+        + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo
+        + '@' + branch + '?structure=flat';
+
+    const res = await fetch(meta);
+    if (!res.ok) throw new Error('jsDelivr 元数据 HTTP ' + res.status);
+    const data = await res.json();
+
+    const prefix = '/' + String(path || '').replace(/^\/+|\/+$/g, '') + '/';
+    return (data.files || [])
+        .map((f) => f.name)
+        .filter((n) => n.startsWith(prefix) && n.endsWith('.md'))
+        .map((n) => {
+            const name = n.slice(prefix.length);
+            return {
+                name,
+                path: n.slice(1),
+                // 走 CDN，读正文时无需鉴权
+                download_url: 'https://cdn.jsdelivr.net/gh/'
+                    + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo
+                    + '@' + branch + n,
+                _viaCdn: true,
+            };
+        });
 }
 
 // ===== 获取文件列表（5 分钟缓存） =====
@@ -42,12 +79,25 @@ export async function fetchContentList(branch, path) {
         return cached;
     }
 
-    console.log('📡 未命中缓存或已过期，从 GitHub 拉取:', cacheKey);
+    console.log('📡 未命中缓存或已过期，拉取列表:', cacheKey);
 
     const token = getToken();
+
+    // ── 无 Token 时走公开 CDN 读取 ──
+    // 仓库是公开的，列目录与读正文本不需要鉴权。
+    // 之前这里无 Token 直接返回 []，导致普通访客看到的是「未配置 Token」
+    // 而不是内容 —— 那是把「写入所需」误当成了「读取所需」。
     if (!token) {
-        console.error('❌ 未配置 GitHub Token');
-        return [];
+        try {
+            const files = await fetchListViaCdn(branch, path);
+            setCacheWithMeta(cacheKey, files, DEFAULT_TTL);
+            console.log('✅ 经 CDN 读取列表:', files.length, '个文件');
+            return files;
+        } catch (err) {
+            console.error('CDN 读取列表失败:', err);
+            const fallback = getCache(cacheKey);
+            return fallback || [];
+        }
     }
 
     const url = 'https://api.github.com/repos/' + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo + '/contents/' + path + '?ref=' + branch + '&t=' + Date.now();
@@ -116,20 +166,39 @@ export async function fetchContentListForce(branch, path) {
  * @returns {Promise<string>} Markdown 原文；失败返回空串
  */
 export async function fetchContentText(apiUrl) {
+    const url = String(apiUrl || '');
+
+    // ── CDN 路径：公开直读纯文本，无需鉴权 ──
+    // fetchListViaCdn() 产出的就是这种地址。
+    if (url.includes('cdn.jsdelivr.net')) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) {
+                console.error('CDN 读取内容失败 HTTP', res.status, url);
+                return '';
+            }
+            return await res.text();
+        } catch (err) {
+            console.error('CDN 读取内容异常:', err);
+            return '';
+        }
+    }
+
+    // ── API 路径：需 Token，返回 Base64 ──
     const token = getToken();
     if (!token) {
-        console.error('❌ 未配置 GitHub Token，无法读取内容');
+        console.error('❌ 未配置 GitHub Token，无法经 API 读取内容');
         return '';
     }
     try {
-        const res = await fetch(apiUrl, {
+        const res = await fetch(url, {
             headers: {
                 'Authorization': 'token ' + token,
                 'Accept': 'application/vnd.github+json',
             },
         });
         if (!res.ok) {
-            console.error('读取内容失败 HTTP', res.status, apiUrl);
+            console.error('读取内容失败 HTTP', res.status, url);
             return '';
         }
         const data = await res.json();

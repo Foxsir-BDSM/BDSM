@@ -10,26 +10,39 @@
   <body>
     <div class="wrap">
       <header class="page-head">
+        <!-- 顶栏：左侧 home 图标，右侧发布内容。
+             手机上不再显示「返回控制中心 / 刷新」两个按钮 ——
+             返回改用 home 图标，刷新改用下拉手势。 -->
+        <a href="/index.html" class="head-ico" id="homeBtn" title="返回控制中心" aria-label="返回控制中心">🏠</a>
         <div class="brand">
           <h1>⛓️ 欲炼之途</h1>
           <p class="sub">玩法 · 见闻 · 见解 —— 一个可以发布自己玩法与见解的地方</p>
         </div>
         <div class="head-actions" id="headActions">
-          <a href="/index.html" class="btn btn-ghost">← 返回控制中心</a>
-          <button type="button" class="btn btn-ghost" id="refreshBtn">🔄 刷新</button>
-          <a href="./post-editor.html" class="btn btn-primary" id="writeBtn" style="display: none">✍️ 发布内容</a>
+          <a href="/index.html" class="btn btn-ghost only-desktop">← 返回控制中心</a>
+          <button type="button" class="btn btn-ghost only-desktop" id="refreshBtn">🔄 刷新</button>
+          <a href="./post-editor.html" class="btn btn-primary" id="writeBtn" style="display: none">
+            <span class="only-desktop">✍️ 发布内容</span><span class="only-mobile">✍️</span>
+          </a>
         </div>
       </header>
+
+      <!-- 下拉刷新指示器（仅手机端启用） -->
+      <div class="ptr" id="ptr" aria-hidden="true">
+        <span class="ptr-ico" id="ptrIco">↓</span>
+        <span class="ptr-text" id="ptrText">下拉刷新</span>
+      </div>
 
       <!-- 类型筛选
            只列「可接取」的三种类型。任务反馈不作为独立入口 ——
            它由「首页任务直达」或「我的 → 接取的任务」发起，而非在内容区浏览。
-           如需恢复该入口，在下方 nav 里加一个 data-type="note" 的按钮即可。 -->
+           如需恢复该入口，在下方 nav 里加一个 data-type="note" 的按钮即可。
+           手机上通过 .fb-long 隐藏长文字，只留图标。 -->
       <nav class="filters" id="typeFilters">
         <button class="fbtn active" data-type="all">全部</button>
-        <button class="fbtn" data-type="task">⛓️ 玩法任务</button>
-        <button class="fbtn" data-type="collection">🗂️ 主题合集</button>
-        <button class="fbtn" data-type="checklist">📊 分级清单</button>
+        <button class="fbtn" data-type="task">⛓️<span class="fb-long"> 玩法任务</span></button>
+        <button class="fbtn" data-type="collection">🗂️<span class="fb-long"> 主题合集</span></button>
+        <button class="fbtn" data-type="checklist">📊<span class="fb-long"> 分级清单</span></button>
       </nav>
 
       <!-- 工具条 -->
@@ -40,8 +53,12 @@
           <span class="s-clear" id="searchClear">✕</span>
         </div>
         <div class="tool-right">
-          <label class="chk"><input type="checkbox" id="showHighRisk" /><span>显示高风险</span></label>
-          <label class="chk"><input type="checkbox" id="hidePrivate" checked /><span>隐藏「仅自己」</span></label>
+          <label class="chk" title="勾选后显示被标记为「高/极高风险」的内容（默认隐藏）">
+            <input type="checkbox" id="showHighRisk" /><span>显示高风险</span>
+          </label>
+          <label class="chk" title="可见性为「仅自己」的内容（相当于云端草稿）默认不出现在列表里，取消勾选即可看到">
+            <input type="checkbox" id="hidePrivate" checked /><span>隐藏「仅自己」</span>
+          </label>
           <span class="count" id="countLabel">共 0 篇</span>
         </div>
       </div>
@@ -65,7 +82,7 @@
     <script type="module">
       import { CONTENT_STORE, TAG_GROUPS, RISK_COLLAPSED } from './js/content-types.js';
       import { normalizePost, renderCard, esc } from './js/render.js';
-      import { fetchContentList, fetchContentListForce, parseFrontmatter, getToken, fetchContentText } from '@/admin/content-manager.js';
+      import { fetchContentList, fetchContentListForce, parseFrontmatter, fetchContentText } from '@/admin/content-manager.js';
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
@@ -121,11 +138,9 @@
 
       async function loadList(force = false) {
         showState(null);
-        if (!getToken()) {
-          showState('🔑', '未配置 GitHub Token', '内容读取需要 Token。可在 <a href="/admin.html">管理后台</a> 的 Token 设置里填入，或配置环境变量 VITE_GITHUB_TOKEN。');
-          countLabel.textContent = '共 0 篇';
-          return;
-        }
+        // 说明：读取内容不需要 Token（仓库公开）。
+        // 无 Token 时 fetchContentList 会自动走公开 CDN 回退。
+        // Token 只在「发布/写入」时才必需。
         let files = [];
         try {
           files = force
@@ -291,6 +306,9 @@
         // 卡片上的接取 / 提交按钮（委托到 grid，卡片重渲染后依然有效）
         grid.addEventListener('click', onCardAction);
 
+        // 下拉刷新（仅触摸设备启用；桌面仍用「刷新」按钮）
+        setupPullToRefresh();
+
         let t = null;
         searchInput.addEventListener('input', (e) => {
           const v = e.target.value.trim();
@@ -329,6 +347,91 @@
             setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1200);
           }
         });
+      }
+
+      // ══════════════════════════════════════════════════════
+      // 下拉刷新（手机端）
+      // ------------------------------------------------------
+      // 为什么自己做而不用浏览器自带：页面是静态 MPA，浏览器下拉刷新会
+      // 整页重载（白屏 + 丢滚动位置），这里只重新拉取列表数据。
+      //
+      // 触发条件：页面已在顶部 + 单指下拉超过阈值 + 垂直位移大于水平位移
+      //          （否则会误伤横向滑动手势）
+      // 只在触摸设备绑定，桌面端不受影响，仍用「刷新」按钮。
+      // ══════════════════════════════════════════════════════
+      const PTR_THRESHOLD = 70;   // 触发刷新的下拉距离（px）
+
+      function setupPullToRefresh() {
+        const box = document.getElementById('ptr');
+        const ico = document.getElementById('ptrIco');
+        const txt = document.getElementById('ptrText');
+        if (!box || !('ontouchstart' in window)) return;
+
+        let startY = 0, startX = 0;
+        let pulling = false, distance = 0, busy = false;
+
+        const reset = () => {
+          box.classList.remove('on', 'ready', 'busy');
+          box.style.transform = '';
+          distance = 0;
+          pulling = false;
+        };
+
+        document.addEventListener('touchstart', (e) => {
+          if (busy || e.touches.length !== 1) return;
+          // 只在页面顶部时才接管，避免影响页面内滚动
+          if ((window.scrollY || document.documentElement.scrollTop) > 0) return;
+          startY = e.touches[0].clientY;
+          startX = e.touches[0].clientX;
+          pulling = true;
+          distance = 0;
+        }, { passive: true });
+
+        document.addEventListener('touchmove', (e) => {
+          if (!pulling || busy || e.touches.length !== 1) return;
+          const dy = e.touches[0].clientY - startY;
+          const dx = Math.abs(e.touches[0].clientX - startX);
+          // 向上滑或横向位移更大 → 交还给页面滚动
+          if (dy <= 0 || dx > Math.abs(dy)) { if (distance === 0) pulling = false; return; }
+
+          // 阻尼：拉得越远越钝，避免一下拉到底
+          distance = Math.min(dy * 0.55, 120);
+          box.classList.add('on');
+          box.style.transform = `translate(-50%, ${distance}px)`;
+          const ready = distance >= PTR_THRESHOLD;
+          box.classList.toggle('ready', ready);
+          ico.textContent = ready ? '↻' : '↓';
+          txt.textContent = ready ? '松开即可刷新' : '下拉刷新';
+        }, { passive: true });
+
+        document.addEventListener('touchend', async () => {
+          if (!pulling || busy) return;
+          const shouldRefresh = distance >= PTR_THRESHOLD;
+          if (!shouldRefresh) { reset(); return; }
+
+          busy = true;
+          box.classList.remove('ready');
+          box.classList.add('busy');
+          box.style.transform = 'translate(-50%, 54px)';
+          ico.textContent = '↻';
+          txt.textContent = '正在刷新…';
+
+          try {
+            await loadList(true);
+            renderTagBar();
+            txt.textContent = '已更新';
+          } catch {
+            txt.textContent = '刷新失败';
+          } finally {
+            setTimeout(() => { reset(); busy = false; }, 700);
+          }
+        }, { passive: true });
+
+        // 横向滑动或滚动时中断，避免误触发
+        document.addEventListener('touchcancel', reset, { passive: true });
+        window.addEventListener('scroll', () => {
+          if (!busy && pulling && (window.scrollY || 0) > 4) reset();
+        }, { passive: true });
       }
 
       init();

@@ -377,3 +377,105 @@ body {
   .toolbar { flex-direction: column; align-items: stretch; }
   .tool-right { justify-content: space-between; }
 }
+
+
+/* ============================================================
+   手机端顶栏 / 筛选 / 下拉刷新
+   ------------------------------------------------------------
+   配套：js 里的 setupPullToRefresh()，以及 index.html 顶栏的三段式结构。
+   背景：手机上原本顶栏并排「返回控制中心 / 刷新 / 发布内容」三个按钮，
+        竖排占掉近两屏顶部空间；筛选按钮也要占两行。
+   ============================================================ */
+
+/* 顶栏 home 图标：仅手机端显示 */
+.head-ico {
+  display: none;
+  flex: none;
+  width: 40px; height: 40px;
+  align-items: center; justify-content: center;
+  border-radius: 12px;
+  font-size: 19px; line-height: 1;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.22s ease;
+}
+.head-ico:hover { background: rgba(212, 165, 116, 0.12); border-color: rgba(212, 165, 116, 0.3); }
+
+/* 只在某一端出现的元素 */
+.only-mobile { display: none; }
+
+/* 下拉刷新指示器 */
+.ptr {
+  position: fixed;
+  top: 0; left: 50%;
+  transform: translate(-50%, -60px);
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 16px;
+  border-radius: 0 0 14px 14px;
+  background: rgba(26, 24, 34, 0.96);
+  border: 1px solid rgba(212, 165, 116, 0.22);
+  border-top: none;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.55);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 60;
+}
+.ptr.on { opacity: 1; }
+.ptr.ready { color: #d4a574; border-color: rgba(212, 165, 116, 0.5); }
+.ptr.busy { color: #d4a574; }
+.ptr.busy .ptr-ico { display: inline-block; animation: spin 0.8s linear infinite; }
+
+@media (max-width: 620px) {
+  /* 顶栏改为「home | 标题 | 发布」三段式 */
+  .page-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 11px;
+  }
+  .head-ico { display: inline-flex; }
+  .only-desktop { display: none !important; }
+  .only-mobile { display: inline; }
+  .brand { min-width: 0; }
+  .brand h1 { font-size: 19px; }
+  .brand .sub { display: none; }       /* 副标题在手机上要占两行，去掉 */
+  .head-actions { gap: 0; }
+  .head-actions .btn-primary {
+    padding: 9px 15px;
+    font-size: 15px;
+    min-height: 40px;
+    display: inline-flex; align-items: center;
+  }
+
+  /* 筛选：图标横排，一行放下四个 */
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+  }
+  .filters .fbtn {
+    padding: 9px 4px;
+    font-size: 12.5px;
+    text-align: center;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .fb-long { display: none; }          /* 只留图标 */
+
+  /* 工具条：勾选项一行排开，不再纵向堆叠 */
+  .toolbar { gap: 9px; }
+  .tool-right {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .chk { font-size: 12px; }
+  .chk input { width: 15px; height: 15px; }
+  .count { font-size: 12px; }
+}

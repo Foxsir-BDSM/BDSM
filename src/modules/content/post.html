@@ -32,7 +32,7 @@
     <script type="module">
       import { CONTENT_STORE, RISK_COLLAPSED } from './js/content-types.js';
       import { normalizePost, renderDetail } from './js/render.js';
-      import { fetchContentList, parseFrontmatter, getToken, fetchContentText } from '@/admin/content-manager.js';
+      import { fetchContentList, parseFrontmatter, fetchContentText } from '@/admin/content-manager.js';
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
       import { showToast } from '@/shared/js/ui-helpers.js';
@@ -147,12 +147,7 @@
 
         showLoading('加载内容', '正在读取…');
         try {
-          if (!getToken()) {
-            showError('🔑', '未配置 GitHub Token', '内容读取需要 Token。可在 <a href="/admin.html">管理后台</a> 的 Token 设置里填入，或配置环境变量 VITE_GITHUB_TOKEN。',
-              '<a href="./index.html" class="btn btn-ghost" style="margin-top:14px">返回列表</a>');
-            return;
-          }
-
+          // 读取不需要 Token（仓库公开）；无 Token 时自动走公开 CDN 回退。
           const files = await fetchContentList(CONTENT_STORE.branch, CONTENT_STORE.path);
           const target = (files || []).find((f) => f.name.replace(/\.md$/, '') === slug);
           if (!target) {
