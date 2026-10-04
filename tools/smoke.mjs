@@ -35,8 +35,9 @@ const PAGES = [
   ['/modules/content/index.html', '欲炼之途'],
   ['/modules/content/post-editor.html', '发布'],
   ['/modules/content/post.html', '内容详情'],
-  ['/modules/random/', '随机模块'],
-  ['/modules/random/index.html', '开发中'],
+  // 说明：/modules/random/ 已于 2026-10-04 随模块收敛移除
+  //（原「淫梦织境」「欲缘之遇」两个模块指向同一占位页），
+  // 故不再纳入冒烟范围。
 ];
 
 const ASSETS = [
