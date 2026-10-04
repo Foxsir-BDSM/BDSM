@@ -559,8 +559,11 @@
         admin: '根源管理',
       };
 
-      /** 档案字段 ID（与共享配置一致，避免硬编码散落） */
-      const ARCHIVE_NAME_FIELD = 'fqidTsBW5js';
+      /**
+       * 档案字段 ID —— 从共享配置读取，避免硬编码。
+       * 迁移数据库后字段 ID 会变，此处若写死旧 ID 会导致匹配不到档案。
+       */
+      let ARCHIVE_NAME_FIELD = null;
 
       const guestCard = document.getElementById('guestCard');
       const memberArea = document.getElementById('memberArea');
@@ -685,9 +688,11 @@
 
         try {
           const { fetchRecords } = await import('@/modules/sub-archive/js/api.js');
+          const { CARD_FIELDS } = await import('@/modules/sub-archive/js/config.js');
+          ARCHIVE_NAME_FIELD = CARD_FIELDS.name;   // 从共享配置取，不硬编码
           const records = await fetchRecords(false);
           const hit = (records || []).find((r) => {
-            const v = r?.data?.[ARCHIVE_NAME_FIELD] ?? r?.fields?.['姓名'];
+            const v = r?.data?.[ARCHIVE_NAME_FIELD] ?? r?.fields?.[ARCHIVE_NAME_FIELD];
             return typeof v === 'string' && v.trim() === name;
           });
 

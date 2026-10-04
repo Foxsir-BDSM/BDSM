@@ -3,7 +3,10 @@
 // Fillout API 封装 - 分页/全量/单条/更新
 // ============================================================
 
-import { CONFIG, PAGE_SIZE, CACHE_KEY, CACHE_TTL } from './config.js';
+import {
+  CONFIG, PAGE_SIZE, CACHE_KEY, CACHE_TTL,
+  VISIBILITY_FIELDS, PRIVACY_CONTROL_IDS, CARD_FIELDS,
+} from './config.js';
 
 // ============================================================
 // 分页获取记录（支持缓存）
@@ -143,16 +146,19 @@ export async function fetchAllRecords(forceRefresh = false) {
 }
 
 // ============================================================
-// ★★★ 修复：可编辑字段白名单（使用字段 ID） ★★★
-// 与 admin.js 中的 SUB_EDITABLE_FIELDS 保持一致
+// 可编辑字段白名单（管理面板允许改的字段）
+// ------------------------------------------------------------
+// ★ 字段 ID 来自配置，不硬编码。
+//   旧库用「公开问卷」+ 4 个「（隐私确认）」配对字段；
+//   新库改用独立的「是否公开 XX」开关 + 「我已确认…」。
 // ============================================================
 const PRIVACY_FIELD_WHITELIST = [
-  'fgerzjJpBTF',   // 公开问卷
-  'f1s9DJg4oLc',   // 常住地址（隐私确认）
-  'fgHLgfGRzy8',   // 联系方式（隐私确认）
-  'fgtX9QmBAM5',   // 生活照片（隐私确认）
-  'fwEcZvqiGvm',   // 隐私照片（隐私确认）
-  'fwK2mQMoxto',   // 认证
+  VISIBILITY_FIELDS.publicQuestionnaire,  // 是否公开问卷内容
+  PRIVACY_CONTROL_IDS.address,            // 是否公开常住地址
+  PRIVACY_CONTROL_IDS.contact,            // 是否公开联系方式
+  PRIVACY_CONTROL_IDS.lifePhotos,         // 是否公开生活照片
+  PRIVACY_CONTROL_IDS.privatePhotos,      // 是否公开隐私照片
+  CARD_FIELDS.verified,                   // 我已确认上述为我真实意愿
 ];
 
 // ============================================================

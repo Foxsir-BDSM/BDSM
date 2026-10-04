@@ -34,9 +34,17 @@ export const FORM_URL = 'https://forms.fillout.com/t/tUpkJr8bb9us';
 /** 列表页按钮文案对应的表名（仅作提示） */
 export const FORM_BUTTON_LABEL = '母の曝光';
 
-/** 卡片无图时的占位图 */
+/**
+ * 卡片无图时的占位图
+ *
+ * ★ 必须用 base64，不能内嵌裸引号。
+ *   原实现是 `data:image/svg+xml,%3Csvg xmlns="..."` —— 其中含未转义的 `"`，
+ *   被插进 `onerror="this.src='...'"` 时会撑破 HTML 属性，
+ *   导致每个无图卡片抛一个 SyntaxError 且占位图也加载失败。
+ *   base64 形式不含任何引号，可安全嵌入单引号、双引号两种上下文。
+ */
 export const DEFAULT_IMAGE =
-  'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"%3E%3Crect width="300" height="400" fill="%23E5E7EB"/%3E%3Ctext x="50%25" y="50%25" font-family="sans-serif" font-size="20" fill="%23999" text-anchor="middle" dy=".3em"%3E暂无图片%3C/text%3E%3C/svg%3E';
+  'data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSczMDAnIGhlaWdodD0nNDAwJyB2aWV3Qm94PScwIDAgMzAwIDQwMCc+PHJlY3Qgd2lkdGg9JzMwMCcgaGVpZ2h0PSc0MDAnIGZpbGw9JyNFNUU3RUInLz48dGV4dCB4PSc1MCUnIHk9JzUwJScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMjAnIGZpbGw9JyM5OTknIHRleHQtYW5jaG9yPSdtaWRkbGUnIGR5PScuM2VtJz7mmoLml6Dlm77niYc8L3RleHQ+PC9zdmc+';
 
 /** 分页与缓存 */
 export const PAGE_SIZE = 20;

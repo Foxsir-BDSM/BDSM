@@ -3,7 +3,7 @@
 // 详情页 - 使用 DETAIL_GROUPS 排序（从 config.js 读取）
 // ============================================================
 
-import { CONFIG, DETAIL_GROUPS, FIELD_LABELS } from './config.js';
+import { CONFIG, DETAIL_GROUPS, FIELD_LABELS, CARD_FIELDS } from './config.js';
 import { fetchRecordById } from './api.js';
 import {
   isImageValue,
@@ -428,7 +428,7 @@ async function renderDetail(record) {
     }))
     .filter(g => g.fields.length > 0);
 
-  const name = getFieldValue(record, 'fqidTsBW5js') || '详情';
+  const name = getFieldValue(record, CARD_FIELDS.name) || '详情';
   const titleText = `👤 ${name}の档案`;
 
   // 如果没有任何分组显示，提示用户
@@ -493,25 +493,14 @@ async function renderDetail(record) {
         displayValue = value ? '是' : '否';
       } else {
         const strValue = String(value);
-        if (id === 'f99RpESRNBX' || id === 'fb483ZvPoMH') {
-          displayValue = generateStars(strValue);
-        } else {
-          switch (id) {
-            case 'ffcCmCH3kSE':
-              displayValue = `${escapeHtml(strValue)} cm`;
-              break;
-            case 'fgSKHPJhFhb':
-              displayValue = `${escapeHtml(strValue)} kg`;
-              break;
-            case 'ffgthuczFyn':
-            case 'fjptYmcfYNC':
-            case 'f5Wk3u2aCfh':
-              displayValue = `${escapeHtml(strValue)} cm`;
-              break;
-            default:
-              displayValue = escapeHtml(strValue);
-          }
-        }
+        // 单位后缀：按字段 ID 查表（ID 来自配置，避免硬编码旧库字段）
+        const SUFFIX = {
+          [CARD_FIELDS.height]: ' cm',
+          [CARD_FIELDS.weight]: ' kg',
+        };
+        displayValue = SUFFIX[id]
+          ? `${escapeHtml(strValue)}${SUFFIX[id]}`
+          : escapeHtml(strValue);
       }
 
       html += `

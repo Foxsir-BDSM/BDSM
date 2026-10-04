@@ -1,0 +1,71 @@
+﻿序号,旧字段ID,旧字段名,旧字段类型,新字段ID,新字段名,新字段类型,对应方式
+1,fqidTsBW5js,姓名,single_line_text,fkHpgmVVTg7,姓名,single_line_text,同名直连
+2,fxwUAnrwpaT,ID,autonumber,,,,新库无对应（或已被认领）
+3,fgerzjJpBTF,公开问卷,checkbox,fkAEd2CE2gQ,是否公开问卷内容,checkbox,语义对应
+4,f1s9DJg4oLc,常住地址（隐私确认）,checkbox,fedNsXf9DNV,是否公开常住地址,checkbox,语义对应
+5,fgHLgfGRzy8,联系方式（隐私确认）,checkbox,fiaG3fZjmZC,是否公开联系方式,checkbox,语义对应
+6,fgtX9QmBAM5,生活照片（隐私确认）,checkbox,fhUrgTMzZnb,是否公开生活照片,checkbox,语义对应
+7,fwEcZvqiGvm,隐私照片（隐私确认）,checkbox,fi8wfWQmC96,是否公开隐私照片,checkbox,语义对应
+8,f1i68ZWVLAD,我已知悉,checkbox,,,,新库无对应（或已被认领）
+9,fkw18M6UR5s,继续填写,checkbox,,,,新库无对应（或已被认领）
+10,fdPfeoZzfSM,年龄,single_line_text,f57DddbxHNc,年龄,single_line_text,同名直连
+11,ffcCmCH3kSE,身高,single_line_text,fviPchG4Lfi,身高（cm）,single_line_text,语义对应
+12,fgSKHPJhFhb,体重,single_line_text,f7rpwNruYeG,体重（kg）,single_line_text,语义对应
+13,fhYoXMy4jSp,罩杯,single_line_text,ft45UeL5YUS,罩杯,single_line_text,同名直连
+14,faAhwfMWp8W,三围,single_line_text,f6RtmHTmp5K,三围,single_line_text,同名直连
+15,fsaqeVWs1cX,职业&学历,single_line_text,fwiiuSAVzaT,职业&学历,single_line_text,同名直连
+16,f2LQqpzRxcE,常住地址,single_line_text,f2MZCq6ZYzg,常住地址,single_line_text,同名直连
+17,fws6eaKNh29,联系方式,single_line_text,fwSj6KJHhHc,联系方式,single_line_text,同名直连
+18,f99RpESRNBX,颜值,rating,,,,新库无对应（或已被认领）
+19,fb483ZvPoMH,身材,rating,,,,新库无对应（或已被认领）
+20,fpAFnqZh8XY,生活照,attachments,f2ccv3EV3b7,生活照,attachments,同名直连
+21,fvXfbzs1w7q,Untitled FileUpload field,attachments,fbrzqgWKxKj,Untitled FileUpload field,attachments,同名直连
+22,f2tp4pmcEer,Untitled FileUpload field (1),attachments,f2PfcBcVByU,Untitled FileUpload field (1),attachments,同名直连
+23,feExminrRcK,Untitled FileUpload field (2),attachments,,,,新库无对应（或已被认领）
+24,fsD8T1Vb9xx,当前情感状态,single_select,f97ur4fWUJY,当前情感状态,single_select,同名直连
+25,f8vviVrV3YL,当前子女情况,single_line_text,fjN8Fd9w4YD,当前子女情况,single_line_text,同名直连
+26,fhAgx3yPgBW,是否有主,single_select,fsinATmNxjT,是否有主,single_select,同名直连
+27,fc76hghn2cc,是否寻找关系,single_select,fpHndBTMCWW,是否寻找关系,single_select,同名直连
+28,fe25wHSUz1s,期望关系类型,multiple_select,f6BLWweWWyi,期望关系类型,multiple_select,同名直连
+29,fdnp5xDJdty,对另一半的要求,single_line_text,fcD7Cfqdh9m,对另一半的要求,single_line_text,同名直连
+30,fv1fNHSpAW3,第一次自慰年纪,single_line_text,frPcRu1oJRM,第一次自慰年纪,single_line_text,同名直连
+31,fx6wDgrKFwR,自慰频率,single_line_text,fqsj3opFdjj,自慰频率,single_line_text,同名直连
+32,faU5LW3tRNU,身体开发进度,multiple_select,fvpqqe12WsG,身体开发进度,multiple_select,同名直连
+33,fsnT6sCC3T8,百人斩进度,number,fpsv5kVoVFb,百人斩进度,number,同名直连
+34,fra1kdg5Eby,都被什么人操过,single_line_text,fi7Mh24zhgj,都被什么人操过,single_line_text,同名直连
+35,f4GnxxQ2Ggr,是否多人,single_select,,,,新库无对应（或已被认领）
+36,f9nZe7gNevh,最多几人同房,single_line_text,ffV5qc4jmzX,最多几人同房,single_line_text,同名直连
+37,fbcpAQMviJU,第一次口交年纪,single_line_text,f3WxA88fhv7,第一次口交年纪,single_line_text,同名直连
+38,ffgthuczFyn,深喉最深,single_line_text,fufy59h1VmA,深喉最深（cm）,single_line_text,语义对应
+39,fpUDyXPVLiY,第一次破处年纪,single_line_text,,,,新库无对应（或已被认领）
+40,fjptYmcfYNC,淫穴最深,single_line_text,,,,新库无对应（或已被认领）
+41,frT28xE2Ers,第一次肛交年纪,single_line_text,ftdFCifwW1t,第一次肛交年纪,single_line_text,同名直连
+42,f5Wk3u2aCfh,菊穴最深,single_line_text,fu8L6paFsGL,菊穴最深（cm）,single_line_text,语义对应
+43,f2CHgyFWPYw,做爱频率,single_line_text,fopXPsZJDB8,做爱频率,single_line_text,同名直连
+44,f3nrrFztgvQ,玩具,multiple_select,,,,新库无对应（或已被认领）
+45,ft5Ya9T9uEb,玩具补充,single_line_text,fjkWGL3SVCZ,玩具补充,single_line_text,同名直连
+46,f2uXHj4eDb2,最难忘的性爱,rich_text,fqf4UGKw9Z2,最难忘的性爱,long_text,同名直连
+47,fdfri1EJhKf,最淫荡的经历,rich_text,f8o1PU7BvMy,最淫荡的经历,long_text,同名直连
+48,fnV2QAxshjr,最下贱的过去,rich_text,fjhrVptg4vK,最下贱的过去,long_text,同名直连
+49,f5FpfrTPvQh,乳,attachments,f1vsrcvqHDD,乳,attachments,同名直连
+50,fbbFbn2c9TV,穴,attachments,fux2osNYRgC,穴,attachments,同名直连
+51,f9Jhy6F4jXh,臀,attachments,fasr1Gix1Yx,臀,attachments,同名直连
+52,fjiCLYCpyeJ,腿,attachments,fqYosUpZ3eh,腿,attachments,同名直连
+53,fk1ywquw4y5,1、与手写@Foxsir+ 信息合照;2、与Foxsir推特主页合照;,attachments,,,,新库无对应（或已被认领）
+54,fwK2mQMoxto,认证,checkbox,fwKCmynWaVf,我已确认上述为我真实意愿,checkbox,语义对应
+55,feVJMAAnX7s,推荐指数,rating,,,,新库无对应（或已被认领）
+56,fsgK5pYQ4ip,已发布,checkbox,,,,新库无对应（或已被认领）
+57,fr6UjRMMbLA,备注,single_line_text,,,,新库无对应（或已被认领）
+58,f5ipjxwBNdD,Source,source,fkYBsZUhZCv,Source,source,同名直连
+N1,,（新库独有）,,fqqEWH7xiC9,电子邮件,email,新库新增
+N2,,（新库独有）,,frNSBFFkJpQ,名称,single_line_text,新库新增
+N3,,（新库独有）,,fwz4nCDQfZH,身份,single_select,新库新增
+N4,,（新库独有）,,f4bYfA5vsJ3,封面展示,attachments,新库新增
+N5,,（新库独有）,,fnQE4jDkwYr,生活照 (1),attachments,新库新增
+N6,,（新库独有）,,fsGpT1jWgeg,生活照 (2),attachments,新库新增
+N7,,（新库独有）,,f6sVgYPieRC,是否有奴,single_select,新库新增
+N8,,（新库独有）,,fsujmD4Sbbz,第一次自慰经历,single_line_text,新库新增
+N9,,（新库独有）,,fxnfcMX7FHY,第一次性交年纪,single_line_text,新库新增
+N10,,（新库独有）,,fbDMk7Vj33a,第一次性交经历,single_line_text,新库新增
+N11,,（新库独有）,,fwt7u9xzXGa,拥有的玩具,multiple_select,新库新增
+N12,,（新库独有）,,f2GdxJp7zxb,1、与手写@Foxsir+  合照;2、与Foxsir推特主页合照;,attachments,新库新增

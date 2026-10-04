@@ -1,4 +1,4 @@
-import { CONFIG, SEARCH_FIELDS, PAGE_SIZE } from './config.js';
+import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, VISIBILITY_FIELDS } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
 import {
   getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo,
@@ -39,23 +39,39 @@ const affFilter = {
 
 // ============================================================
 // 判断记录是否公开
+// ------------------------------------------------------------
+// ★ 字段 ID 来自配置，不硬编码。
+//   旧库用「公开问卷」fgerzjJpBTF；新库改用「是否公开问卷内容」
+//   fkAEd2CE2gQ。迁库后若这里读旧 ID，会全部取到 null，
+//   导致所有卡片被过滤掉（曾发生此故障）。
 // ============================================================
 function isPublic(record) {
-  const value = getFieldValue(record, 'fgerzjJpBTF');
+  const fieldId = VISIBILITY_FIELDS.publicQuestionnaire;
+  const value = getFieldValue(record, fieldId);
   if (value === true || value === '是' || value === 'true' || value === 1) return true;
   if (typeof value === 'string' && value.trim().toLowerCase() === 'true') return true;
   return false;
 }
 
 // ============================================================
-// ★★★ 前端排序（按 fxwUAnrwpaT 降序） ★★★
+// 前端排序（最新在前）
+// ------------------------------------------------------------
+// 旧库按自增 ID 字段 fxwUAnrwpaT 降序；新库无该字段，
+// 改用记录自带的 updatedAt / createdAt 时间戳。
 // ============================================================
 function sortByLatest(records) {
-  const idFieldId = 'fxwUAnrwpaT';
+  // 旧库的自增序号字段。新库没有它，取到 null，此时走时间戳分支。
+  // 保留这行是为了兼容仍带该字段的旧数据，不参与新库排序。
+  const LEGACY_SEQ_FIELD = 'fxwUAnrwpaT';
+  const ts = (r) => {
+    const t = Date.parse(r.updatedAt || r.createdAt || '');
+    return Number.isNaN(t) ? 0 : t;
+  };
   return records.slice().sort((a, b) => {
-    const idA = parseInt(getFieldValue(a, idFieldId)) || 0;
-    const idB = parseInt(getFieldValue(b, idFieldId)) || 0;
-    return idB - idA;
+    const idA = parseInt(getFieldValue(a, LEGACY_SEQ_FIELD), 10) || 0;
+    const idB = parseInt(getFieldValue(b, LEGACY_SEQ_FIELD), 10) || 0;
+    if (idA || idB) return idB - idA;
+    return ts(b) - ts(a);
   });
 }
 

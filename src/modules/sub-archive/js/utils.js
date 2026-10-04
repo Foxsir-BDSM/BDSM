@@ -11,6 +11,8 @@ import {
   PRIVACY_DEPENDENCIES,
   DETAIL_GROUPS,
   FILTER_FIELDS,
+  VISIBILITY_FIELDS,
+  PRIVACY_CONTROL_IDS,
 } from './config.js';
 
 // ============================================================
@@ -101,7 +103,7 @@ function isEmptyValue(value) {
 // 首页卡片专用函数
 // ============================================================
 export function getCardImage(record) {
-  const privacyValue = getFieldValue(record, 'fgtX9QmBAM5');
+  const privacyValue = getFieldValue(record, PRIVACY_CONTROL_IDS.lifePhotos);
   if (!isPrivacyApproved(privacyValue)) {
     return CONFIG.DEFAULT_IMAGE;
   }
@@ -130,7 +132,7 @@ export function getCardAge(record) {
 }
 
 export function getCardInfo(record) {
-  const areaPrivacy = getFieldValue(record, 'f1s9DJg4oLc');
+  const areaPrivacy = getFieldValue(record, PRIVACY_CONTROL_IDS.address);
   const areaValue = isPrivacyApproved(areaPrivacy)
     ? getFieldValue(record, CARD_FIELDS.area) || ''
     : '未公开';

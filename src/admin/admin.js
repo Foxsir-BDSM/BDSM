@@ -14,8 +14,15 @@ import {
   clearCache as clearSubCache,
 } from '@/modules/sub-archive/js/api.js';
 
+// ----- 档案字段配置（不再硬编码字段 ID）-----
+import {
+  CARD_FIELDS,
+  VISIBILITY_FIELDS,
+  PRIVACY_CONTROL_IDS,
+} from '@/modules/sub-archive/js/config.js';
+
 // ============================================================
-// 内置 getFieldValue
+// 内置 getFieldValue（fields 与 data 两种键都兼容）
 // ============================================================
 function getFieldValue(record, fieldId) {
   if (!record) return undefined;
@@ -236,13 +243,14 @@ const subSearchInput = document.getElementById('subSearchInput');
 
 let pendingSubChanges = {};
 
+// 管理面板可编辑的档案字段（ID 来自配置，迁移数据库后自动跟随）
 const SUB_EDITABLE_FIELDS = [
-  { id: 'fgerzjJpBTF', label: '公开问卷' },
-  { id: 'f1s9DJg4oLc', label: '常住地址（隐私确认）' },
-  { id: 'fgHLgfGRzy8', label: '联系方式（隐私确认）' },
-  { id: 'fgtX9QmBAM5', label: '生活照片（隐私确认）' },
-  { id: 'fwEcZvqiGvm', label: '隐私照片（隐私确认）' },
-  { id: 'fwK2mQMoxto', label: '认证' },
+  { id: VISIBILITY_FIELDS.publicQuestionnaire, label: '是否公开问卷内容' },
+  { id: PRIVACY_CONTROL_IDS.address,           label: '是否公开常住地址' },
+  { id: PRIVACY_CONTROL_IDS.contact,           label: '是否公开联系方式' },
+  { id: PRIVACY_CONTROL_IDS.lifePhotos,        label: '是否公开生活照片' },
+  { id: PRIVACY_CONTROL_IDS.privatePhotos,     label: '是否公开隐私照片' },
+  { id: CARD_FIELDS.verified,                  label: '我已确认上述为我真实意愿' },
 ];
 
 let subRecords = [];
@@ -285,7 +293,7 @@ function renderSubTable() {
   html += `<th>状态</th></tr></thead><tbody>`;
 
   filteredSubRecords.forEach((record) => {
-    const name = getFieldValue(record, 'fqidTsBW5js') || '未命名';
+    const name = getFieldValue(record, CARD_FIELDS.name) || '未命名';
     const id = record.id;
     html += `<tr data-record-id="${id}"><td><strong>${name}</strong></td>`;
     SUB_EDITABLE_FIELDS.forEach((f) => {
@@ -381,9 +389,9 @@ subSearchInput.addEventListener('input', function () {
     filteredSubRecords = subRecords;
   } else {
     filteredSubRecords = subRecords.filter((r) => {
-      const name = (getFieldValue(r, 'fqidTsBW5js') || '').toLowerCase();
-      const profession = (getFieldValue(r, 'fI5zGTDkg2W') || '').toLowerCase();
-      const region = (getFieldValue(r, 'fF9i8Q5CgBe') || '').toLowerCase();
+      const name = (getFieldValue(r, CARD_FIELDS.name) || '').toLowerCase();
+      const profession = (getFieldValue(r, CARD_FIELDS.profession) || '').toLowerCase();
+      const region = (getFieldValue(r, CARD_FIELDS.area) || '').toLowerCase();
       return name.includes(keyword) || profession.includes(keyword) || region.includes(keyword);
     });
   }
