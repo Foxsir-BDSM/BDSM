@@ -35,7 +35,8 @@
     "fields:snapshot": "node --no-warnings tools/snapshot-fields.mjs",
     "fields:verify": "node --no-warnings tools/verify-restructure.mjs",
     "check:orphan": "node --no-warnings tools/check-orphan-text.mjs",
-    "check:profile": "node tools/check-profile-entry.mjs"
+    "check:profile": "node tools/check-profile-entry.mjs",
+    "check:profile:layout": "node tools/check-profile-layout.mjs"
   },
   "keywords": [],
   "author": "",

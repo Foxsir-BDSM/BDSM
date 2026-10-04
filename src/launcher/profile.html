@@ -132,6 +132,21 @@
       .avatar-hint .t1 { font-size: 14px; color: rgba(255, 255, 255, 0.75); margin-bottom: 5px; }
       .avatar-hint .t2 { font-size: 12px; color: rgba(255, 255, 255, 0.25); line-height: 1.7; }
 
+      /* 保存 / 还原：置于头像区右侧，上下排列 */
+      .avatar-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex-shrink: 0;
+        margin-left: auto;
+      }
+      .avatar-actions .btn {
+        width: 118px;
+        text-align: center;
+        white-space: nowrap;   /* 防止「保存修改」折行 */
+      }
+      .avatar-actions .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
       /* ---- 表单 ---- */
       .field { margin-bottom: 16px; }
       .field label {
@@ -142,7 +157,8 @@
         letter-spacing: 0.6px;
         margin-bottom: 6px;
       }
-      .field input {
+      .field input,
+      .field select {
         width: 100%;
         padding: 11px 15px;
         border-radius: 12px;
@@ -153,7 +169,22 @@
         font-family: inherit;
         transition: border-color 0.25s ease;
       }
-      .field input:focus { outline: none; border-color: rgba(212, 165, 116, 0.35); }
+      .field select {
+        appearance: none;
+        -webkit-appearance: none;
+        cursor: pointer;
+        padding-right: 38px;
+        /* 自绘下拉箭头：避免各浏览器默认样式不一致 */
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+      }
+      .field select option {
+        background: #1a1a1c;
+        color: #fffffe;
+      }
+      .field input:focus,
+      .field select:focus { outline: none; border-color: rgba(212, 165, 116, 0.35); }
       .field input::placeholder { color: rgba(255, 255, 255, 0.12); }
       .field input:disabled {
         color: rgba(255, 255, 255, 0.35);
@@ -265,9 +296,8 @@
 
       <!-- 已登录内容 -->
       <div id="memberArea" style="display: none">
-        <!-- 头像 -->
+        <!-- 头像 + 操作按钮 -->
         <div class="card">
-          <div class="card-title">头像</div>
           <div class="avatar-row">
             <div class="avatar-big" id="avatarBox" title="点击更换头像">
               <div id="avatarInner"></div>
@@ -284,6 +314,11 @@
                 系统会自动压缩为 200×200 的 WebP，控制在最小体积
               </div>
             </div>
+            <!-- 保存 / 还原：上下排列，置于头像区右侧 -->
+            <div class="avatar-actions">
+              <button type="button" class="btn btn-primary" id="saveBtn" disabled>保存修改</button>
+              <button type="button" class="btn btn-ghost" id="resetBtn" disabled>还原</button>
+            </div>
           </div>
           <div class="notice" id="avatarNotice"></div>
         </div>
@@ -293,62 +328,32 @@
           <div class="card-title">基本资料</div>
 
           <div class="field">
+            <label for="identitySelect">身份</label>
+            <select id="identitySelect"></select>
+            <div class="hint" id="identityHint">身份决定你的角色（主 / 奴）与档案馆默认展示谁</div>
+          </div>
+
+          <div class="field">
             <label for="nicknameInput">昵称</label>
             <input type="text" id="nicknameInput" placeholder="你的圈内称呼" maxlength="24" />
             <div class="hint">将显示在控制中心右上角与文章作者署名处</div>
           </div>
 
           <div class="field">
-            <label for="emailInput">邮箱（不可修改）</label>
+            <label for="emailInput">邮箱（只读）</label>
             <input type="text" id="emailInput" disabled />
             <div class="hint">邮箱作为登录凭据，如需更换请联系管理员</div>
           </div>
 
-          <div class="actions">
-            <button type="button" class="btn btn-primary" id="saveBtn" disabled>保存修改</button>
-            <button type="button" class="btn btn-ghost" id="resetBtn">还原</button>
+          <div class="field" style="margin-bottom:0">
+            <div class="info-row" style="border-bottom:none;padding:0">
+              <span class="k">平台角色</span>
+              <span class="v" id="roleInfo">—</span>
+            </div>
+            <div class="hint">平台角色由权限层级决定，不可修改</div>
           </div>
+
           <div class="notice" id="saveNotice"></div>
-        </div>
-
-        <!-- 身份与等级（只读）-->
-        <div class="card">
-          <div class="card-title">身份与角色 <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.22);margin-left:6px;">只读</span></div>
-          <div class="info-row">
-            <span class="k">主身份</span>
-            <span class="v" id="primaryIdentity">—</span>
-          </div>
-          <div class="info-row">
-            <span class="k">角色</span>
-            <span class="v" id="levelInfo">—</span>
-          </div>
-          <div class="info-row">
-            <span class="k">平台角色</span>
-            <span class="v" id="roleInfo">—</span>
-          </div>
-          <div class="hint" style="font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 14px; line-height: 1.7">
-            <b style="color: rgba(255,255,255,0.3)">身份</b>决定你的角色（主 / 奴）与档案馆默认展示谁，<b style="color: rgba(255,255,255,0.3)">平台角色</b>决定你的权限层级。<br />
-            ⚠️ 身份<b style="color: rgba(255,255,255,0.3)">不可自助修改</b>：它同时影响权限与档案筛选，
-            开放自助会带来越权风险。<br />
-            如需调整，请通过管理面板或联系管理员。
-          </div>
-        </div>
-
-        <!-- 回到我的 -->
-        <div class="card">
-          <div class="card-title">相关页面</div>
-          <div class="actions">
-            <a href="/my.html" class="btn btn-ghost" style="text-decoration: none">← 返回我的</a>
-            <a href="/modules/sub-archive/" class="btn btn-ghost" style="text-decoration: none">🌊 去档案馆</a>
-          </div>
-        </div>
-
-        <!-- 账号操作 -->
-        <div class="card">
-          <div class="card-title">账号</div>
-          <div class="actions">
-            <button type="button" class="btn btn-danger" id="logoutBtn">退出登录</button>
-          </div>
         </div>
       </div>
     </div>
@@ -359,7 +364,7 @@
 
     <script type="module">
       import { supabase } from '@/shared/js/supabase-client.js';
-      import { getCurrentUser, signOut, getUserIdentity } from '@/shared/js/auth.js';
+      import { getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { uploadAvatar } from '@/shared/js/avatar.js';
       import { getRoleInfo } from '@/shared/js/level.js';
@@ -384,16 +389,19 @@
       const avatarNotice = document.getElementById('avatarNotice');
       const nicknameInput = document.getElementById('nicknameInput');
       const emailInput = document.getElementById('emailInput');
+      const identitySelect = document.getElementById('identitySelect');
+      const identityHint = document.getElementById('identityHint');
       const saveBtn = document.getElementById('saveBtn');
       const resetBtn = document.getElementById('resetBtn');
       const saveNotice = document.getElementById('saveNotice');
-      const logoutBtn = document.getElementById('logoutBtn');
 
       /** 当前登录用户（渲染基准） */
       let currentUser = null;
       let identity = null;
       /** 原始昵称，用于比对与「还原」 */
       let originalNickname = '';
+      /** 原始身份 id，用于比对与「还原」 */
+      let originalIdentityId = '';
       /** 是否正在提交 */
       let saving = false;
 
@@ -422,6 +430,30 @@
         return /[A-Za-z]/.test(first) ? first : '👤';
       }
 
+      // ────────────────────────────────────────── 身份下拉
+      /**
+       * 渲染身份下拉选项（数据源：identity-config.js 的 IDENTITIES）
+       * 只列 4 个现行身份；旧身份值会被 migrateIdentity 归并后预选。
+       */
+      function renderIdentitySelect() {
+        identitySelect.innerHTML = IDENTITIES
+          .map((i) => `<option value="${i.id}">${i.icon} ${i.label} · ${i.desc}</option>`)
+          .join('');
+      }
+
+      /** 当前选中的身份 id（未选时返回空串） */
+      function selectedIdentityId() {
+        return identitySelect.value || '';
+      }
+
+      /** 选中身份后刷新提示文案 */
+      function refreshIdentityHint() {
+        const def = IDENTITIES.find((i) => i.id === selectedIdentityId());
+        identityHint.textContent = def
+          ? `${def.icon} ${def.label} · ${def.desc} —— 决定你的角色（${getRoleInfo(def.id).title}）与档案馆默认展示谁`
+          : '身份决定你的角色（主 / 奴）与档案馆默认展示谁';
+      }
+
       // ────────────────────────────────────────── 渲染
       function renderAvatar() {
         const url = currentUser?.user_metadata?.avatar_url;
@@ -432,29 +464,8 @@
         }
       }
 
-      function renderInfo(identity, role) {
-        // 主身份
-        const primaryId = identity?.primaryId;
-        const primaryDef = IDENTITIES.find((i) => i.id === primaryId);
-        document.getElementById('primaryIdentity').innerHTML = primaryDef
-          ? `<span class="tag">${primaryDef.icon} ${primaryDef.label}</span><span style="color:rgba(255,255,255,0.35);font-size:12px;">${primaryDef.desc} · ${
-              primaryDef.gender === 'male' ? '男' : '女'
-            } · ${primaryDef.type === 'top' ? '上位' : '下位'}</span>`
-          : `<span class="v dim">未设置</span>`;
-
-        // 角色（主 / 奴）
-        const points = currentUser?.user_metadata?.points ?? 0;
-        if (primaryId) {
-          const roleInfo = getRoleInfo(primaryId);
-          document.getElementById('levelInfo').innerHTML = roleInfo.title
-            ? `<span class="tag">${roleInfo.title}</span>` +
-              `<span style="color:rgba(255,255,255,0.35);font-size:12px;">${roleInfo.desc} · ${points} 积分</span>`
-            : `<span class="v dim">—</span>`;
-        } else {
-          document.getElementById('levelInfo').innerHTML = `<span class="v dim">—</span>`;
-        }
-
-        // 角色
+      function renderInfo(role) {
+        // 平台角色（只读）
         document.getElementById('roleInfo').textContent = ROLE_MAP[role] || role;
       }
 
@@ -462,16 +473,27 @@
       // 取向与自助修改已移除（2026-10-04 决策：筛选仅按身份）
       // ──────────────────────────────────────────────
 
+      // ──────────────────────────────────────────────
+      // 变更检测：昵称与身份任一改动即视为「有改动」
+      // ──────────────────────────────────────────────
       function refreshDirty() {
-        const changed = nicknameInput.value.trim() !== originalNickname;
+        const nickChanged = nicknameInput.value.trim() !== originalNickname;
+        const identChanged = selectedIdentityId() !== originalIdentityId;
+        const changed = nickChanged || identChanged;
         saveBtn.disabled = !changed || saving;
         resetBtn.disabled = !changed || saving;
       }
 
       nicknameInput.addEventListener('input', refreshDirty);
+      identitySelect.addEventListener('change', () => {
+        refreshIdentityHint();
+        refreshDirty();
+      });
 
       resetBtn.addEventListener('click', () => {
         nicknameInput.value = originalNickname;
+        identitySelect.value = originalIdentityId;
+        refreshIdentityHint();
         refreshDirty();
         saveNotice.classList.remove('show');
       });
@@ -513,30 +535,45 @@
         }
       });
 
-      // ────────────────────────────────────────── 保存昵称
+      // ────────────────────────────────────────── 保存昵称 + 身份
       saveBtn.addEventListener('click', async () => {
-        const next = nicknameInput.value.trim();
-        if (!next) {
+        const nextNick = nicknameInput.value.trim();
+        const nextIdentityId = selectedIdentityId();
+        const identChanged = nextIdentityId !== originalIdentityId;
+        const nickChanged = nextNick !== originalNickname;
+
+        if (!nextNick) {
           showSaveNotice('昵称不能为空', 'err');
           return;
         }
-        if (next.length > 24) {
+        if (nextNick.length > 24) {
           showSaveNotice('昵称最长 24 个字符', 'err');
           return;
         }
-        if (next === originalNickname) return;
+        if (!nickChanged && !identChanged) return;
+
+        const identDef = IDENTITIES.find((i) => i.id === nextIdentityId);
 
         saving = true;
         refreshDirty();
         showSaveNotice('保存中…', 'info');
 
         try {
+          // 身份变更时同步写入元数据（角色、性别等派生字段一并更新）
+          const metaPatch = { nickname: nextNick };
+          if (identChanged && identDef) {
+            metaPatch.primary_identity = identDef.id;
+            metaPatch.primary_label = identDef.label;
+            metaPatch.gender = identDef.gender;
+            metaPatch.role_type = identDef.type;
+          }
+
           const { data, error } = await supabase.auth.updateUser({
-            data: { ...(currentUser.user_metadata || {}), nickname: next },
+            data: { ...(currentUser.user_metadata || {}), ...metaPatch },
           });
           if (error) throw error;
 
-          // 同步本地会话缓存，保证其他页面立即读到新昵称
+          // 同步本地会话缓存，保证其他页面立即读到新值
           const stored = localStorage.getItem('foxsir_session');
           if (stored) {
             try {
@@ -549,8 +586,13 @@
           }
 
           currentUser = data.user;
-          originalNickname = next;
-          showSaveNotice('昵称已保存 ✅', 'ok');
+          originalNickname = nextNick;
+          originalIdentityId = nextIdentityId;
+
+          const parts = [];
+          if (nickChanged) parts.push('昵称');
+          if (identChanged) parts.push('身份');
+          showSaveNotice(parts.join('与') + '已保存 ✅', 'ok');
         } catch (err) {
           showSaveNotice('保存失败：' + (err.message || err), 'err');
         } finally {
@@ -559,13 +601,10 @@
         }
       });
 
-      // ────────────────────────────────────────── 退出登录
-      logoutBtn.addEventListener('click', async () => {
-        await signOut();
-      });
-
       // ────────────────────────────────────────── 初始化
       async function init() {
+        renderIdentitySelect();
+
         showLoading('读取资料', '正在加载…');
         try {
           const user = await getCurrentUser();
@@ -588,8 +627,13 @@
           nicknameInput.placeholder = user.email?.split('@')[0] || '你的圈内称呼';
           emailInput.value = user.email || '';
 
+          // 预选当前身份（旧身份值由 getUserIdentity 归并后再取）
+          originalIdentityId = identity?.primaryId || '';
+          identitySelect.value = originalIdentityId;
+          refreshIdentityHint();
+
           renderAvatar();
-          renderInfo(identity, role);
+          renderInfo(role);
           refreshDirty();
         } catch (err) {
           console.error('[profile] 初始化失败:', err);

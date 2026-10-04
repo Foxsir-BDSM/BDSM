@@ -134,16 +134,15 @@ try {
 
   const cards = await js(`[...document.querySelectorAll('.card-title')].map(e=>e.textContent.trim().slice(0,12))`);
   console.log(`     板块: ${JSON.stringify(cards)}`);
-  check('含头像板块', Array.isArray(cards) && cards.some((c) => c.includes('头像')), true);
-  check('含基本资料板块', Array.isArray(cards) && cards.some((c) => c.includes('基本资料')), true);
-  check('含身份与角色板块', Array.isArray(cards) && cards.some((c) => c.includes('身份')), true);
+  check('保留「基本资料」板块', Array.isArray(cards) && cards.some((c) => c.includes('基本资料')), true);
+  check('已无「相关页面」板块', Array.isArray(cards) && !cards.some((c) => c.includes('相关页面')), true);
+  check('已无「账号」板块', Array.isArray(cards) && !cards.some((c) => c === '账号'), true);
 
   check('昵称输入框存在', await js(`!!document.getElementById('nicknameInput')`), true);
+  check('身份下拉存在', await js(`document.getElementById('identitySelect')?.tagName`), 'SELECT');
   check('邮箱输入框为只读', await js(`document.getElementById('emailInput')?.disabled`), true);
+  check('平台角色为只读文本', await js(`document.getElementById('roleInfo')?.tagName`), 'SPAN');
   check('头像上传入口存在', await js(`!!document.getElementById('avatarFile')`), true);
-
-  const hint = await js(`[...document.querySelectorAll('.hint')].map(e=>e.textContent).join(' ')`);
-  check('身份区说明「不可自助修改」', /不可自助修改/.test(String(hint)), true);
 
   const realErrs = errs.filter((e) => !/favicon|ERR_/.test(e));
   if (realErrs.length) {
