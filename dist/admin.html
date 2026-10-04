@@ -55,21 +55,23 @@
   <script type="module" crossorigin src="/assets/src_shared_js_ui-helpers.js-CEBwo3Z9.js"></script>
   <script type="module" crossorigin src="/assets/config-DrgoX0Df.js"></script>
   <script type="module" crossorigin src="/assets/api-Bv_Gdrl9.js"></script>
-  <script type="module" crossorigin src="/assets/src_admin_admin.js-BVvjIG98.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/src_admin_admin-auH1HSMz.css">
+  <script type="module" crossorigin src="/assets/src_admin_admin.js-DgjJUxPs.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/src_admin_admin-47iuaIpJ.css">
   <link rel="stylesheet" crossorigin href="/assets/main-BcRJzlKm.css">
 </head>
 <body>
-  <!-- ===== 顶部导航 ===== -->
+  <!-- ===== 顶部导航 =====
+       顶栏：左侧 logo + 标题（左对齐），右侧 home 图标 + 用户信息 + 登出。
+       原先「← 返回欲研所」是文字链接，占位且与 logo 不在一条基准线上。 -->
   <header class="admin-header">
     <div class="header-left">
-      <a href="/" class="back-link">← 返回欲研所</a>
       <div class="brand-mark">
         <img src="/assets/OIP-C-DsxhjT2W.jpg" alt="Foxsir" class="brand-icon" />
         <h1>管理面板</h1>
       </div>
     </div>
     <div class="header-right">
+      <a href="/" class="home-ico" title="返回欲研所" aria-label="返回欲研所">🏠</a>
       <span id="adminUserInfo" class="admin-user"></span>
       <button id="adminLogoutBtn" class="btn-logout">登出</button>
     </div>
@@ -84,16 +86,15 @@
     </div>
   </div>
 
-  <!-- ===== Tab 导航（动态控制：仅 admin 可见用户权限） ===== -->
+  <!-- ===== Tab 导航 =====
+       原先有「上位档案」与「下位档案」两个并列入口，但上下位已合并为统一档案库，
+       故移除「上位档案」，只保留一个入口并改名为「全部档案」。 -->
   <nav class="tab-nav" id="tabNav">
     <button class="tab-btn active" data-tab="userPerm" id="tabUserPerm">
       👤 用户权限 <span class="badge ready">已就绪</span>
     </button>
-    <button class="tab-btn" data-tab="domArchive">
-      📤 上位档案 <span class="badge coming">开发中</span>
-    </button>
     <button class="tab-btn" data-tab="subArchive" id="tabSubArchive">
-      📥 下位档案 <span class="badge ready">已就绪</span>
+      📁 全部档案 <span class="badge ready">已就绪</span>
     </button>
   </nav>
 
@@ -108,30 +109,24 @@
         </div>
         <div class="right">
           <input type="text" id="userSearchInput" placeholder="🔍 搜索昵称或邮箱…" />
-          <button id="pushBtn" class="btn btn-gold">📤 Push 生效</button>
+          <button id="pushBtn" class="btn btn-gold" title="保存并生效">💾</button>
         </div>
       </div>
       <div id="userTableContainer"></div>
       <div id="pushResult" class="push-result"></div>
     </div>
 
-    <!-- 面板二：上位档案（占位） -->
-    <div class="tab-pane" id="pane-domArchive">
-      <div class="coming-soon">
-        <div class="placeholder-icon">🚧</div>
-        <p>上位档案馆尚未接入</p>
-        <p class="sub-text">此功能即将开放，敬请期待……</p>
-      </div>
-    </div>
-
-    <!-- 面板三：下位档案（subadmin + admin 可见） -->
+    <!-- 面板二：全部档案（subadmin + admin 可见）
+         上下位已合并为统一档案库，故不再有独立的「上位档案」面板。 -->
     <div class="tab-pane" id="pane-subArchive">
-      <div class="toolbar">
+      <div class="toolbar" id="subToolbar">
         <div class="left">
           <span class="stats-label">共 <strong id="subTotalCount">0</strong> 条档案</span>
         </div>
         <div class="right">
           <input type="text" id="subSearchInput" placeholder="🔍 搜索姓名" />
+          <!-- 保存按钮由 admin.js 动态创建并插入此处（pushSubBtn），
+               不要在此静态声明，否则会出现两个按钮 -->
         </div>
       </div>
       <div id="subRecordsContainer"></div>

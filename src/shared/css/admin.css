@@ -544,3 +544,107 @@ body {
     height: 40px;
   }
 }
+
+/* ============================================================
+   管理面板 · 顶栏 / 工具栏 / 表格 补充
+   ============================================================ */
+
+/* 顶栏 home 图标 */
+.home-ico {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  font-size: 17px; line-height: 1;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.22s ease;
+}
+.home-ico:hover { background: rgba(212, 165, 116, 0.12); border-color: rgba(212, 165, 116, 0.3); }
+
+/* 保存图标按钮：固定最小宽度，避免「提交中…」把工具栏撑开 */
+#pushBtn, #pushSubBtn {
+  min-width: 46px;
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* 表格横向滚动容器
+   列名最长 6 个汉字，窄屏下若强行压缩会被拆成一列一个字。
+   宁可让表格横向滚动，也不要让列名竖排。 */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.table-scroll .admin-table {
+  min-width: 560px;   /* 7 列的下限宽度 */
+}
+
+/* ============================================================
+   窄屏
+   ============================================================ */
+@media (max-width: 768px) {
+  /* 顶栏保持一行：logo + 标题左对齐，右侧 home / 用户 / 登出。
+     原先是 column 方向，「返回欲研所」会单独占一行。 */
+  .admin-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 11px 13px;
+    flex-wrap: wrap;
+  }
+  .header-left { flex: 1 1 auto; min-width: 0; }
+  .brand-mark { gap: 9px; min-width: 0; }
+  .brand-icon { width: 30px; height: 30px; flex: none; }
+  .admin-header h1 { font-size: 16px; white-space: nowrap; }
+  .header-right {
+    flex: none;
+    display: flex; align-items: center; gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .admin-user { font-size: 11px; max-width: 118px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn-logout { padding: 6px 11px; font-size: 12px; }
+
+  /* ★ 工具栏吸顶：滑动长列表时搜索框与保存按钮始终可见 */
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: rgba(22, 20, 28, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .toolbar .left { flex: none; }
+  .toolbar .right {
+    flex: 1 1 auto;
+    display: flex; align-items: center; gap: 7px;
+    min-width: 0;
+  }
+  .toolbar input[type='text'] {
+    flex: 1 1 auto;
+    width: auto; min-width: 0;
+    padding: 8px 11px;
+    font-size: 13px;
+  }
+  .stats-label { font-size: 12px; white-space: nowrap; }
+
+  /* 标签页：只剩两个入口，一行放得下 */
+  .tab-nav { gap: 4px; }
+  .tab-btn { padding: 9px 11px; font-size: 12.5px; white-space: nowrap; }
+  .tab-btn .badge { display: none; }   /* 「已就绪」在窄屏是噪音 */
+
+  .admin-table { font-size: 12px; }
+  .admin-table th { white-space: nowrap; }   /* ★ 关键：列名不允许换行 */
+  .admin-table th,
+  .admin-table td { padding: 6px 9px; }
+  .admin-table input[type='checkbox'] { width: 17px; height: 17px; }
+}

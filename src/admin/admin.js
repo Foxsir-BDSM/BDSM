@@ -233,7 +233,7 @@ async function pushChanges() {
   pendingChanges = {};
   renderUserTable();
   await loadUsers();
-  pushBtn.textContent = '📤 Push 生效';
+  pushBtn.textContent = '💾';
   pushBtn.disabled = true;
   showToast(
     failCount === 0 ? '所有变更已生效' : '部分变更失败',
@@ -242,7 +242,7 @@ async function pushChanges() {
 }
 
 // ============================================================
-// 3. 下位档案管理（subadmin + admin 均可操作）
+// 3. 全部档案管理（subadmin + admin 均可操作）
 // ============================================================
 
 const subRecordsContainer = document.getElementById('subRecordsContainer');
@@ -265,8 +265,11 @@ let subRecords = [];
 let filteredSubRecords = [];
 
 const pushSubBtn = document.createElement('button');
+pushSubBtn.id = 'pushSubBtn';
 pushSubBtn.className = 'btn btn-gold';
-pushSubBtn.textContent = '📤 Push 下位档案变更';
+pushSubBtn.textContent = '💾';                          // 保存图标代替「Push」文案
+pushSubBtn.title = '保存档案更改';
+pushSubBtn.setAttribute('aria-label', '保存档案更改');
 pushSubBtn.disabled = true;
 pushSubBtn.style.marginLeft = '10px';
 document.querySelector('#pane-subArchive .toolbar .right').appendChild(pushSubBtn);
@@ -274,7 +277,7 @@ document.querySelector('#pane-subArchive .toolbar .right').appendChild(pushSubBt
 async function loadSubRecords() {
   try {
     const records = await fetchSubRecords(true);
-    console.log('📥 加载下位档案记录数:', records.length);
+    console.log('📥 加载全部档案记录数:', records.length);
     subRecords = records;
     filteredSubRecords = records;
     renderSubTable();
@@ -282,7 +285,7 @@ async function loadSubRecords() {
     pendingSubChanges = {};
     pushSubBtn.disabled = true;
   } catch (err) {
-    console.error('加载下位档案失败:', err);
+    console.error('加载全部档案失败:', err);
     subRecordsContainer.innerHTML = `<p class="error">加载档案失败：${err.message}</p>`;
   }
 }
@@ -293,12 +296,18 @@ function renderSubTable() {
     return;
   }
 
-  let html = `<table class="admin-table">
+  // 表格：姓名 + 可编辑字段（问卷内容 / 常住地址 / 联系方式 / 生活照片 /
+  //       隐私照片 / 首页认证标签），共 7 列。
+  // 原先还追加了一列「状态」，但那是保存提示（「待保存」已标在勾选框旁、
+  // 「已保存」由底部 pushResult 统一提示），单独占一列在手机上把其余列挤到
+  // 竖排显示，故移除。
+  // 窄屏下由 .table-scroll 负责横向滚动，保证列名不被压成竖排。
+  let html = `<div class="table-scroll"><table class="admin-table">
     <thead><tr><th>姓名</th>`;
   SUB_EDITABLE_FIELDS.forEach((f) => {
     html += `<th>${f.label}</th>`;
   });
-  html += `<th>状态</th></tr></thead><tbody>`;
+  html += `</tr></thead><tbody>`;
 
   filteredSubRecords.forEach((record) => {
     const name = getFieldValue(record, CARD_FIELDS.name) || '未命名';
@@ -313,9 +322,9 @@ function renderSubTable() {
         ${hasPending ? '<span style="color:#f59e0b;font-size:10px;">待保存</span>' : ''}
       </td>`;
     });
-    html += `<td><span class="save-status" id="sub-status-${id}"></span></td></tr>`;
+    html += `</tr>`;
   });
-  html += `</tbody></table>`;
+  html += `</tbody></table></div>`;
   subRecordsContainer.innerHTML = html;
 
   document.querySelectorAll('.sub-check').forEach((cb) => {
@@ -385,7 +394,7 @@ async function pushSubChanges() {
   showToast(msg, failCount === 0 ? 'success' : 'error');
 
   await loadSubRecords();
-  pushSubBtn.textContent = '📤 Push 下位档案变更';
+  pushSubBtn.textContent = '💾';
   pushSubBtn.disabled = true;
 }
 
@@ -440,7 +449,7 @@ async function initAdmin() {
     if (userPermTab) {
       userPermTab.style.display = 'none';
     }
-    // 如果用户权限面板当前激活，切换到下位档案
+    // 如果用户权限面板当前激活，切换到全部档案
     const userPermPane = document.getElementById('pane-userPerm');
     if (userPermPane && userPermPane.classList.contains('active')) {
       const subArchiveTab = document.querySelector('.tab-btn[data-tab="subArchive"]');
@@ -461,7 +470,7 @@ async function initAdmin() {
     await loadUsers();
   }
 
-  // ★ subadmin 和 admin 均可管理下位档案 ★
+  // ★ subadmin 和 admin 均可管理全部档案 ★
   await loadSubRecords();
 }
 
