@@ -7,34 +7,31 @@
     "dev": "vite",
     "build": "vite build && node tools/flatten-dist.mjs",
     "preview": "vite preview",
-
     "serve": "node tools/static-server.mjs",
     "serve:dist": "node tools/static-server.mjs --dist --port 5601",
-
     "check": "node tools/ref-check.mjs",
     "check:baseline": "node tools/ref-check.mjs --baseline",
     "refs": "node tools/show-refs.mjs",
-
     "smoke": "node tools/smoke.mjs",
     "smoke:dist": "node tools/smoke.mjs --port 5601 --prod --label \"dist 生产态\"",
     "crawl": "node tools/crawl.mjs",
     "runtime": "node tools/runtime-check.mjs",
     "runtime:dist": "node tools/runtime-check.mjs --port 5601",
     "shots": "node tools/runtime-check.mjs --port 5601 --shot --wait 3000",
-
     "check:menu": "node tools/check-menu.mjs",
     "check:auth": "node tools/check-auth-flow.mjs",
     "check:avatar": "node tools/check-avatar-upload.mjs",
-    "check:my": "node tools/check-my-page.mjs",
+    "check:my": "node tools/check-my-privacy.mjs",
     "check:editor": "node tools/check-content-editor.mjs",
     "check:affil": "node --no-warnings tools/check-affiliation-filter.mjs",
     "check:archive": "node --no-warnings tools/check-archive-config.mjs",
     "check:identity": "node tools/check-identity-flow.mjs",
     "fields": "node tools/get_fields_diff.js",
-
     "flatten": "node tools/flatten-dist.mjs",
     "verify": "npm run check && npm run build && npm run smoke:dist",
-    "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist && npm run check:menu -- --port 5601"
+    "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist && npm run check:menu -- --port 5601",
+    "check:imports": "node --no-warnings tools/check-missing-imports.mjs",
+    "check:render": "node tools/check-archive-render.mjs"
   },
   "keywords": [],
   "author": "",

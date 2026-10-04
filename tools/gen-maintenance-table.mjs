@@ -149,9 +149,9 @@ const META = {
   },
   'src/shared/config/archive/fields.js': {
     layer: '共享层·档案馆配置', page: '档案馆全模块（首页/详情/管理/我的）',
-    what: '★ 字段维护文件：56 字段的 id→名称、详情页分组（显隐板块）、卡片字段映射、搜索字段、隐私规则、列表可见性字段、筛选字段',
-    maintain: '★ 字段增删改按此流程：跑 npm run fields 对比远程 → 把差异粘回本文件的 FIELD_LABELS → 消费方自动生效。DETAIL_GROUPS 决定详情页板块划分，新增字段要归入某个分组。',
-    cautions: '分组 id 以 photos_ 开头的走媒体网格渲染，且 photos_life / photos_private 被 detail.js 硬编码引用，不要改名。',
+    what: '★ 档案馆字段维护文件：59 字段的 id→名称；★ 字段可见性注册表（按页面区域划分）；5 个隐私公开开关；详情页分组；卡片映射；搜索与筛选字段',
+    maintain: '★ 本文件是维护主入口，只需改 FIELD_VISIBILITY 里的对应数组即可调整某页面显示哪些字段，不需要动任何页面代码。区域：home_card（首页卡片）/ detail（详情页）/ bind_only（表单绑定）/ manage（管理面板）/ self（我的页面）。',
+    cautions: '分组 id 以 photos_ 开头的走媒体网格渲染，且 photos_life / photos_private 被 detail.js 硬编码引用，不要改名。「首页认证标签」只能出现在 home_card 与 manage，不能进 self。',
   },
   'src/shared/config/archive/instances.js': {
     layer: '共享层·档案馆配置', page: '档案馆全模块',

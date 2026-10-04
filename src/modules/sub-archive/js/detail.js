@@ -14,7 +14,7 @@ import {
   getFieldValue,
   extractFileUrl,
   getImageUrls,
-  filterFieldsByRoleAndPrivacy,
+  getVisibleDetailFields,
 } from './utils.js';
 import { getUserRole } from '@/shared/js/identity.js';
 
@@ -428,7 +428,7 @@ async function renderDetail(record) {
     }))
     .map(group => ({
       ...group,
-      fields: filterFieldsByRoleAndPrivacy(group.fields, role, record),
+      fields: getVisibleDetailFields(group.fields, role, record),
     }))
     .filter(g => g.fields.length > 0);
 

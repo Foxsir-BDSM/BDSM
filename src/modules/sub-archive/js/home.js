@@ -7,10 +7,10 @@
 //   · ★ 列表可见性判定在 isPublic()，字段取 VISIBILITY_FIELDS.publicQuestionnaire —— 不要硬编码字段 ID，迁库后会静默失效（曾导致列表全部为空）。
 //   · ★ 表单跳转参数在 buildFormUrl()：email / name / uid，与 Fillout 的 URL 参数一一对应。
 //   · 筛选条由 renderFilterBar() 动态渲染，HTML 里没有写死按钮。
-import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, VISIBILITY_FIELDS } from './config.js';
+import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, VISIBILITY_FIELDS, CARD_FIELDS, getFieldsFor } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
 import {
-  getFieldValue, getCardImage, getCardName, getCardAge, getCardInfo,
+  getFieldValue, getCardImage, getCardName, getCardAge,
   filterRecordsByAffiliation, countByAffiliation, getRecordPositionGender,
   hasRealIdentityData,
 } from './utils.js';
@@ -85,22 +85,22 @@ function sortByLatest(records) {
 }
 
 // ============================================================
-// 生成星级评分
+// HTML 转义 —— 卡片所有插值都必须经过它（防存储型 XSS）
 // ============================================================
-function generateStars(rating) {
-  const num = parseInt(rating);
-  if (isNaN(num) || num < 1 || num > 10) {
-    return '<span class="no-rating">暂无评分</span>';
-  }
-  let stars = '';
-  for (let i = 1; i <= 10; i++) {
-    stars += i <= num ? '★' : '☆';
-  }
-  return stars;
+function escapeHtml(unsafe) {
+  if (unsafe === null || unsafe === undefined) return '';
+  return String(unsafe)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ============================================================
 // 判断是否认证
+// ------------------------------------------------------------
+// 数据来源：CARD_FIELDS.verified =「首页认证标签」（仅管理员可改）
 // ============================================================
 function isVerified(value) {
   if (value === true || value === 'true' || value === '是' || value === '认证' || value === 1) return true;
@@ -152,41 +152,46 @@ function renderAllCards() {
   let html = '';
   displayRecords.forEach((record) => {
     const id = record.id;
+
+    // ★ 卡片字段全部来自 FIELD_VISIBILITY.home_card（fields.js）
+    //   增删卡片字段只需改注册表，本函数不用动。
+    //   这里按字段逐个取值：缺值的行自动省略，不显示占位符。
+    const val = (key) => getFieldValue(record, CARD_FIELDS[key]);
+
     const img = getCardImage(record);
     const name = getCardName(record);
     const age = getCardAge(record);
-    const info = getCardInfo(record);
+    const area = val('area') || '';
+    const height = val('height') || '';
+    const weight = val('weight') || '';
+    const verified = isVerified(val('verified'));
 
-    const area = info.area || '—';
-    const height = info.height || '—';
-    const weight = info.weight || '—';
-    const recommend = info.recommend || '';
-    const verified = isVerified(info.verified);
-
+    // 右上角认证徽章 —— 仅由「首页认证标签」决定（管理员可改）
     const badgeHtml = verified ? '<div class="verified-badge">✅</div>' : '';
+
+    // 信息行按「有值才渲染」组装
+    const rows = [];
+    if (area) {
+      rows.push(`<div class="info-row"><span class="icon">📍</span><span class="value">${escapeHtml(String(area))}</span></div>`);
+    }
+    if (height || weight) {
+      const h = height ? `<span class="height-item"><span class="icon">📏</span><span class="value">${escapeHtml(String(height))}cm</span></span>` : '';
+      const w = weight ? `<span class="weight-item"><span class="icon">⚖</span><span class="value">${escapeHtml(String(weight))}kg</span></span>` : '';
+      rows.push(`<div class="info-row row-height-weight">${h}${w}</div>`);
+    }
 
     html += `
       <div class="card" data-id="${id}" onclick="location.href='./detail.html?id=${id}'">
         <div class="card-image-wrap">
-          <img src="${img}" alt="${name}" loading="lazy" onerror="this.src='${CONFIG.DEFAULT_IMAGE}'" />
+          <img src="${img}" alt="${escapeHtml(name)}" loading="lazy" onerror="this.src='${CONFIG.DEFAULT_IMAGE}'" />
           ${badgeHtml}
           <div class="card-image-caption">
-            <span class="card-name">${name}</span>
-            ${age ? `<span class="card-age">${age}岁</span>` : ''}
+            <span class="card-name">${escapeHtml(name)}</span>
+            ${age ? `<span class="card-age">${escapeHtml(String(age))}岁</span>` : ''}
           </div>
         </div>
         <div class="card-footer">
-          <div class="info-row">
-            <span class="icon">📍</span>
-            <span class="value">${area}</span>
-          </div>
-          <div class="info-row row-height-weight">
-            <span class="height-item"><span class="icon">📏</span><span class="value">${height}cm</span></span>
-            <span class="weight-item"><span class="icon">⚖</span><span class="value">${weight}kg</span></span>
-          </div>
-          <div class="info-row stars-row">
-            <div class="stars-container">${generateStars(recommend)}</div>
-          </div>
+          ${rows.join('\n          ')}
         </div>
       </div>
     `;

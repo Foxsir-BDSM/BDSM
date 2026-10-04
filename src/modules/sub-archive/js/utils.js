@@ -21,6 +21,7 @@ import {
   FILTER_FIELDS,
   VISIBILITY_FIELDS,
   PRIVACY_CONTROL_IDS,
+  getFieldsFor,
 } from './config.js';
 
 // ============================================================
@@ -139,6 +140,11 @@ export function getCardAge(record) {
   return String(age);
 }
 
+/**
+ * 卡片信息（按 FIELD_VISIBILITY.home_card 的字段集）
+ * 说明：旧库的「推荐指数」已随迁移移除，故不再返回 recommend。
+ *       受隐私开关控制的字段（常住地址）未公开时返回「未公开」。
+ */
 export function getCardInfo(record) {
   const areaPrivacy = getFieldValue(record, PRIVACY_CONTROL_IDS.address);
   const areaValue = isPrivacyApproved(areaPrivacy)
@@ -148,8 +154,7 @@ export function getCardInfo(record) {
     area: typeof areaValue === 'string' ? areaValue : String(areaValue || ''),
     height: String(getFieldValue(record, CARD_FIELDS.height) || ''),
     weight: String(getFieldValue(record, CARD_FIELDS.weight) || ''),
-    recommend: String(getFieldValue(record, CARD_FIELDS.recommend) || ''),
-    verified: getFieldValue(record, CARD_FIELDS.verified),
+    verified: getFieldValue(record, CARD_FIELDS.verified),   // 首页认证标签
   };
 }
 
@@ -415,31 +420,46 @@ export function filterFieldsByRole(fields, role) {
 }
 
 // ============================================================
-// ★★★ 修复：按角色 + 隐私控制过滤字段 ★★★
-// 隐私控制对所有角色生效，包括管理员
+// ★★★ 详情页字段过滤（可见性白名单 + 隐私开关）★★★
+// ------------------------------------------------------------
+// 两层过滤，是「与」的关系：
+//
+//   第一层 · 可见性白名单
+//     字段必须登记在 FIELD_VISIBILITY.detail 内才会出现在详情页。
+//     想加字段 → 改 fields.js 的 FIELD_VISIBILITY.detail 即可。
+//
+//   第二层 · 隐私开关（5 个）
+//     受控字段的开关不为 true 时隐藏，**对所有角色生效，包括管理员**。
+//     依据：是否公开是用户的私人选择，不是权限层级问题。
+//
+// 返回按分组与白名单双重过滤后的字段列表。
 // ============================================================
-export function filterFieldsByRoleAndPrivacy(fields, role, record) {
-  // 1. 角色权限检查（admin 可查看所有字段）
-  const allowedIds = ROLE_FIELD_VISIBILITY[role] || ROLE_FIELD_VISIBILITY.guest;
+export function getVisibleDetailFields(fields, role, record) {
+  // 可见性白名单：详情页只认这一份
+  const allowed = new Set(getFieldsFor('detail'));
+  // 角色白名单（当前配置为「一视同仁」，保留以支持后续按角色收紧）
+  const roleAllowed = ROLE_FIELD_VISIBILITY[role] || ROLE_FIELD_VISIBILITY.guest;
   const isAdmin = role === 'admin';
 
   return fields.filter((field) => {
-    // 2. 如果非管理员，按角色白名单过滤
-    if (!isAdmin && allowedIds !== '*' && !allowedIds.includes(field.id)) {
+    // 第一层 A：必须登记在详情页白名单内
+    if (!allowed.has(field.id)) return false;
+
+    // 第一层 B：角色白名单（管理员不受限）
+    if (!isAdmin && roleAllowed !== '*' && !roleAllowed.includes(field.id)) {
       return false;
     }
 
-    // 3. ★★★ 核心修复：隐私控制检查（所有角色都生效） ★★★
-    const depControlId = PRIVACY_DEPENDENCIES[field.id];
-    if (depControlId) {
-      // 获取控制字段的值
-      const controlValue = record?.fields?.[depControlId] || record?.data?.[depControlId];
-      // 只有控制字段为 true 时，才显示受控字段
-      if (controlValue !== true) {
-        return false; // 用户未公开，即使是管理员也不显示
-      }
+    // 第二层：隐私开关 —— 未公开则连管理员也看不到
+    const controlId = PRIVACY_DEPENDENCIES[field.id];
+    if (controlId) {
+      const controlValue = getFieldValue(record, controlId);
+      if (controlValue !== true) return false;
     }
 
     return true;
   });
 }
+
+/** @deprecated 旧名，保留兼容；请改用 getVisibleDetailFields */
+export const filterFieldsByRoleAndPrivacy = getVisibleDetailFields;

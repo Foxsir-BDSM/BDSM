@@ -24,6 +24,9 @@ import {
   CARD_FIELDS,
   VISIBILITY_FIELDS,
   PRIVACY_CONTROL_IDS,
+  FIELD_LABELS,
+  SYSTEM_FIELD_IDS,
+  getFieldsFor,
 } from '@/modules/sub-archive/js/config.js';
 
 // ============================================================
@@ -248,15 +251,15 @@ const subSearchInput = document.getElementById('subSearchInput');
 
 let pendingSubChanges = {};
 
-// 管理面板可编辑的档案字段（ID 来自配置，迁移数据库后自动跟随）
-const SUB_EDITABLE_FIELDS = [
-  { id: VISIBILITY_FIELDS.publicQuestionnaire, label: '是否公开问卷内容' },
-  { id: PRIVACY_CONTROL_IDS.address,           label: '是否公开常住地址' },
-  { id: PRIVACY_CONTROL_IDS.contact,           label: '是否公开联系方式' },
-  { id: PRIVACY_CONTROL_IDS.lifePhotos,        label: '是否公开生活照片' },
-  { id: PRIVACY_CONTROL_IDS.privatePhotos,     label: '是否公开隐私照片' },
-  { id: CARD_FIELDS.verified,                  label: '我已确认上述为我真实意愿' },
-];
+// ────────────────────────────────────────────────────────────
+// 管理面板可编辑的档案字段
+// ★ 字段清单来自 FIELD_VISIBILITY.manage（fields.js 的注册表）
+//   要增删管理面板的字段，改注册表即可，本文件不用动。
+// ────────────────────────────────────────────────────────────
+const SUB_EDITABLE_FIELDS = getFieldsFor('manage').map((id) => ({
+  id,
+  label: FIELD_LABELS[id] || SYSTEM_FIELD_IDS[id] || id,
+}));
 
 let subRecords = [];
 let filteredSubRecords = [];

@@ -38,14 +38,39 @@ for (const k of ['FIELD_LABELS', 'CARD_FIELDS', 'SEARCH_FIELDS', 'DETAIL_GROUPS'
 check('DATABASE_ID 兼容旧命名 = 新 base', SUB_ARCHIVE_CONFIG.DATABASE_ID, 'e7d18ead20743825');
 
 console.log('\n── 3. 字段维护文件规模 ──');
-// 远程 56 = FIELD_LABELS 55 + SYSTEM_FIELD_IDS 1（Source 不参与展示）
-check('FIELD_LABELS 字段数', Object.keys(FIELDS.FIELD_LABELS).length, 55);
-check('SYSTEM_FIELD_IDS 字段数', Object.keys(FIELDS.SYSTEM_FIELD_IDS).length, 1);
-console.log(`     标签 ${Object.keys(FIELDS.FIELD_LABELS).length} + 系统 ${Object.keys(FIELDS.SYSTEM_FIELD_IDS).length} = 远程 56`);
+// 远程 59 = FIELD_LABELS 56 + SYSTEM_FIELD_IDS 3（系统字段不参与展示）
+check('FIELD_LABELS 字段数', Object.keys(FIELDS.FIELD_LABELS).length, 56);
+check('SYSTEM_FIELD_IDS 字段数', Object.keys(FIELDS.SYSTEM_FIELD_IDS).length, 3);
+console.log(`     标签 ${Object.keys(FIELDS.FIELD_LABELS).length} + 系统 ${Object.keys(FIELDS.SYSTEM_FIELD_IDS).length} = 远程 59`);
 check('DETAIL_GROUPS 分组数', FIELDS.DETAIL_GROUPS.length, 5);
 check('保留 photos_life 分组（detail.js 硬编码依赖）',
   FIELDS.DETAIL_GROUPS.some((g) => g.id === 'photos_life'), true);
 check('保留 photos_private 分组', FIELDS.DETAIL_GROUPS.some((g) => g.id === 'photos_private'), true);
+
+console.log('\n── 3b. 字段可见性注册表 ──');
+const VIS = FIELDS.FIELD_VISIBILITY;
+check('注册表含 5 个区域', Object.keys(VIS).sort(),
+  ['bind_only', 'detail', 'home_card', 'manage', 'self']);
+check('首页卡片 7 字段', VIS.home_card.length, 7);
+check('卡片含「首页认证标签」', VIS.home_card.includes('fb7zJUvkBhe'), true);
+check('详情页不含「首页认证标签」', VIS.detail.includes('fb7zJUvkBhe'), false);
+check('管理面板含「首页认证标签」', VIS.manage.includes('fb7zJUvkBhe'), true);
+check('★ 我的页面不含「首页认证标签」（用户不可管理）',
+  VIS.self.includes('fb7zJUvkBhe'), false);
+check('绑定区仅邮箱+名称', VIS.bind_only.length, 2);
+check('getFieldsFor 可用', FIELDS.getFieldsFor('home_card').length, 7);
+check('FIELD_USAGE 覆盖全部字段', Object.keys(FIELDS.FIELD_USAGE).length, 59);
+
+console.log('\n── 3c. 5 个隐私开关 ──');
+const SW = FIELDS.PRIVACY_SWITCHES;
+check('开关数 5', Object.keys(SW).length, 5);
+check('每个开关都有 controlId', Object.values(SW).every((s) => !!s.controlId), true);
+check('每个开关都有 controls', Object.values(SW).every((s) => Array.isArray(s.controls) && s.controls.length > 0), true);
+check('PRIVACY_CONTROL_IDS 与开关一致', Object.keys(FIELDS.PRIVACY_CONTROL_IDS).length, 5);
+console.log('     开关清单:');
+Object.entries(SW).forEach(([k, v]) => {
+  console.log(`       ${k.padEnd(14)} ${v.controlId}  ${v.label.padEnd(20)} → ${v.controls.length} 个受控字段`);
+});
 
 console.log('\n── 4. 详情分组覆盖率 ──');
 // 每个字段要么进分组，要么进系统字段、要么进排除名单或首页专用
@@ -60,7 +85,7 @@ check('无归属的字段数（应为 0）', orphans.length, 0);
 if (orphans.length) orphans.forEach((o) => console.log(`      ⚠️ ${o}  ${FIELDS.FIELD_LABELS[o]}`));
 
 console.log('\n── 5. 隐私规则（自动派生反向表）──');
-check('PRIVACY_RULES 条数', FIELDS.PRIVACY_RULES.length, 4);
+check('PRIVACY_RULES 条数（与开关数一致）', FIELDS.PRIVACY_RULES.length, 5);
 check('PRIVACY_DEPENDENCIES 自动派生',
   Object.keys(FIELDS.PRIVACY_DEPENDENCIES).length,
   FIELDS.PRIVACY_RULES.reduce((a, r) => a + r.displayIds.length, 0));

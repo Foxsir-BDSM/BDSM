@@ -9,7 +9,7 @@
 //   · ⚠️ API Key 明文写在 shared/config/archive/api.js，属已知安全债。
 import {
   CONFIG, PAGE_SIZE, CACHE_KEY, CACHE_TTL,
-  VISIBILITY_FIELDS, PRIVACY_CONTROL_IDS, CARD_FIELDS,
+  VISIBILITY_FIELDS, PRIVACY_CONTROL_IDS, CARD_FIELDS, getFieldsFor,
 } from './config.js';
 
 // ============================================================
@@ -150,20 +150,12 @@ export async function fetchAllRecords(forceRefresh = false) {
 }
 
 // ============================================================
-// 可编辑字段白名单（管理面板允许改的字段）
+// 可编辑字段白名单（允许写库的字段）
 // ------------------------------------------------------------
-// ★ 字段 ID 来自配置，不硬编码。
-//   旧库用「公开问卷」+ 4 个「（隐私确认）」配对字段；
-//   新库改用独立的「是否公开 XX」开关 + 「我已确认…」。
+// ★ 直接取 FIELD_VISIBILITY.manage —— 与管理面板的勾选框同源，
+//   因此两者永远不会不一致（此前是两份手工清单，容易漂移）。
 // ============================================================
-const PRIVACY_FIELD_WHITELIST = [
-  VISIBILITY_FIELDS.publicQuestionnaire,  // 是否公开问卷内容
-  PRIVACY_CONTROL_IDS.address,            // 是否公开常住地址
-  PRIVACY_CONTROL_IDS.contact,            // 是否公开联系方式
-  PRIVACY_CONTROL_IDS.lifePhotos,         // 是否公开生活照片
-  PRIVACY_CONTROL_IDS.privatePhotos,      // 是否公开隐私照片
-  CARD_FIELDS.verified,                   // 我已确认上述为我真实意愿
-];
+const PRIVACY_FIELD_WHITELIST = getFieldsFor('manage');
 
 // ============================================================
 // 更新记录字段（仅允许白名单字段）

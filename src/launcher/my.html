@@ -376,6 +376,44 @@
         .kv { grid-template-columns: 76px 1fr; font-size: 13px; }
         .tab { font-size: 12.5px; min-width: 74px; padding: 9px 4px; }
       }
+
+      /* ══════════ 认证状态徽章（只读）══════════ */
+      .verify-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 3px 11px; border-radius: 30px;
+        font-size: 12px; font-weight: 500;
+      }
+      .verify-badge.on {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.38);
+        color: #4ade80;
+      }
+      .verify-badge.off {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.35);
+      }
+
+      /* ══════════ 隐私勾选面板 ══════════ */
+      .pv-panel { display: flex; flex-direction: column; gap: 7px; }
+      .pv-row {
+        display: flex; align-items: center; gap: 9px;
+        padding: 7px 11px; border-radius: 9px;
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        cursor: pointer; transition: all 0.18s ease;
+      }
+      .pv-row:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.1); }
+      .pv-check {
+        width: 15px; height: 15px; flex: 0 0 auto;
+        accent-color: #6a9fb5; cursor: pointer;
+      }
+      .pv-check:disabled { opacity: 0.45; cursor: wait; }
+      .pv-label { font-size: 12.5px; color: rgba(255, 255, 255, 0.7); }
+      .pv-hint {
+        font-size: 11px; color: rgba(255, 255, 255, 0.25);
+        line-height: 1.6; margin-top: 1px;
+      }
     </style>
   </head>
   <body>
@@ -549,6 +587,7 @@
       import { getUserRole } from '@/shared/js/identity.js';
       import { getRoleTitle, getRoleInfo, formatPoints } from '@/shared/js/level.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
+      import { showToast } from '@/shared/js/ui-helpers.js';
       import { IDENTITIES } from '@/shared/config/identity-config.js';
 
       const ROLE_MAP = {
@@ -564,6 +603,7 @@
        * 迁移数据库后字段 ID 会变，此处若写死旧 ID 会导致匹配不到档案。
        */
       let ARCHIVE_NAME_FIELD = null;
+      let ARCHIVE_CFG = null;       // 档案馆配置（运行时加载）
 
       const guestCard = document.getElementById('guestCard');
       const memberArea = document.getElementById('memberArea');
@@ -674,43 +714,91 @@
         ]);
       }
 
-      // ────────────────────────────────── 渲染：档案状态
+      // ────────────────────────────────── 渲染：我的档案
+      // 绑定依据：表单提交时由 URL 参数自动写入的「电子邮件」字段。
+      // 这比按昵称匹配可靠 —— 昵称可能重复，邮箱不会。
+      let myRecord = null;   // 当前用户的档案记录（供隐私勾选使用）
+
+      /** 认证状态行（只读 —— 用户不可自行管理） */
+      function verifyRowHtml(record) {
+        const { CARD_FIELDS } = ARCHIVE_CFG;
+        const v = record?.data?.[CARD_FIELDS.verified] ?? record?.fields?.[CARD_FIELDS.verified];
+        const on = v === true || v === 'true' || v === '是' || v === 1;
+        return on
+          ? '<span class="verify-badge on">✅ 已认证</span>'
+          : '<span class="verify-badge off">未认证</span>';
+      }
+
       /**
-       * 说明：档案馆数据由 Fillout 维护，与平台账号暂无关联字段，
-       * 因此这里只能按「昵称」尝试匹配，匹配不到就如实告知，
-       * 不编造数据。后续打通账号↔档案关联后替换此函数即可。
+       * 隐私勾选面板（5 个开关）
+       * ★ 字段清单来自 FIELD_VISIBILITY.self（fields.js 的注册表）
+       *   与管理面板的区别：不含「首页认证标签」—— 用户看不到也改不了。
        */
+      function privacyPanelHtml(record) {
+        const { getFieldsFor, FIELD_LABELS } = ARCHIVE_CFG;
+        const ids = getFieldsFor('self');
+        const rows = ids.map((id) => {
+          const v = record?.data?.[id] ?? record?.fields?.[id];
+          const on = v === true;
+          const label = FIELD_LABELS[id] || id;
+          return `<label class="pv-row">
+            <input type="checkbox" class="pv-check" data-field-id="${id}" ${on ? 'checked' : ''} />
+            <span class="pv-label">${esc(label)}</span>
+          </label>`;
+        }).join('');
+        return `<div class="pv-panel">
+          ${rows}
+          <div class="pv-hint">未公开的字段，任何人都看不到（包括管理员）。</div>
+        </div>`;
+      }
+
       async function renderArchive(user) {
         const kv = document.getElementById('archiveKv');
-        const name = displayNameOf(user);
+        const email = (user?.email || '').trim().toLowerCase();
 
         setKv(kv, [['档案状态', '查询中…', true]]);
 
+        if (!email) {
+          setKv(kv, [['档案状态', '当前账号没有邮箱，无法关联档案', true]]);
+          return;
+        }
+
         try {
-          const { fetchRecords } = await import('@/modules/sub-archive/js/api.js');
-          const { CARD_FIELDS } = await import('@/modules/sub-archive/js/config.js');
-          ARCHIVE_NAME_FIELD = CARD_FIELDS.name;   // 从共享配置取，不硬编码
+          const [{ fetchRecords }, cfg] = await Promise.all([
+            import('@/modules/sub-archive/js/api.js'),
+            import('@/modules/sub-archive/js/config.js'),
+          ]);
+          ARCHIVE_CFG = cfg;
+          ARCHIVE_NAME_FIELD = cfg.CARD_FIELDS.name;
+
           const records = await fetchRecords(false);
+          const emailField = cfg.BINDING_FIELDS.email;   // 账号绑定字段（表单 URL 参数注入）
+
+          const pick = (r, id) => r?.data?.[id] ?? r?.fields?.[id];
+
           const hit = (records || []).find((r) => {
-            const v = r?.data?.[ARCHIVE_NAME_FIELD] ?? r?.fields?.[ARCHIVE_NAME_FIELD];
-            return typeof v === 'string' && v.trim() === name;
+            const v = pick(r, emailField);
+            return typeof v === 'string' && v.trim().toLowerCase() === email;
           });
 
+          myRecord = hit || null;
+
           if (hit) {
-            const d = hit.data || {};
             setKv(kv, [
-              ['档案状态', '<span style="color:#22c55e">✅ 已建档（按昵称匹配）</span>', false],
-              ['姓名', esc(d[ARCHIVE_NAME_FIELD] || name), false],
-              ['记录 ID', `<span style="font-family:monospace;font-size:12px">${esc(hit.id)}</span>`, false],
+              ['档案状态', '<span style="color:#22c55e">✅ 已建档（按邮箱关联）</span>', false],
+              ['认证状态', verifyRowHtml(hit), false],
+              ['姓名', esc(pick(hit, ARCHIVE_NAME_FIELD) || displayNameOf(user)), false],
+              ['隐私设置', privacyPanelHtml(hit), false],
               ['', `<a href="/modules/sub-archive/detail.html?id=${esc(hit.id)}" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px;margin-top:6px">查看我的档案 →</a>`, false],
             ]);
+            bindPrivacyChecks(kv, hit);
           } else {
             setKv(kv, [
-              ['档案状态', '未找到匹配档案', true],
-              ['匹配依据', `按昵称「${esc(name)}」匹配`, true],
+              ['档案状态', '未找到关联档案', true],
+              ['匹配依据', '按本账号邮箱匹配（表单提交时自动写入）', true],
               ['', `<div style="color:rgba(255,255,255,0.25);font-size:12px;line-height:1.7;margin-top:2px">
-                      账号与档案暂未建立关联字段，因此只能按昵称推测。<br />
-                      如需建档或修改，请通过档案馆的「母の曝光」提交。
+                      还没有属于你的档案。通过档案馆的「母の曝光」提交问卷后，<br />
+                      系统会用你的账号邮箱自动关联，无需额外操作。
                     </div>
                     <a href="/modules/sub-archive/" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px;margin-top:8px">前往档案馆 →</a>`, false],
             ]);
@@ -721,6 +809,27 @@
             ['', `<a href="/modules/sub-archive/" class="btn btn-ghost" style="padding:7px 18px;font-size:12.5px">前往档案馆 →</a>`, false],
           ]);
         }
+      }
+
+      /** 绑定隐私勾选的保存行为 */
+      function bindPrivacyChecks(root, record) {
+        root.querySelectorAll('.pv-check').forEach((cb) => {
+          cb.addEventListener('change', async () => {
+            const fieldId = cb.dataset.fieldId;
+            const next = cb.checked;
+            cb.disabled = true;
+            try {
+              const { updateRecordFields } = await import('@/modules/sub-archive/js/api.js');
+              await updateRecordFields(record.id, { [fieldId]: next });
+              showToast(next ? '已设为公开' : '已设为不公开');
+            } catch (err) {
+              cb.checked = !next;   // 回滚
+              showToast('保存失败：' + err.message, 'error');
+            } finally {
+              cb.disabled = false;
+            }
+          });
+        });
       }
 
       // ────────────────────────────────── 渲染：我发布的内容
