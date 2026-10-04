@@ -13,14 +13,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 // 注入测试用 field id，再动态导入被测模块（ESM 只求值一次）
+//
+// ⚠️ 这里用「正则匹配 filloutId 赋值」而不是写死整行文本。
+//    此前写死整行，fields.js 里那行加了个反引号就导致替换静默失效，
+//    测试降级成「字段未建」分支却依然全绿 —— 断言数从 51 掉到 42 才被发现。
 const CFG = 'src/shared/config/archive/fields.js';
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
 const cfgPath = path.join(ROOT, CFG);
 const original = fs.readFileSync(cfgPath, 'utf8');
-const patched = original.replace(
-  "    filloutId: 'fwz4nCDQfZH',   // ★ 身份（新数据库中已存在）",
-  "    filloutId: 'fTEST_IDENTITY',"
-);
+const identityFieldPattern = /(filloutId:\s*)(['"`])f\w+\2(\s*,)/;
+if (!identityFieldPattern.test(original)) {
+  console.error('❌ 无法在 fields.js 中定位 filloutId 赋值 —— 测试的注入逻辑需要更新');
+  console.error('   （不要放任它静默降级，否则会假绿）');
+  process.exit(2);
+}
+const patched = original.replace(identityFieldPattern, "$1'fTEST_IDENTITY'$3");
 const withFields = patched !== original;
 if (withFields) fs.writeFileSync(cfgPath, patched, 'utf8');
 

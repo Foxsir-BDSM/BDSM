@@ -31,7 +31,9 @@
     "verify": "npm run check && npm run build && npm run smoke:dist",
     "verify:full": "npm run check && npm run build && npm run smoke:dist && npm run runtime:dist && npm run check:menu -- --port 5601",
     "check:imports": "node --no-warnings tools/check-missing-imports.mjs",
-    "check:render": "node tools/check-archive-render.mjs"
+    "check:render": "node tools/check-archive-render.mjs",
+    "fields:snapshot": "node --no-warnings tools/snapshot-fields.mjs",
+    "fields:verify": "node --no-warnings tools/verify-restructure.mjs"
   },
   "keywords": [],
   "author": "",

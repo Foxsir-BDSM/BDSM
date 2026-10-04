@@ -42,7 +42,7 @@ console.log('\n── 3. 字段维护文件规模 ──');
 check('FIELD_LABELS 字段数', Object.keys(FIELDS.FIELD_LABELS).length, 56);
 check('SYSTEM_FIELD_IDS 字段数', Object.keys(FIELDS.SYSTEM_FIELD_IDS).length, 3);
 console.log(`     标签 ${Object.keys(FIELDS.FIELD_LABELS).length} + 系统 ${Object.keys(FIELDS.SYSTEM_FIELD_IDS).length} = 远程 59`);
-check('DETAIL_GROUPS 分组数', FIELDS.DETAIL_GROUPS.length, 5);
+check('DETAIL_GROUPS 分组数（privacy 组已移除，它从未渲染过）', FIELDS.DETAIL_GROUPS.length, 4);
 check('保留 photos_life 分组（detail.js 硬编码依赖）',
   FIELDS.DETAIL_GROUPS.some((g) => g.id === 'photos_life'), true);
 check('保留 photos_private 分组', FIELDS.DETAIL_GROUPS.some((g) => g.id === 'photos_private'), true);
