@@ -134,7 +134,7 @@ const previewers = {
     return parts.join('');
   },
 
-  // ✍️ 见解随笔
+  // ✍️ 任务反馈
   note(meta, d) {
     const body = String(d.body || '');
     if (!body.trim()) return sec('正文', '<div class="dim">（还没有内容）</div>');

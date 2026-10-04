@@ -305,12 +305,12 @@ export const POST_TYPES = [
     ],
   },
 
-  // ═══════════════════════════════════════════ D · 见解随笔
+  // ═══════════════════════════════════════════ D · 任务反馈
   {
     id: 'note',
-    label: '见解随笔',
+    label: '任务反馈',
     icon: '✍️',
-    desc: '自由表达：经验、感悟、科普、问答，没有固定套路',
+    desc: '完成任务后提交的反馈：过程记录、遇到的问题、自检结果与下次调整',
     accent: '#f59e0b',
     sections: [
       {
@@ -395,7 +395,7 @@ export const CONTENT_STORE = {
 //   { "type": "task", "meta": {...}, "data": {...} }
 //   ```
 //
-//   （可选）Markdown 正文 —— 目前用于「见解随笔」类
+//   （可选）Markdown 正文 —— 目前用于「任务反馈」类
 export const JSON_FENCE = '```json foxsir-post';
 export const JSON_FENCE_RE = /```json foxsir-post\s*\n([\s\S]*?)\n```/;
 

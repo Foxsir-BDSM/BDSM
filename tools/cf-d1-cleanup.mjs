@@ -69,3 +69,31 @@ if (args.includes('--purge-probe')) {
   }
   console.log('');
 }
+
+if (args.includes('--purge-test')) {
+  console.log('════════ 清理测试期间产生的记录 ════════\n');
+  console.log('  规则：删除 task_slug 以 demo- 或 zz- 开头的记录');
+  console.log('        （演示内容与探针内容，均为测试用途）\n');
+
+  const before = await q('SELECT COUNT(*) AS n FROM task_acceptances;');
+  console.log(`  清理前: ${before?.[0]?.n ?? '?'} 行`);
+
+  const rows = await q("SELECT task_slug, task_title, status FROM task_acceptances WHERE task_slug LIKE 'demo-%' OR task_slug LIKE 'zz-%' ORDER BY accepted_at DESC;");
+  console.log(`  待删: ${rows?.length ?? 0} 条`);
+  (rows || []).forEach((r) => console.log(`     · ${r.task_slug}  [${r.status}]  ${r.task_title || ''}`));
+
+  if (rows?.length) {
+    await q("DELETE FROM task_acceptances WHERE task_slug LIKE 'demo-%' OR task_slug LIKE 'zz-%';");
+    const after = await q('SELECT COUNT(*) AS n FROM task_acceptances;');
+    console.log(`\n  清理后: ${after?.[0]?.n ?? '?'} 行`);
+
+    const remain = await q('SELECT task_slug, status FROM task_acceptances ORDER BY accepted_at DESC LIMIT 20;');
+    if (remain?.length) {
+      console.log('  剩余记录:');
+      remain.forEach((r) => console.log(`     · ${r.task_slug}  [${r.status}]`));
+    }
+  } else {
+    console.log('  （无需清理）');
+  }
+  console.log('');
+}

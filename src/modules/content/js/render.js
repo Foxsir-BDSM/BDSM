@@ -238,7 +238,7 @@ export function renderDetail(post) {
         <h2 class="d-sec-t">${esc(sec.title)}</h2>${rows.join('')}</section>`);
     }
   }
-  // 见解随笔：正文在 markdown 里
+  // 任务反馈：正文在 markdown 里
   if (post.markdown) {
     bodyParts.push(`<section class="d-sec"><div class="d-markdown">${renderSimpleMarkdown(post.markdown)}</div></section>`);
   }
