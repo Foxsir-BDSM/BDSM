@@ -261,11 +261,8 @@ const META = {
     what: '单条档案详情：按板块展示字段、媒体网格、隐私可见性控制',
     maintain: '板块划分完全由 fields.js 的 DETAIL_GROUPS 决定，本页无字段列表。',
   },
-  'src/modules/sub-archive/admin.html': {
-    layer: '模块·档案馆', page: '档案馆后台 /modules/sub-archive/admin.html',
-    what: '档案隐私勾选管理表格',
-    maintain: '可编辑字段定义在 js/admin.js。',
-  },
+  // src/modules/sub-archive/admin.html 已归档（2026-10-05），
+  // 档案管理统一走主管理面板 /admin.html 的「全部档案」标签页
   'src/modules/sub-archive/js/home.js': {
     layer: '模块·档案馆', page: '档案列表页',
     what: '列表页主逻辑：拉数据、公开性过滤、身份分流、搜索、分页、卡片渲染、「去填写」拼带参表单链接',

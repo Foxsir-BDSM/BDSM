@@ -60,7 +60,8 @@ const PAGES = [
   ['/admin-article-simple.html', ['简易内容管理'], false],
   ['/modules/sub-archive/index.html', ['母の曝光', 'grid-container'], false],
   ['/modules/sub-archive/detail.html', ['detailContainer'], false],
-  ['/modules/sub-archive/admin.html', ['管理后台'], false],
+  // /modules/sub-archive/admin.html 已归档（旧版独立后台），
+  // 档案管理统一走主管理面板 /admin.html 的「全部档案」标签页
   ['/modules/content/index.html', ['欲炼之途'], false],
   ['/modules/content/post-editor.html', ['发布内容', '选择发布板块'], false],
   ['/modules/content/post.html', ['缺少 slug'], false],
@@ -187,11 +188,7 @@ const KNOWN_ISSUES = [
     pattern: /import\.meta.*outside a module/,
     note: '非 module 的 <script> 中使用了 import.meta（v2.2 既有缺陷，Vite 不转换普通 script）',
   },
-  {
-    page: '/modules/sub-archive/admin.html',
-    pattern: /Cannot read properties of null/,
-    note: '旧版独立后台引用了本页不存在的 DOM 元素（该页为废弃死文件）',
-  },
+  // /modules/sub-archive/admin.html 的既有问题已随该页归档而消失，条目移除
   {
     page: '/modules/knowledge/article.html',
     pattern: /Error: No slug/,

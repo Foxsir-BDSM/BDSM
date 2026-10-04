@@ -79,7 +79,7 @@ const HEADERS = {
   },
   'src/modules/sub-archive/js/admin.js': {
     what: '档案馆后台：隐私勾选表格渲染、勾选变更收集、批量保存。',
-    pages: '档案馆后台 /modules/sub-archive/admin.html',
+    pages: '（已归档）档案馆后台曾位于 /modules/sub-archive/admin.html，现统一走 /admin.html',
     deps: 'api.js',
     usedBy: '入口模块，由 admin.html 加载',
     notes: [

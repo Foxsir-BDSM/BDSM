@@ -251,8 +251,7 @@ const SECTIONS = [
       [M.sub, 'detail.html', '内存泄漏防护', 'MutationObserver 检测 overlay 移出后清理 keydown 监听', '无 UI（内部处理）'],
       [M.sub, 'detail.html', '⚠️ 缺 ?id 参数提示', '显示「⚠️ 缺少记录 ID」', '/modules/sub-archive/detail.html 页 #detailContainer > .state-message'],
 
-      [M.sub, 'admin.html', '⚠️ 废弃页面', '旧版独立后台，中文曾损坏、导入不存在的模块（死文件）', '/modules/sub-archive/admin.html（无入口链接）'],
-
+      // admin.html 已归档（旧版独立后台，2026-10-05），档案管理统一走 /admin.html 的「全部档案」
       [M.sub, 'js/api.js', '分页拉取记录（5 分钟缓存）', 'fetchRecordsPage（PAGE_SIZE=20）', '被列表页 loadPage 调用'],
       [M.sub, 'js/api.js', '全量拉取记录（5 分钟缓存）', 'fetchRecords（管理后台用）', '被管理后台 loadSubRecords 调用'],
       [M.sub, 'js/api.js', '单条记录拉取', 'fetchRecordById（无缓存）', '被详情页 init 调用'],
@@ -378,7 +377,7 @@ const SECTIONS = [
       [P.shared, 'js/guard.js', '防重入保护', 'guardRunning 标记位', '无 UI（内部）'],
       [P.shared, 'js/guard.js', '异常保守处理', '出错时非公开路由一律跳 landing', '无 UI（内部）'],
       [P.shared, 'js/guard.js', '自动执行', 'DOMContentLoaded 或立即执行', '被 /launcher/index.html 引入'],
-      [P.shared, 'js/guard.js', '⚠️ 覆盖缺口', '仅 index.html 引入；其他页面未接守卫', '影响 knowledge/mission/sub-archive/admin 等页'],
+      [P.shared, 'js/guard.js', '⚠️ 覆盖缺口', '仅 index.html 引入；其他页面未接守卫', '影响 knowledge/mission 等页'],
       [P.shared, 'js/guard.js', '⚠️ 未使用导出', 'hasModuleAccess / getRedirectParam', '无调用者'],
 
       [P.shared, 'js/auth.js', '注册（含身份元数据）', '写 role:self + nickname + points:0 + 8 项身份字段', '被 /launcher/auth.html 注册表单调用'],
@@ -526,7 +525,7 @@ const ISSUES = [
   ['I-21', '档案馆仍是全站唯一亮色模块（含彩虹渐变）', 'src/modules/sub-archive/css/*', '与黑金体系视觉割裂'],
   ['I-22', '三套 Toast 并存（精美版/简陋版/原生 alert）', 'index.html + ui-helpers.js + 各模块', '交互体验不一致'],
   ['I-23', '积分体系半成品（数据/计算/徽章齐全但零调用）', 'shared/js/level.js + auth.js', 'about.html 宣称的 5 种积分获取均未实现'],
-  ['I-24', '死代码：sub-archive/admin.html+js、shared/js/{main,launcher}.js、control-center.css', '多处', '维护困惑'],
+  ['I-24', '死代码：shared/js/{main,launcher}.js、control-center.css', '多处', '维护困惑（sub-archive/admin.* 已于 2026-10-05 归档）'],
   ['I-25', 'not marked：guard.js 仅 index.html 引入', 'src/shared/js/guard.js', '其他页面未接守卫，靠数据降级'],
 ];
 for (const [id, name, loc, impact] of ISSUES) {

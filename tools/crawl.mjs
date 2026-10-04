@@ -28,7 +28,6 @@ const PAGES = [
   '/admin-article-simple.html',
   '/modules/sub-archive/index.html',
   '/modules/sub-archive/detail.html',
-  '/modules/sub-archive/admin.html',
   '/modules/content/index.html',
   '/modules/content/post-editor.html',
   '/modules/content/post.html',

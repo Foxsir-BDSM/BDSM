@@ -30,7 +30,7 @@ const PAGES = [
   ['/modules/sub-archive/', '下位者档案馆'],
   ['/modules/sub-archive/index.html', '档案库'],
   ['/modules/sub-archive/detail.html', '详情'],
-  ['/modules/sub-archive/admin.html', '管理后台'],
+  // /modules/sub-archive/admin.html 已归档（旧版独立后台）
   ['/modules/content/', '欲炼之途'],
   ['/modules/content/index.html', '欲炼之途'],
   ['/modules/content/post-editor.html', '发布'],
