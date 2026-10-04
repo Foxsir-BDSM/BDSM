@@ -1,4 +1,10 @@
-// Supabase 配置（保持不变）
+// 职责    Supabase 连接参数与全局常量。
+// 归属页面 全站
+// 依赖    无
+// 被依赖   supabase-client.js、registry.js 等
+//
+// 维护提示
+//   · 换后端项目只改这里。
 export const SUPABASE_URL = 'https://mfexambabgxytkrkhmwx.supabase.co';
 export const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mZXhhbWJhYmd4eXRrcmtobXd4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NzcwMTgsImV4cCI6MjA5OTU1MzAxOH0.FdD4EV8fV1mX6J8Vxsio_eyJgkY-_W7SM0M0xvcKN90';

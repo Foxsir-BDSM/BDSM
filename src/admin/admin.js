@@ -1,7 +1,12 @@
-// ============================================================
-// 管理面板主逻辑（Tab 切换 + 用户权限 + 下位档案管理）
-// ============================================================
-
+// 职责    管理后台主逻辑：用户角色管理、档案隐私勾选编辑、档案检索、Tab 切换。
+// 归属页面 管理后台 /admin.html
+// 依赖    shared/js/identity.js、auth.js、supabase-client.js、ui-helpers.js、sub-archive/js/api.js、sub-archive/js/config.js
+// 被依赖   入口模块，由 admin.html 加载
+//
+// 维护提示
+//   · ★ 档案可编辑字段在 SUB_EDITABLE_FIELDS，字段 ID 从 config 读取（VISIBILITY_FIELDS / PRIVACY_CONTROL_IDS / CARD_FIELDS）—— 再迁库只改 fields.js 即可。
+//   · ★ 该清单必须与 sub-archive/js/api.js 的 PRIVACY_FIELD_WHITELIST 一致，否则保存会被静默忽略。
+//   · 本文件内置了一份 getFieldValue，与 sub-archive/js/utils.js 的同名函数是两份实现。
 import { getCurrentUser, getUserRole } from '@/shared/js/identity.js';
 import { signOut } from '@/shared/js/auth.js';
 import { supabase } from '@/shared/js/supabase-client.js';

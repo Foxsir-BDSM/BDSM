@@ -1,9 +1,10 @@
-// ================================================================
-// src/shared/js/loading.js
-// 功能：全局 Loading 遮罩管理（含超时保护、进度动画）
-// 全站统一 Logo：/shared/assets/images/OIP-C.jpg
-// ================================================================
-
+// 职责    全屏加载遮罩：showLoading / hideLoading。
+// 归属页面 全站
+// 依赖    无
+// 被依赖   多个页面
+//
+// 维护提示
+//   · 通用组件，一般不需要改。
 let loadingOverlay = null;
 let loadingTimeout = null;
 let isVisible = false;

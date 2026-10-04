@@ -1,3 +1,10 @@
+// 职责    首页模块卡片渲染。
+// 归属页面 首页 /index.html
+// 依赖    shared/js/registry.js
+// 被依赖   launcher/index.html
+//
+// 维护提示
+//   · 卡片数据来自 registry.js。
 import { getVisibleProjects } from './registry.js';
 import { getUserRole } from '@/shared/js/identity.js';
 

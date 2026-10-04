@@ -1,10 +1,11 @@
-// ================================================================
-// assets/js/content-manager.js
-// 功能：GitHub 内容管理 CRUD 操作（知识区 / 任务区共用）
-// 缓存策略：5 分钟过期 + 手动刷新
-// 作者字段：自动从当前用户获取，不可修改
-// ================================================================
-
+// 职责    内容管理：内容列表读取、发布、删除（对接 GitHub 仓库 foxsir-content）。
+// 归属页面 管理后台的内容管理页
+// 依赖    content-config.js
+// 被依赖   内容管理页面
+//
+// 维护提示
+//   · 仓库 / 分支 / 路径在 content-config.js。
+//   · ⚠️ VITE_GITHUB_TOKEN 会被 Vite 内联进前端产物，属已知安全债。
 import { CONTENT_CONFIG } from './content-config.js';
 import { getCache, setCache, clearCache, getCacheWithMeta, setCacheWithMeta, DEFAULT_TTL } from '@/shared/js/cache.js';
 

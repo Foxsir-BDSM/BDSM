@@ -1,31 +1,12 @@
-// ============================================================
-// src/shared/config/archive/instances.js
-// 档案馆 · 单一事实源（聚合层）
-// ------------------------------------------------------------
-// 档案馆的全部语义集中在这一处，首页 / 详情页 / 个人页面都从这里读。
+// 职责    ★ 档案馆单一事实源（聚合层）：把 api.js 与 fields.js 组装成 SUB_ARCHIVE_CONFIG，供全站读取。
+// 归属页面 档案馆全部页面、管理后台、我的页面
+// 依赖    archive/api.js、archive/fields.js
+// 被依赖   sub-archive/js/config.js
 //
-// 本文件不再直接声明字段与 API，而是聚合下面两份「维护文件」：
-//
-//   api.js     总 API 配置（数据源 ID、API Key、表单入口、分页缓存）
-//   fields.js  字段维护文件（字段标签、详情板块、卡片映射、隐私规则、筛选字段）
-//
-// 维护流程不变：
-//   1) node tools/get_fields_diff.js   ← 对比远程字段与本地，输出 id:'名称' 差异
-//   2) 把差异粘贴回 fields.js
-//   3) 本文件自动生效，消费方无需改动
-//
-// 数据源：Zite（原 Fillout Tables）
-//   URL  https://app.zite.com/workspace/e7d18ead20743825/database/t4d3B3XvKL8/vvzaSN4ztoq
-//   表单 https://forms.fillout.com/t/tUpkJr8bb9us
-//
-// 变更记录（2026-10-04）：
-//   · 数据源从旧库 0019555500b60c58 / taRmZxGFzF5 迁到新库 e7d18ead20743825 / t4d3B3XvKL8
-//   · 表单入口从 sZm1g43KzHus 迁到 tUpkJr8bb9us
-//   · 字段从旧表 56 项替换为新表 56 项（含新增「身份」「封面展示」「是否公开×5」）
-//   · 隐私机制由「配对控制字段」简化为「独立公开开关」
-//   · 取向维度取消，筛选仅按身份
-// ============================================================
-
+// 维护提示
+//   · 本文件只做聚合与向后兼容，不直接声明字段。改字段去 fields.js，改数据源去 api.js。
+//   · ★ 导出契约被多处依赖，删减导出项会连锁报错。
+//   · DETAIL_FIELD_ORDER 是由 DETAIL_GROUPS 展平得到的兼容项。
 import * as API from './api.js';
 import * as FIELDS from './fields.js';
 

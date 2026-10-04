@@ -1,16 +1,11 @@
-// ============================================================
-// src/modules/sub-archive/js/config.js
-// 档案馆模块配置适配层
-// ------------------------------------------------------------
-// 单一事实源在 src/shared/config/archive/：
-//   api.js        总 API 配置
-//   fields.js     字段维护文件
-//   instances.js  聚合（本文件从这里读取）
+// 职责    档案馆模块的配置适配层。把 shared/config/archive 的内容转出，并补充缓存与分页常量。
+// 归属页面 档案馆全部页面（列表 / 详情 / 后台）
+// 依赖    shared/config/archive/instances.js、api.js、schema.js
+// 被依赖   home.js、detail.js、utils.js、api.js、admin.js、launcher/my.html、admin/admin.js
 //
-// 说明：这里用相对路径而非 `@/` 别名，以便本模块的纯逻辑代码
-// 能被 Node 直接导入做单元验证（见 tools/check-affiliation-filter.mjs）。
-// ============================================================
-
+// 维护提示
+//   · 本文件只做转发，改配置请去 shared/config/archive/ 下的 api.js 或 fields.js。
+//   · ★ 这里用相对路径导入（不是 @/ 别名），是为了让 Node 能直接导入做纯逻辑测试；改成别名会破坏 tools/check-affiliation-filter.mjs。
 import { SUB_ARCHIVE_CONFIG } from '../../../shared/config/archive/instances.js';
 import {
   CONFIG as API_CONFIG,

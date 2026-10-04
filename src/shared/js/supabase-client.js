@@ -1,3 +1,10 @@
+// 职责    Supabase 客户端单例。
+// 归属页面 全站
+// 依赖    shared/js/config.js
+// 被依赖   被 6 个文件依赖
+//
+// 维护提示
+//   · URL 与 anon key 在 shared/js/config.js，换后端项目只改那里。
 import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 import { withTimeout } from './request.js';

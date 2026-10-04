@@ -1,4 +1,10 @@
-// 显示提示消息
+// 职责    通用 UI 工具：toast 提示等。
+// 归属页面 全站
+// 依赖    无
+// 被依赖   被 4 个文件依赖
+//
+// 维护提示
+//   · 改函数签名要全局搜索调用点。
 export function showToast(message, type = 'info') {
   const toast = document.createElement('div');
   toast.style.position = 'fixed';

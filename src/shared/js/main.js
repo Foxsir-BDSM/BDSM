@@ -1,3 +1,10 @@
+// 职责    首版启动器入口（登录表单 + 角色中文映射）。
+// 归属页面 （无页面引用）
+// 依赖    auth.js、identity.js、launcher.js、ui-helpers.js
+// 被依赖   无
+//
+// 维护提示
+//   · ⚠️ 已被各页面的独立入口取代，当前没有任何页面引用本文件。可安全删除。
 import { signIn, signOut, signUp, onAuthStateChange } from '@/shared/js/auth.js';
 import { getCurrentUser, getUserRole } from '@/shared/js/identity.js';
 import { renderLauncher } from './launcher.js';

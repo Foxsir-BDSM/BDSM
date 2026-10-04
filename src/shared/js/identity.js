@@ -1,3 +1,11 @@
+// 职责    当前用户与角色的读取封装（只读）。
+// 归属页面 全站
+// 依赖    shared/js/supabase-client.js
+// 被依赖   被 8 个文件依赖 —— 全站被依赖最多的模块
+//
+// 维护提示
+//   · ★ 改动影响面最大，修改函数签名前请全局搜索调用点。
+//   · 角色值来自 Supabase 的 user_metadata.role，属于客户端可读字段。
 import { supabase } from '@/shared/js/supabase-client.js';
 
 export async function getCurrentUser() {

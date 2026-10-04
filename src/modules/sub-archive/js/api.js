@@ -1,8 +1,12 @@
-// ============================================================
-// src/modules/sub-archive/js/api.js
-// Fillout API 封装 - 分页/全量/单条/更新
-// ============================================================
-
+// 职责    Fillout / Zite Tables API 封装：分页拉取、全量拉取、单条拉取、字段更新（管理面板用）、本地缓存。
+// 归属页面 档案馆全部页面、管理后台
+// 依赖    config.js
+// 被依赖   home.js、detail.js、admin.js、admin/admin.js、launcher/my.html
+//
+// 维护提示
+//   · ★ 写接口白名单 PRIVACY_FIELD_WHITELIST 必须与 admin/admin.js 的 SUB_EDITABLE_FIELDS 保持一致，否则保存会被静默忽略。
+//   · 接口地址：tables.fillout.com/api/v1/bases/{BASE_ID}/tables/{TABLE_ID}/records/list
+//   · ⚠️ API Key 明文写在 shared/config/archive/api.js，属已知安全债。
 import {
   CONFIG, PAGE_SIZE, CACHE_KEY, CACHE_TTL,
   VISIBILITY_FIELDS, PRIVACY_CONTROL_IDS, CARD_FIELDS,

@@ -1,7 +1,11 @@
-// ============================================================
-// 身份选择器渲染 & 交互逻辑
-// ============================================================
-
+// 职责    4 身份选择器组件：渲染卡片、选中态、读取选中值、重置。
+// 归属页面 注册页 /auth.html
+// 依赖    shared/config/identity-config.js
+// 被依赖   launcher/auth.html
+//
+// 维护提示
+//   · 身份数据源是 identity-config.js 的 IDENTITIES，本文件不应重复声明身份清单。
+//   · ★ 原「取向选择器」已于 2026-10-04 随取向维度一并移除。
 import { IDENTITIES } from '@/shared/config/identity-config.js';
 
 let selectedPrimary = null;           // 当前选中的身份 ID

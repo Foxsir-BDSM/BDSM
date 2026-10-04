@@ -1,8 +1,12 @@
-// ============================================================
-// src/modules/sub-archive/js/detail.js
-// 详情页 - 使用 DETAIL_GROUPS 排序（从 config.js 读取）
-// ============================================================
-
+// 职责    档案详情页主逻辑：按 DETAIL_GROUPS 分板块渲染、媒体网格、隐私过滤、单位后缀。
+// 归属页面 档案详情页 /modules/sub-archive/detail.html
+// 依赖    config.js、api.js、utils.js
+// 被依赖   入口模块，由 detail.html 加载
+//
+// 维护提示
+//   · ★ 板块与字段完全来自 fields.js 的 DETAIL_GROUPS，本文件不含字段清单。
+//   · ★ 分组 id "photos_life" / "photos_private" 在本文件被硬编码判断（决定是否走媒体网格渲染），改名会失去网格效果。
+//   · 单位后缀按字段 ID 查表（CARD_FIELDS.height / weight），不硬编码旧 ID。
 import { CONFIG, DETAIL_GROUPS, FIELD_LABELS, CARD_FIELDS } from './config.js';
 import { fetchRecordById } from './api.js';
 import {

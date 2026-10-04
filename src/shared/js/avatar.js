@@ -1,8 +1,10 @@
-// ============================================================
-// 头像上传 / 压缩 / 管理
-// Supabase Storage + Canvas 压缩
-// ============================================================
-
+// 职责    头像上传与读取（Supabase Storage 的 avatars 桶）。
+// 归属页面 资料页 /profile.html
+// 依赖    shared/js/supabase-client.js
+// 被依赖   launcher/profile.html
+//
+// 维护提示
+//   · 桶名与路径规则在本文件。上传失败优先排查 Storage 的 RLS 策略。
 import { supabase } from '@/shared/js/supabase-client.js';
 import { getCurrentUser } from '@/shared/js/auth.js';
 

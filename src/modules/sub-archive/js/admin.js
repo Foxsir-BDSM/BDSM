@@ -1,7 +1,11 @@
-// ============================================================
-// 管理面板主逻辑（Tab 切换 + 用户权限 + 下位档案管理）
-// ============================================================
-
+// 职责    档案馆后台：隐私勾选表格渲染、勾选变更收集、批量保存。
+// 归属页面 档案馆后台 /modules/sub-archive/admin.html
+// 依赖    api.js
+// 被依赖   入口模块，由 admin.html 加载
+//
+// 维护提示
+//   · ⚠️ 本文件内部按下标/字段名读取（如「姓名」），与 api.js 的白名单口径（字段 ID）不一致，功能尚不完整。
+//   · 若要修好，需统一为字段 ID 口径，并同步 api.js 的白名单。
 import { getCurrentUser, getUserRole } from '@/shared/js/identity.js';
 import { signOut } from '@/shared/js/auth.js';
 import { supabase } from '@/shared/js/supabase-client.js';

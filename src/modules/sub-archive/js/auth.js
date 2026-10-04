@@ -1,3 +1,11 @@
+// 职责    档案馆版认证封装（注册 / 登录 / 身份元数据读取）。
+// 归属页面 （无页面引用）
+// 依赖    shared/js/supabase-client.js
+// 被依赖   无
+//
+// 维护提示
+//   · ⚠️ 与 shared/js/auth.js 功能重复，当前没有任何文件引用本文件。
+//   · 可安全删除；删除前建议全局搜索确认。
 import { supabase } from '@/shared/js/supabase-client.js';
 
 // 注册（支持昵称 + 身份元数据）

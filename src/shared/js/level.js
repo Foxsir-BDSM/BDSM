@@ -1,18 +1,10 @@
-// ============================================================
-// src/shared/js/level.js
-// 角色与积分工具
-// ------------------------------------------------------------
-// 设计（2026-10-03 定稿）：
-//   取消了 8 级等级体系，改为两类角色称谓：主 / 奴
-//   由身份的上/下位决定，与积分无关。
+// 职责    角色称谓与积分格式化（仅主 / 奴）。
+// 归属页面 首页、我的页、资料页
+// 依赖    shared/config/identity-config.js、shared/config/levelConfig.js
+// 被依赖   launcher/index.html、launcher/my.html、launcher/profile.html
 //
-//   积分（points）保留为纯数值统计，不再决定等级。
-//
-// 已移除（无人使用）：
-//   calculateLevel / getLevelBadge / getLevelProgressBar
-//   → 由 getRoleTitle() 取代
-// ============================================================
-
+// 维护提示
+//   · 已移除多级等级计算（calculateLevel / getLevelBadge / getLevelProgressBar）。若恢复等级阶梯需重新引入。
 import { getType } from '@/shared/config/identity-config.js';
 import { getRoleTitleByType, ROLE_TITLE_DESC } from '@/shared/config/levelConfig.js';
 

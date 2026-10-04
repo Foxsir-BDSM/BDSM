@@ -1,8 +1,10 @@
-// ================================================================
-// assets/js/content-config.js
-// 配置：GitHub 内容仓库信息
-// ================================================================
-
+// 职责    内容仓库配置（owner / repo / branch / 路径）。
+// 归属页面 管理后台的内容管理页
+// 依赖    无
+// 被依赖   content-manager.js、admin-article.html
+//
+// 维护提示
+//   · 换仓库或分支只改这里。
 const OWNER = 'Foxsir-BDSM';
 const REPO = 'foxsir-content';
 

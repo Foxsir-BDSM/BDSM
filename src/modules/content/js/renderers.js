@@ -1,13 +1,10 @@
-// ================================================================
-// src/modules/content/js/renderers.js
-// 按发布类型的专属渲染（编辑器实时预览 + 列表卡片 共用）
-// ----------------------------------------------------------------
-// 结构：
-//   previewers[typeId](meta, data) -> HTML 片段（编辑器预览用）
-//   renderCardFacts(post)          -> 卡片元信息数组（列表用）
-//   renderListRow(post)            -> 紧凑列表行（「我的」页复用）
-// ================================================================
-
+// 职责    按内容类型分发的渲染器实现。
+// 归属页面 内容详情页
+// 依赖    content-types.js
+// 被依赖   render.js
+//
+// 维护提示
+//   · 新增内容类型时在此加一个渲染分支。
 import { getPostType, getRisk, RISK_COLLAPSED } from './content-types.js';
 
 export function esc(s) {

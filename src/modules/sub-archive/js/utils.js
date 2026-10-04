@@ -1,3 +1,11 @@
+// 职责    档案馆通用工具：字段取值、卡片信息提取、归属解析与筛选、计数、媒体收集、隐私判定辅助。
+// 归属页面 档案列表页、档案详情页
+// 依赖    config.js
+// 被依赖   home.js、detail.js
+//
+// 维护提示
+//   · ★ getFieldValue() 同时兼容 record.data 与 record.fields 两种结构 —— 换数据源导致 API 返回结构变化时，这里是第一道防线。
+//   · 归属筛选会把「未标注身份」的记录一律保留，不会因筛选而丢数据。
 import {
   CONFIG,
   SYSTEM_FIELD_IDS,

@@ -1,9 +1,10 @@
-// ================================================================
-// src/shared/js/guard.js
-// 功能：权限路由守卫（访客仅限 Landing/About/Auth）
-// 优化：增加防重入保护，避免无限重定向循环
-// ================================================================
-
+// 职责    页面访问权限守卫：未授权的访问会跳转。
+// 归属页面 全站
+// 依赖    shared/js/identity.js、shared/config/access.js
+// 被依赖   各页面的入口
+//
+// 维护提示
+//   · 白名单与重定向目标在本文件。放开某页权限时先看这里。
 import { getCurrentUser } from '@/shared/js/auth.js';
 import { getUserRole } from '@/shared/js/identity.js';
 import { RELAXED_ACCESS } from '@/shared/config/access.js';

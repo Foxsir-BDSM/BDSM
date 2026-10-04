@@ -1,3 +1,12 @@
+// 职责    档案列表页主逻辑：拉取数据、公开性过滤、身份分流、搜索分页、卡片渲染、拼带参表单链接。
+// 归属页面 档案列表页 /modules/sub-archive/index.html
+// 依赖    config.js、api.js、utils.js、shared/config/identity-config.js、shared/js/auth.js
+// 被依赖   入口模块，由 index.html 以 <script type="module" src="./js/home.js"> 加载
+//
+// 维护提示
+//   · ★ 列表可见性判定在 isPublic()，字段取 VISIBILITY_FIELDS.publicQuestionnaire —— 不要硬编码字段 ID，迁库后会静默失效（曾导致列表全部为空）。
+//   · ★ 表单跳转参数在 buildFormUrl()：email / name / uid，与 Fillout 的 URL 参数一一对应。
+//   · 筛选条由 renderFilterBar() 动态渲染，HTML 里没有写死按钮。
 import { CONFIG, SEARCH_FIELDS, PAGE_SIZE, VISIBILITY_FIELDS } from './config.js';
 import { fetchRecordsPage, clearCache } from './api.js';
 import {

@@ -1,20 +1,12 @@
-// ============================================================
-// src/shared/config/archive/api.js
-// 档案馆 · 总 API 配置
-// ------------------------------------------------------------
-// 数据源：Zite / Fillout Tables
+// 职责    ★ 档案馆总 API 配置：数据库 base/table ID、API Key、表单入口 URL、分页与缓存参数、默认占位图。
+// 归属页面 档案馆全部页面、管理后台
+// 依赖    无（最底层配置）
+// 被依赖   fields.js 无关；instances.js、sub-archive/js/config.js、tools 下多个脚本
 //
-// ID 名称对应关系（容易搞错，特此注明）：
-//   Zite 编辑器 URL 形如
-//     https://app.zite.com/workspace/<BASE>/database/<TABLE>/<VIEW>
-//                                    ↑            ↑
-//                                 baseId      tableId
-//   Tables API 形如
-//     https://tables.fillout.com/api/v1/bases/<BASE>/tables/<TABLE>/records/list
-//
-// 表单填写入口（新表单；对应列表页「母の曝光」按钮）
-// ============================================================
-
+// 维护提示
+//   · ★ 换数据库只改本文件的 BASE_ID / TABLE_ID / API_KEY，以及表单入口 FORM_URL。
+//   · ★ ID 对应关系（易混）：Zite 编辑器 URL 形如 app.zite.com/workspace/<BASE>/database/<TABLE>/<VIEW>，其中 workspace 段是 base，database 段是 table。
+//   · ★ DEFAULT_IMAGE 必须保持 base64 形式（不含任何引号）。若改回内嵌引号的写法，会撑破卡片的 onerror 属性，导致占位图加载失败并逐卡报错。
 /** Fillout Tables：base（对应 Zite 的 workspace 段） */
 export const BASE_ID = 'e7d18ead20743825';
 

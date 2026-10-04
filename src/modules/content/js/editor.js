@@ -1,15 +1,10 @@
-// ================================================================
-// src/modules/content/js/editor.js
-// 结构化编辑器 · 由 content-types.js 的 schema 驱动渲染
-// ----------------------------------------------------------------
-// 设计要点：
-//   · 字段组完全由 schema 生成，新增字段只改 content-types.js
-//   · list 类型支持增删、上下移动、嵌套子列表
-//   · 草稿自动存 localStorage，避免编辑中丢失
-//   · 风险等级与安全字段联动（高/极高必填安全项 + 知情确认）
-//   · 命中高风险提示时弹出建议（不拦截，可继续发布）
-// ================================================================
-
+// 职责    结构化内容编辑器主逻辑：表单生成、实时预览、提交。
+// 归属页面 内容编辑器 /modules/content/post-editor.html
+// 依赖    content-types.js 等
+// 被依赖   入口模块，由 post-editor.html 加载
+//
+// 维护提示
+//   · ★ 表单由 content-types.js 的定义驱动生成，不要在本文件硬编码字段。
 import {
   POST_TYPES, RISK_LEVELS, VISIBILITY, TAG_GROUPS,
   getPostType, getRisk, blankData, blankItem,

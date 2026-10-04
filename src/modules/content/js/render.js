@@ -1,8 +1,10 @@
-// ================================================================
-// src/modules/content/js/render.js
-// 列表卡片 + 详情渲染（由 content-types.js 的 schema 驱动）
-// ================================================================
-
+// 职责    内容渲染入口与数据获取。
+// 归属页面 内容列表、内容详情、我的页
+// 依赖    renderers.js、content-types.js
+// 被依赖   被 3 个页面共用
+//
+// 维护提示
+//   · 改动输出结构要三处同查。
 import {
   getPostType, getRisk, RISK_COLLAPSED,
   JSON_FENCE_RE, parsePayload,
