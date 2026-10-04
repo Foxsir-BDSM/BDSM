@@ -924,16 +924,42 @@
         white-space: nowrap;
       }
       .ms-meta { font-size: 11px; color: rgba(255, 255, 255, 0.28); }
-      .ms-go {
+
+      /* ── 提交反馈按钮（暗金色高亮）──
+         整行是 <a>，此按钮用 span 模拟链接，靠 JS 阻止冒泡后跳转。
+         颜色取站点主色 #d4a574，实心暗金底以突出「这里可以点」。 */
+      .ms-submit {
         flex: none;
-        font-size: 12px;
-        color: rgba(212, 165, 116, 0.75);
+        padding: 7px 16px;
+        border-radius: 20px;
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
         white-space: nowrap;
+        cursor: pointer;
+        color: #1a1408;
+        background: linear-gradient(180deg, #e0b884 0%, #c9974f 100%);
+        border: 1px solid rgba(212, 165, 116, 0.55);
+        box-shadow: 0 2px 10px rgba(212, 165, 116, 0.22);
+        transition: all 0.22s ease;
+        user-select: none;
       }
+      .ms-submit:hover {
+        background: linear-gradient(180deg, #edc79a 0%, #d4a574 100%);
+        box-shadow: 0 4px 16px rgba(212, 165, 116, 0.36);
+        transform: translateY(-1px);
+      }
+      .ms-submit:focus-visible {
+        outline: 2px solid rgba(212, 165, 116, 0.85);
+        outline-offset: 2px;
+      }
+      .ms-submit:active { transform: translateY(0); box-shadow: 0 1px 6px rgba(212, 165, 116, 0.3); }
+
       @media (max-width: 640px) {
         .missions-section { padding: 0 16px; margin-bottom: 34px; }
         .ms-item { padding: 12px 13px; gap: 10px; }
-        .ms-go { display: none; }
+        /* 原先手机端把入口整个隐藏了 —— 那等于没有入口，故保留并加大热区 */
+        .ms-submit { padding: 9px 14px; font-size: 12px; min-height: 38px; display: inline-flex; align-items: center; }
       }
     </style>
   </head>
@@ -1246,19 +1272,39 @@
         if (!tasks || !tasks.length) return;
 
         listEl.innerHTML = tasks.slice(0, 5).map((t) => {
-          const url = `/modules/content/post.html?slug=${encodeURIComponent(t.task_slug)}`;
+          // 整行 → 任务详情；右侧按钮 → 该任务的任务反馈编辑器
+          const detailUrl = `/modules/content/post.html?slug=${encodeURIComponent(t.task_slug)}`;
+          const editorUrl = `/modules/content/post-editor.html?type=note&task=${encodeURIComponent(t.task_slug)}`;
           const when = (t.accepted_at || '').slice(0, 10);
           return `
-            <a class="ms-item" href="${url}">
+            <a class="ms-item" href="${detailUrl}">
               <span class="ms-ico">⛓️</span>
               <span class="ms-body">
                 <span class="ms-name">${escapeHtml(t.task_title || t.task_slug)}</span>
                 <span class="ms-meta">接取于 ${when}</span>
               </span>
-              <span class="ms-go">提交 →</span>
+              <!-- 用 span 而非 <a>：<a> 不能嵌套 <a>，否则 HTML 结构非法 -->
+              <span class="ms-submit" role="link" tabindex="0"
+                    data-href="${editorUrl}"
+                    aria-label="提交该任务的反馈">提交反馈</span>
             </a>`;
         }).join('');
         section.hidden = false;
+      }
+
+      /**
+       * 任务直达里的「提交反馈」按钮
+       *
+       * 整行本身是 <a>（进任务详情），按钮用 span 模拟链接，
+       * 故必须阻止冒泡，否则会连带跳去详情页而不是编辑器。
+       */
+      function onMissionSubmit(e) {
+        const btn = e.target.closest('.ms-submit');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const href = btn.dataset.href;
+        if (href) location.href = href;
       }
 
       /** 防止任务直达并发拉取两次（首屏与校正各会触发一次） */
@@ -1483,6 +1529,23 @@
       }
 
       window.addEventListener('resize', () => renderProjects());
+
+      // 任务直达的「提交反馈」按钮：事件委托，列表重绘后依然有效
+      // （列表每 5 分钟会随真实数据刷新，逐个绑定会失效）
+      (function bindMissionSubmit() {
+        const list = document.getElementById('missionsList');
+        if (!list) return;
+        list.addEventListener('click', onMissionSubmit);
+        // 键盘可达：Enter / 空格等同点击
+        list.addEventListener('keydown', (e) => {
+          if (e.key !== 'Enter' && e.key !== ' ') return;
+          if (!e.target.closest('.ms-submit')) return;
+          e.preventDefault();
+          e.stopPropagation();
+          const href = e.target.closest('.ms-submit').dataset.href;
+          if (href) location.href = href;
+        });
+      })();
 
       import { onAuthStateChange } from '@/shared/js/auth.js';
       onAuthStateChange(() => renderAll());
