@@ -34,14 +34,15 @@ const { SUPABASE_URL, SUPABASE_ANON_KEY } = await import('../src/shared/js/confi
 const email = `qa_e2e_${Date.now().toString().slice(-8)}@foxsir-test.local`;
 const PASS = 'Qa!123456';
 
-let token = null;
 const su = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
   method: 'POST',
   headers: { apikey: SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
   body: JSON.stringify({ email, password: PASS, data: { nickname: '接取测试', role: 'self' } }),
 });
 const suj = await su.json().catch(() => ({}));
-token = suj.access_token;
+
+let token = suj.access_token;
+let refresh = suj.refresh_token;
 if (!token) {
   const li = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     method: 'POST',
@@ -50,8 +51,10 @@ if (!token) {
   });
   const lij = await li.json().catch(() => ({}));
   token = lij.access_token;
+  refresh = lij.refresh_token;
 }
 check('取得测试账号 token', !!token, email);
+check('取得 refresh_token', !!refresh, refresh ? '已获取' : '缺失');
 if (!token) process.exit(1);
 
 // ── 2. 启动本地服务
@@ -108,25 +111,47 @@ const js = async (expr, t = 30000) => {
   return r.result?.value;
 };
 
-// 注入 Supabase 会话
+// 用 Supabase 官方客户端建立真实会话
+// 说明：不能手工往 localStorage 塞假 session —— getCurrentUser() 会向
+//       Supabase 校验 token，假的会被拒绝。必须走 setSession()。
 await send('Page.navigate', { url: BASE + '/' }, sessionId);
-await sleep(4000);
+await sleep(4500);
 
-const key = 'sb-mfexambabgxytkrkhmwx-auth-token';
-const injected = await js(`(function(){
+// 读取本地 .dev.vars 里的 GITHUB_TOKEN
+const devVars = fs.readFileSync('cloudflare/.dev.vars', 'utf8');
+const ghToken = (devVars.match(/^GITHUB_TOKEN=(.+)$/m) || [])[1]?.trim() || '';
+check('读取到 GITHUB_TOKEN', !!ghToken, ghToken ? ghToken.slice(0, 14) + '…' : '(空)');
+
+// 建立真实会话（Supabase 客户端对认证方法包了 10 秒超时，偶发超时需重试）
+let sess = 'init';
+for (let attempt = 1; attempt <= 3; attempt++) {
+  sess = await js(`(async function(){
+    try {
+      var mod = await import('/src/shared/js/supabase-client.js');
+      var r = await mod.supabase.auth.setSession({
+        access_token: ${JSON.stringify(token)},
+        refresh_token: ${JSON.stringify(refresh || '')}
+      });
+      return r.error ? 'err: ' + r.error.message : 'ok:' + (r.data && r.data.user ? r.data.user.email : 'no-user');
+    } catch(e) { return 'err: ' + e.message; }
+  })()`, 45000);
+  console.log(`     尝试 ${attempt}: ${String(sess).slice(0, 80)}`);
+  if (String(sess).startsWith('ok:')) break;
+  await sleep(3000);
+}
+check('建立真实 Supabase 会话', String(sess).startsWith('ok:'), String(sess).slice(0, 80));
+
+// GitHub Token 与缓存清理（独立执行，不受上一步成败影响）
+const prepared = await js(`(function(){
   try {
-    localStorage.setItem(${JSON.stringify(key)}, JSON.stringify({
-      access_token: ${JSON.stringify(token)},
-      token_type: 'bearer',
-      expires_in: 3600,
-      expires_at: Math.floor(Date.now()/1000) + 3600,
-      refresh_token: 'x',
-      user: { id: 'e2e', email: ${JSON.stringify(email)} }
-    }));
+    localStorage.setItem('foxsir_github_token', ${JSON.stringify(ghToken)});
+    Object.keys(localStorage).forEach(function(k){
+      if (k.indexOf('foxsir_') === 0 && k.indexOf('cache') >= 0 || k.indexOf('foxsir_list_') === 0) localStorage.removeItem(k);
+    });
     return 'ok';
   } catch(e) { return 'err: ' + e.message; }
 })()`);
-check('注入登录会话到 localStorage', injected === 'ok', String(injected));
+check('写入 GitHub Token 并清缓存', prepared === 'ok', String(prepared).slice(0, 60));
 
 // 打开内容详情页
 await send('Page.navigate', { url: `${BASE}/modules/content/post.html?slug=${encodeURIComponent(SLUG)}` }, sessionId);

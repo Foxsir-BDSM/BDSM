@@ -995,15 +995,14 @@
         try {
           const { CONTENT_STORE } = await import('@/modules/content/js/content-types.js');
           const { normalizePost } = await import('@/modules/content/js/render.js');
-          const { fetchContentList, parseFrontmatter } = await import('@/admin/content-manager.js');
+          const { fetchContentList, parseFrontmatter, fetchContentText } = await import('@/admin/content-manager.js');
 
           const files = await fetchContentList(CONTENT_STORE.branch, CONTENT_STORE.path).catch(() => []);
 
           const mine = [];
           for (const f of files) {
             try {
-              const res = await fetch(f.download_url + '?t=' + Date.now());
-              const raw = await res.text();
+              const raw = await fetchContentText(f.download_url);
               const parsed = parseFrontmatter(raw, f.name);
               const post = normalizePost(f.name, raw, parsed);
               if (!post) continue;

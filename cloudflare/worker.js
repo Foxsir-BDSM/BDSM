@@ -38,16 +38,55 @@
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
-/** 允许的前端来源 */
-const ALLOWED_ORIGINS = [
-  'https://www.foxsir.top',
-  'https://foxsir.top',
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-];
+/**
+ * slug 合法性校验
+ *
+ * 为什么不用白名单（如 /^[a-zA-Z0-9._-]+$/）：
+ *   内容仓库里的 slug 大量使用中文（「酒店」「公开场合」「全天露出任务」…），
+ *   白名单会一律拒绝，导致接取功能对所有中文内容失效。
+ *
+ * 改为「排除危险字符」：
+ *   · 禁止路径分隔符与控制字符 —— slug 会拼进 GitHub API 路径
+ *   · 禁止 .. 与首尾空白
+ *   · 限制长度
+ */
+const SLUG_BAD_CHARS = /[\/\\:*?"<>|\x00-\x1f\x7f]/;
+function isValidSlug(slug) {
+  if (typeof slug !== 'string') return false;
+  const s = slug.trim();
+  if (!s || s.length > 120) return false;
+  if (s !== slug) return false;              // 不允许首尾空白
+  if (s === '.' || s === '..') return false;
+  if (s.includes('..')) return false;
+  if (SLUG_BAD_CHARS.test(s)) return false;
+  return true;
+}
+
+/**
+ * 判断来源是否允许
+ *
+ * 说明：早期版本写死了 http://localhost:5173，导致 Vite 换端口后
+ *       CORS 被拒（表现为前端「网络异常：Failed to fetch」）。
+ *       故改为：正式域名精确匹配 + 本机地址按主机名放行（不限端口）。
+ */
+const ALLOWED_HOSTS = ['www.foxsir.top', 'foxsir.top'];
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return true;                       // 同源或非浏览器请求
+  try {
+    const u = new URL(origin);
+    if (ALLOWED_HOSTS.includes(u.hostname)) return true;
+    if (LOCAL_HOSTS.includes(u.hostname)) return true;   // 本机开发，不限端口
+    return false;
+  } catch {
+    return false;
+  }
+}
 
 function corsHeaders(origin) {
-  const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  // 允许则回显来源（浏览器要求 Access-Control-Allow-Origin 与请求来源一致）
+  const allow = isAllowedOrigin(origin) ? (origin || `https://${ALLOWED_HOSTS[0]}`) : `https://${ALLOWED_HOSTS[0]}`;
   return {
     'Access-Control-Allow-Origin': allow,
     'Access-Control-Allow-Methods': 'GET,POST,PATCH,OPTIONS',
@@ -113,7 +152,14 @@ async function fetchContentMeta(env, slug) {
     );
     if (!r.ok) return null;
     const j = await r.json();
-    const text = atob(j.content.replace(/\n/g, ''));
+    // ★ Base64 → UTF-8 文本
+    //   注意：atob 返回的是 Latin-1 字符串，中文会变成乱码
+    //   （如「端到端测试任务」→「ç«¯å°ç«¯æµè¯ä»»å¡」），
+    //   必须逐字节还原后再用 TextDecoder 解码。
+    const bin = atob(String(j.content || '').replace(/\s/g, ''));
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    const text = new TextDecoder('utf-8').decode(bytes);
     const m = text.match(/^---\n([\s\S]*?)\n---/);
     if (!m) return null;
     const meta = {};
@@ -138,7 +184,7 @@ async function acceptTask(request, env, user, origin) {
 
   const { taskSlug, taskTitle, taskType } = body || {};
   if (!taskSlug || typeof taskSlug !== 'string') return bad('缺少 taskSlug', 400, origin);
-  if (!/^[a-zA-Z0-9._-]{1,120}$/.test(taskSlug)) return bad('taskSlug 格式不合法', 400, origin);
+  if (!isValidSlug(taskSlug)) return bad('taskSlug 格式不合法', 400, origin);
 
   // 已接取过就返回既有记录（幂等，避免重复点击报错）
   const exist = await env.DB.prepare(
@@ -275,7 +321,7 @@ async function publishContent(request, env, user, origin) {
 
   const { slug, content, message } = body || {};
   if (!slug || !content) return bad('缺少 slug 或 content', 400, origin);
-  if (!/^[a-zA-Z0-9._-]{1,120}$/.test(slug)) return bad('slug 格式不合法', 400, origin);
+  if (!isValidSlug(slug)) return bad('slug 格式不合法', 400, origin);
 
   const owner = env.CONTENT_OWNER || 'Foxsir-BDSM';
   const repo = env.CONTENT_REPO || 'foxsir-content';

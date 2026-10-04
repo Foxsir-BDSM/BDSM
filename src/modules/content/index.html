@@ -63,7 +63,7 @@
     <script type="module">
       import { CONTENT_STORE, TAG_GROUPS, RISK_COLLAPSED } from './js/content-types.js';
       import { normalizePost, renderCard, esc } from './js/render.js';
-      import { fetchContentList, fetchContentListForce, parseFrontmatter, getToken } from '@/admin/content-manager.js';
+      import { fetchContentList, fetchContentListForce, parseFrontmatter, getToken, fetchContentText } from '@/admin/content-manager.js';
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
@@ -121,8 +121,7 @@
         const posts = [];
         await Promise.all((files || []).map(async (f) => {
           try {
-            const res = await fetch(f.download_url + '?t=' + Date.now());
-            const raw = await res.text();
+            const raw = await fetchContentText(f.download_url);
             const parsed = parseFrontmatter(raw, f.name);
             const post = normalizePost(f.name, raw, parsed);
             if (post) posts.push(post);

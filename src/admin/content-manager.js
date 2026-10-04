@@ -63,6 +63,21 @@ export async function fetchContentList(branch, path) {
         const data = await response.json();
         const files = Array.isArray(data) ? data.filter(function(f) { return f && f.name && f.name.endsWith('.md'); }) : [];
 
+        // ★ 把 download_url（raw.githubusercontent）换成 API 路径 ★
+        // 原因：raw 是 CDN，带 cache-control: max-age=300，
+        //       且按 Authorization 分缓存（vary: Authorization），
+        //       加时间戳参数也无法绕过。结果是内容更新后匿名读取最多滞后 5 分钟。
+        //       实测：同一文件首次迁移后匿名读 2439 字节（旧）、鉴权读 2451 字节（新）。
+        //       API 路径始终返回最新内容，故正文统一走 API。
+        files.forEach(function(f) {
+            if (f && f.name) {
+                f.download_url = 'https://api.github.com/repos/'
+                    + CONTENT_CONFIG.owner + '/' + CONTENT_CONFIG.repo
+                    + '/contents/' + path + '/' + encodeURIComponent(f.name)
+                    + '?ref=' + branch;
+            }
+        });
+
         // ★ 存入缓存（5 分钟有效期） ★
         setCacheWithMeta(cacheKey, files, DEFAULT_TTL);
         console.log('✅ 缓存已写入:', cacheKey, files.length, '个文件，有效期 5 分钟');
@@ -86,6 +101,53 @@ export async function fetchContentListForce(branch, path) {
     clearCache(cacheKey);
     console.log('🔄 强制刷新，已清除缓存:', cacheKey);
     return fetchContentList(branch, path);
+}
+
+// ===== 取单个文件的正文 =====
+/**
+ * 读取一篇内容的 Markdown 原文。
+ *
+ * 为什么单独封装：列表接口返回的 download_url 是 raw.githubusercontent（CDN，max-age=300，
+ * 且按 Authorization 分缓存），内容刚更新时匿名读取会滞后最多 5 分钟。
+ * fetchContentList 已把 download_url 改写成 GitHub API 地址，这里负责用 API 读取，
+ * 并把 Base64 内容解码回文本。
+ *
+ * @param {string} apiUrl  fetchContentList 返回项的 download_url（已是 API 地址）
+ * @returns {Promise<string>} Markdown 原文；失败返回空串
+ */
+export async function fetchContentText(apiUrl) {
+    const token = getToken();
+    if (!token) {
+        console.error('❌ 未配置 GitHub Token，无法读取内容');
+        return '';
+    }
+    try {
+        const res = await fetch(apiUrl, {
+            headers: {
+                'Authorization': 'token ' + token,
+                'Accept': 'application/vnd.github+json',
+            },
+        });
+        if (!res.ok) {
+            console.error('读取内容失败 HTTP', res.status, apiUrl);
+            return '';
+        }
+        const data = await res.json();
+
+        // API 返回 Base64；中文需先还原为 UTF-8 字节再解码
+        if (data && typeof data.content === 'string') {
+            const bin = atob(String(data.content).replace(/\s/g, ''));
+            const bytes = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+            return new TextDecoder('utf-8').decode(bytes);
+        }
+
+        // 兼容：若传入的是 raw 地址，退化为纯文本
+        return typeof data === 'string' ? data : '';
+    } catch (err) {
+        console.error('读取内容异常:', err);
+        return '';
+    }
 }
 
 // ===== 获取缓存剩余有效期（调试用） =====

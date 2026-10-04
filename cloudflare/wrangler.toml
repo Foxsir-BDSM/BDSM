@@ -10,14 +10,16 @@ compatibility_date = "2026-01-01"
 
 # ── 环境变量（非密钥）─────────────────────────────────────
 [vars]
-# 内容仓库定位（与 src/admin/content-config.js 保持一致）
+# 内容仓库定位（必须与前端 content-types.js 的 CONTENT_STORE 一致）
 CONTENT_OWNER  = "Foxsir-BDSM"
 CONTENT_REPO   = "foxsir-content"
 CONTENT_DIR    = "posts"
-# ★ 注意：代码里原配置写的是 "content"，但仓库实际只有 main / tasks 两个分支。
-#   jsDelivr 实测 @content 返回 404、@main 返回 200，故此处用 main。
-#   如果你后来新建了 content 分支，把这里和 content-config.js 一起改回去。
-CONTENT_BRANCH = "main"
+CONTENT_BRANCH = "content"
+# 历史沿革：
+#   · 原始内容在 tasks 分支的 tasks/ 与 knowledge 分支的 articles/（旧格式）
+#   · 2026-10-04 迁移：新建 content 分支，9 篇旧内容转新格式写入 posts/
+#   · 仓库默认分支是 knowledge；main 分支只有一个 README
+#   ★ 若将来改分支，需同时改这里与 content-types.js 的 CONTENT_STORE.branch
 
 # R2 公开访问地址（绑定自定义域名后填，例如 https://media.foxsir.top）
 # 留空时上传可用，但返回的 url 为空，前端拿不到地址。

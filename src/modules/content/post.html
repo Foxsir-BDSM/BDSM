@@ -32,7 +32,7 @@
     <script type="module">
       import { CONTENT_STORE, RISK_COLLAPSED } from './js/content-types.js';
       import { normalizePost, renderDetail } from './js/render.js';
-      import { fetchContentList, parseFrontmatter, getToken } from '@/admin/content-manager.js';
+      import { fetchContentList, parseFrontmatter, getToken, fetchContentText } from '@/admin/content-manager.js';
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
       import { showToast } from '@/shared/js/ui-helpers.js';
@@ -161,8 +161,7 @@
             return;
           }
 
-          const res = await fetch(target.download_url + '?t=' + Date.now());
-          const raw = await res.text();
+          const raw = await fetchContentText(target.download_url);
           const parsed = parseFrontmatter(raw, target.name);
           const post = normalizePost(target.name, raw, parsed);
 
