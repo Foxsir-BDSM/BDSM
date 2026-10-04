@@ -330,6 +330,36 @@ body {
   background: rgba(255, 255, 255, 0.02);
 }
 
+/* ============================================================
+   首列固定（sticky）
+   ------------------------------------------------------------
+   用途：表格在窄屏横向滚动时，姓名/昵称列始终留在视野内，
+        避免"滑到右边改错行"。
+
+   要点：
+     1) 用不透明白底 —— 半透明会让下层单元格的文字透出来
+     2) z-index 分层：表头 < 表头首格 < 首列单元格
+     3) 右侧加一条分隔线，滑到右边时能看出这不是内容列
+     4) ★ hover 的 tr:hover td 会给所有 td 上背景，必须重新覆盖
+        sticky 列，否则悬停时它变半透明、下层内容透出
+   ============================================================ */
+.admin-table th:first-child,
+.admin-table td:first-child {
+  position: sticky;
+  left: 0;
+  /* 与卡片底色一致的实色（卡片背景 rgba(255,255,255,0.02) 叠在 #0f0e17 上） */
+  background: #16151f;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 2;
+}
+.admin-table th:first-child {
+  z-index: 3;                 /* 表头首格压在首列之上，滚动时不脱层 */
+}
+/* 悬停时保持实色，并稍微提亮以维持"整行高亮"的观感 */
+.admin-table tr:hover td:first-child {
+  background: #1c1b26;
+}
+
 .admin-table select {
   padding: 4px 10px;
   border-radius: 20px;
