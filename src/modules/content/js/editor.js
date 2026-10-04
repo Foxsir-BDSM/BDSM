@@ -18,6 +18,7 @@ import { showLoading, hideLoading } from '@/shared/js/loading.js';
 import { showToast } from '@/shared/js/ui-helpers.js';
 import { createOrUpdateContent } from '@/admin/content-manager.js';
 import { renderTypePreview } from './renderers.js';
+import { myTasks, updateTask, taskApiReady } from '@/shared/js/task-api.js';
 
 // ────────────────────────────────────────────── 状态
 const state = {
@@ -30,7 +31,31 @@ const state = {
   editingSlug: '',
   user: null,
   role: 'guest',
+
+  // ── 任务关联 ──
+  // 用途：提交任务反馈时，选中「是哪一条任务的反馈」。
+  // 提交成功后把该任务置为已提交，它就不再出现在「任务直达 / 我的」的待办里。
+  // 可选任务 = 我已接取且**尚未提交**的任务；已提交的不列入（避免重复提交）。
+  linkTaskSlug: '',        // 当前选中的任务
+  availableTasks: [],      // 可选任务列表
+  taskLinked: false,       // 是否为「提交任务反馈」模式（由 ?task= 进入或手动选择）
 };
+
+// 「任务反馈」类型：只有它才需要关联任务
+const FEEDBACK_TYPE = 'note';
+
+/** 从 URL 取初始任务（详情页/首页/我的 跳转过来时会带） */
+function getTaskFromUrl() {
+  try {
+    const t = new URLSearchParams(location.search).get('task');
+    return t ? decodeURIComponent(t) : '';
+  } catch { return ''; }
+}
+
+/** 是否处于「提交任务反馈」上下文 */
+function isFeedbackContext() {
+  return state.typeId === FEEDBACK_TYPE || !!state.linkTaskSlug;
+}
 
 // ────────────────────────────────────────────── 工具
 const el = (id) => document.getElementById(id);
@@ -316,8 +341,7 @@ function renderSelTags() {
 }
 
 /** 高/极高风险时强制显示的「安全字段」区块 */
-function renderSafety() {
-  const box = el('safetyBox');
+function renderSafety() {  const box = el('safetyBox');
   const need = RISK_NEEDS_SAFETY.includes(state.meta.risk);
   if (!need) {
     box.innerHTML = '';
@@ -374,6 +398,72 @@ function renderSections() {
       </div>
     </section>`).join('');
   bindSectionEvents();
+}
+
+// ────────────────────────────────────────────── 关联任务
+/**
+ * 渲染「关联任务」选择框。
+ *
+ * 显示时机：类型为「任务反馈」，或从带 ?task= 的链接进入。
+ * 选项来源：我已接取且尚未提交的任务（已提交的不列，避免重复关联）。
+ *
+ * 为什么做成必选：不关联的话任务会永远停在「进行中」，
+ * 用户会以为提交没成功 —— 这正是要解决的问题。
+ */
+function renderTaskLink() {
+  const box = el('taskLinkBox');
+  if (!box) return;
+
+  if (!isFeedbackContext()) { box.style.display = 'none'; return; }
+  if (!taskApiReady()) { box.style.display = 'none'; return; }
+
+  box.style.display = 'block';
+
+  if (!state.availableTasks.length) {
+    box.innerHTML = `
+      <section class="card">
+        <div class="card-head"><span>关联任务</span></div>
+        <div class="task-link-empty">
+          <p>你还没有「已接取但未提交」的任务。</p>
+          <p class="dim">请先到 <a href="./index.html">欲炼之途</a> 接取一个任务，再回来提交反馈。</p>
+        </div>
+      </section>`;
+    return;
+  }
+
+  const opts = state.availableTasks.map((t) => {
+    const sel = t.task_slug === state.linkTaskSlug ? ' selected' : '';
+    return `<option value="${esc(t.task_slug)}"${sel}>${esc(t.task_title || t.task_slug)}</option>`;
+  }).join('');
+
+  box.innerHTML = `
+    <section class="card">
+      <div class="card-head">
+        <span>关联任务 <span class="req">*</span></span>
+        <span class="dim sm">提交后该任务会标记为「已提交」，从待办中移除</span>
+      </div>
+      <div class="fld">
+        <select id="taskLinkSelect" class="inp">
+          <option value="">— 请选择这条反馈对应的任务 —</option>
+          ${opts}
+        </select>
+      </div>
+    </section>`;
+
+  el('taskLinkSelect')?.addEventListener('change', (e) => {
+    state.linkTaskSlug = e.target.value;
+    state.taskLinked = !!state.linkTaskSlug;
+    scheduleDraft();
+  });
+}
+
+/** 拉取可选任务：已接取且未提交 */
+async function loadAvailableTasks() {
+  if (!state.user || !taskApiReady()) return;
+  try {
+    const r = await myTasks('accepted');            // 后端已按状态过滤，只返回未提交的
+    if (r.ok) state.availableTasks = r.tasks || [];
+  } catch { /* 拿不到就不显示选择框 */ }
 }
 
 // ────────────────────────────────────────────── 事件绑定
@@ -544,6 +634,8 @@ function switchType(id) {
   if (hasContent && !confirm('切换类型会重置已填写的类型专属字段，确定继续？')) return;
   state.typeId = id;
   state.data = blankData(id);
+  // 切到 / 切走「任务反馈」会影响是否需要关联任务，故一并重渲染
+  if (typeof renderTaskLink === 'function') renderTaskLink();
   renderTypeTabs(); renderSections(); renderSafety(); renderPreview();
   scheduleDraft();
 }
@@ -560,7 +652,9 @@ function saveDraft() {
   try {
     const all = JSON.parse(localStorage.getItem(CONTENT_STORE.draftKey) || '{}');
     all[state.editingSlug || '__new__'] = {
-      typeId: state.typeId, data: state.data, meta: state.meta, at: Date.now(),
+      typeId: state.typeId, data: state.data, meta: state.meta,
+      linkTaskSlug: state.linkTaskSlug,     // 关联的任务随草稿一并保留
+      at: Date.now(),
     };
     localStorage.setItem(CONTENT_STORE.draftKey, JSON.stringify(all));
     const box = el('draftTip');
@@ -637,6 +731,15 @@ function validate() {
     const steps = state.data.steps || [];
     if (!steps.length || !steps.some((s) => String(s.text || '').trim())) errs.push('玩法任务至少需要 1 个步骤');
   }
+
+  // ── 任务反馈必须关联一条任务 ──
+  // 为什么必选：不关联的话，「我的」里那条任务永远停在「进行中」，
+  // 用户会以为没提交成功。关联后才能把任务置为已提交、从待办里消失。
+  if (state.typeId === FEEDBACK_TYPE || isFeedbackContext()) {
+    if (!state.linkTaskSlug) {
+      errs.push('请选择这条反馈对应的任务（未关联的任务会一直显示为「进行中」）');
+    }
+  }
   return errs;
 }
 
@@ -684,8 +787,30 @@ export async function initEditor() {
       state.meta = { ...state.meta, ...(draft.meta || {}) };
     }
 
+    // ── 从链接进入时的初始任务 ──
+    // 详情页「去提交反馈」、首页任务直达、我的页面「提交反馈」都带 ?task=
+    const urlTask = getTaskFromUrl();
+    if (urlTask) {
+      state.linkTaskSlug = urlTask;
+      state.taskLinked = true;
+      // 从任务链接进来时，默认切到「任务反馈」，因为提交的就是反馈
+      state.typeId = FEEDBACK_TYPE;
+      state.data = blankData(FEEDBACK_TYPE);
+    } else if (draft && draft.linkTaskSlug) {
+      state.linkTaskSlug = draft.linkTaskSlug;
+      state.taskLinked = true;
+    }
+
+    // 可选任务列表（失败不阻塞编辑器）
+    await loadAvailableTasks();
+    // 链接带来的任务若不在可选列表里（例如已提交过），仍然保留选择但给出提示
+    if (state.linkTaskSlug && !state.availableTasks.some((t) => t.task_slug === state.linkTaskSlug)) {
+      state.availableTasks.unshift({ task_slug: state.linkTaskSlug, task_title: state.linkTaskSlug });
+    }
+
     renderTypeTabs();
     renderMeta();
+    renderTaskLink();
     renderSections();
     renderSafety();
     renderPreview();
@@ -763,9 +888,34 @@ async function onPublish() {
 
   try {
     await createOrUpdateContent(CONTENT_STORE.branch, path, fileBody, `📝 发布: ${payload.title}`);
+
+    // ── 关联任务：把该任务置为「已提交」 ──
+    // 这一步是「提交反馈后任务不再显示为进行中」的关键。
+    // 失败不回滚已发布的内容，但会明确告知，避免用户误以为没关联上。
+    let linkMsg = '';
+    if (state.linkTaskSlug) {
+      try {
+        const lr = await updateTask(state.linkTaskSlug, {
+          status: 'submitted',
+          feedbackSlug: payload.slug,
+        });
+        if (lr.ok) {
+          linkMsg = `<div class="pub-sub">🔗 已关联任务「${esc(
+            (state.availableTasks.find((t) => t.task_slug === state.linkTaskSlug) || {}).task_title
+            || state.linkTaskSlug
+          )}」，该任务已标记为「已提交」。</div>`;
+        } else {
+          linkMsg = `<div class="pub-sub warn">⚠️ 内容已发布，但任务关联失败：${esc(lr.error || '未知错误')}
+            <br />该任务仍会显示为「进行中」。</div>`;
+        }
+      } catch (e) {
+        linkMsg = `<div class="pub-sub warn">⚠️ 内容已发布，但任务关联异常：${esc(e.message)}</div>`;
+      }
+    }
+
     el('pubMsg').className = 'pub-msg ok show';
-    el('pubMsg').innerHTML = `✅ 发布成功！<a href="./post.html?slug=${encodeURIComponent(payload.slug)}">查看详情 →</a>`;
-    showToast('发布成功 🎉');
+    el('pubMsg').innerHTML = `✅ 发布成功！<a href="./post.html?slug=${encodeURIComponent(payload.slug)}">查看详情 →</a>${linkMsg}`;
+    showToast(state.linkTaskSlug ? '发布成功，任务已标记完成 🎉' : '发布成功 🎉');
   } catch (err) {
     el('pubMsg').className = 'pub-msg err show';
     el('pubMsg').textContent = '发布失败：' + err.message + '（未配置 GitHub Token 时无法写入）';

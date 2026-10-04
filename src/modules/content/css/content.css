@@ -136,6 +136,8 @@ body {
   border-radius: 18px; overflow: hidden;
   text-decoration: none; color: inherit;
   transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 定位上下文：卡片内的接取按钮靠它绝对定位 */
+  position: relative;
 }
 .pcard:hover {
   transform: translateY(-4px);
@@ -144,6 +146,43 @@ body {
 }
 .pcard.is-collapsed { opacity: 0.72; }
 .pcard.is-collapsed:hover { opacity: 1; }
+
+/* ── 卡片上的接取按钮 ──
+   卡片整体是 <a>，按钮必须可独立点击，故绝对定位钉在右上角，
+   并由 JS 侧 stopPropagation + preventDefault 阻止跳转。 */
+.card-accept {
+  position: absolute; top: 10px; right: 10px; z-index: 3;
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 500; line-height: 1.5;
+  cursor: pointer; white-space: nowrap;
+  backdrop-filter: blur(6px);
+  transition: all 0.22s ease;
+  font-family: inherit;
+}
+.card-accept.is-idle {
+  color: #d4a574;
+  background: rgba(20, 16, 14, 0.72);
+  border: 1px solid rgba(212, 165, 116, 0.45);
+}
+.card-accept.is-idle:hover {
+  background: rgba(212, 165, 116, 0.2);
+  border-color: #d4a574;
+}
+.card-accept.is-doing {
+  color: #7dd3fc;
+  background: rgba(14, 20, 26, 0.72);
+  border: 1px solid rgba(125, 211, 252, 0.42);
+}
+.card-accept.is-doing:hover { background: rgba(125, 211, 252, 0.18); }
+.card-accept.is-done {
+  color: rgba(255, 255, 255, 0.34);
+  background: rgba(20, 20, 20, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: default;
+}
+.card-accept[disabled] { opacity: 0.75; }
+/* 有封面时按钮压在图上，加深底色保证可读 */
+.c-cover + .c-body .card-accept { background: rgba(14, 12, 10, 0.86); }
 
 .c-cover { height: 118px; background-size: cover; background-position: center; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
 .c-cover-empty {

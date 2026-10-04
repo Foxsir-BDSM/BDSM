@@ -112,25 +112,92 @@ await js(`(function(){ localStorage.setItem('foxsir_github_token', ${JSON.string
 
 // ── ① 列表页
 console.log('\n── ① 列表页 ──');
-await goto(`${BASE}/modules/content/`, 11000);
+await goto(`${BASE}/modules/content/`, 12000);
 const listInfo = await js(`(function(){
   var cards = [].map.call(document.querySelectorAll('.pcard'), function(c){
     return {
       title: (c.querySelector('.c-title')||{}).textContent || '',
       type: (c.querySelector('.c-type')||{}).textContent || '',
-      slug: (function(){ var m=(c.getAttribute('href')||'').match(/slug=([^&]+)/); return m?decodeURIComponent(m[1]):''; })()
+      slug: (function(){ var m=(c.getAttribute('href')||'').match(/slug=([^&]+)/); return m?decodeURIComponent(m[1]):''; })(),
+      accept: (function(){
+        var b = c.querySelector('.card-accept');
+        return b ? { text: b.textContent.trim(), action: b.dataset.action, disabled: b.disabled } : null;
+      })()
     };
   });
-  return JSON.stringify({ count: cards.length, cards: cards, empty: (document.body.innerText||'').indexOf('还是一片空白') >= 0 });
+  var filters = [].map.call(document.querySelectorAll('#typeFilters .fbtn'), function(b){ return b.textContent.trim(); });
+  return JSON.stringify({ count: cards.length, cards: cards, filters: filters });
 })()`);
 let L = {};
 try { L = JSON.parse(listInfo); } catch {}
-check('列表页渲染出卡片', L.count >= 4, `卡片数 ${L.count}`);
-const slugs = (L.cards || []).map((c) => c.slug);
-['demo-breath', 'demo-stretch', 'demo-check', 'demo-feedback'].forEach((s) => {
+check('列表页渲染出卡片', L.count >= 3, `卡片数 ${L.count}`);
+check('★ 任务反馈已从列表移除', !(L.cards || []).some((c) => c.slug === 'demo-feedback'), `卡片: ${(L.cards || []).map((c) => c.slug).join(', ')}`);
+check('★ 筛选栏无「任务反馈」入口', !(L.filters || []).some((f) => f.includes('任务反馈')), (L.filters || []).join(' / '));
+
+['demo-breath', 'demo-stretch', 'demo-check'].forEach((s) => {
   const hit = (L.cards || []).find((c) => c.slug === s);
-  check(`  含 ${s}（含类型徽章）`, !!hit && hit.type.length > 0, hit ? hit.type.trim() : '未找到');
+  check(`  含 ${s}（类型徽章 + 接取按钮）`,
+    !!hit && hit.type.length > 0 && !!hit.accept,
+    hit ? `${hit.type.trim()} | 按钮「${hit.accept ? hit.accept.text : '无'}」` : '未找到');
 });
+
+// ── ①b 卡片上直接接取（问题 2）
+console.log('\n── ①b 卡片上直接接取 ──');
+const btnState = await js(`(function(){
+  var c = [].find.call(document.querySelectorAll('.pcard'), function(x){
+    return (x.getAttribute('href')||'').indexOf('demo-stretch') >= 0;
+  });
+  if (!c) return JSON.stringify({ found: false });
+  var b = c.querySelector('.card-accept');
+  if (!b) return JSON.stringify({ found: true, btn: false });
+  return JSON.stringify({ found: true, btn: true, text: b.textContent.trim(), action: b.dataset.action });
+})()`);
+let B = {};
+try { B = JSON.parse(btnState); } catch {}
+check('卡片上存在接取按钮', B.found && B.btn, `action=${B.action} 文案「${B.text}」`);
+
+if (B.btn && B.action === 'accept') {
+  // 记录点击前的地址，确认不会被卡片链接带走
+  await js(`window.__urlBefore = location.href`);
+  await js(`(function(){
+    var c = [].find.call(document.querySelectorAll('.pcard'), function(x){
+      return (x.getAttribute('href')||'').indexOf('demo-stretch') >= 0;
+    });
+    c.querySelector('.card-accept').click();
+  })()`);
+  await sleep(7000);
+  const after = await js(`JSON.stringify({
+    urlChanged: location.href !== window.__urlBefore,
+    url: location.href.split('/').pop(),
+    btnText: (function(){
+      var c = [].find.call(document.querySelectorAll('.pcard'), function(x){
+        return (x.getAttribute('href')||'').indexOf('demo-stretch') >= 0;
+      });
+      var b = c && c.querySelector('.card-accept');
+      return b ? b.textContent.trim() : '(无)';
+    })(),
+    btnAction: (function(){
+      var c = [].find.call(document.querySelectorAll('.pcard'), function(x){
+        return (x.getAttribute('href')||'').indexOf('demo-stretch') >= 0;
+      });
+      var b = c && c.querySelector('.card-accept');
+      return b ? b.dataset.action : '';
+    })()
+  })`);
+  let A2 = {};
+  try { A2 = JSON.parse(after); } catch {}
+  check('★ 点击按钮未跳转到详情页', A2.urlChanged === false, `当前页 ${A2.url}`);
+  check('★ 按钮变为「提交反馈」', /提交反馈/.test(A2.btnText || ''), `${A2.btnText} (action=${A2.btnAction})`);
+
+  // 核对 D1
+  const mineCheck = await fetch(`${TASK_API_BASE}/api/tasks/mine?status=accepted`, { headers: { Authorization: `Bearer ${token}` } });
+  const mc = await mineCheck.json().catch(() => ({}));
+  check('D1 已记录卡片接取', (mc.tasks || []).some((t) => t.task_slug === 'demo-stretch'),
+    `已接取: ${(mc.tasks || []).map((t) => t.task_slug).join(', ')}`);
+
+  // 回到列表页继续后续用例
+  await goto(`${BASE}/modules/content/`, 9000);
+}
 
 // ── ②③ 详情页 + 接取按钮
 console.log('\n── ②③ 详情页与接取按钮 ──');

@@ -1038,7 +1038,7 @@
 
     <script type="module">
       // ===== 核心模块导入 =====
-      import { signOut, getCurrentUser, getUserIdentity } from '@/shared/js/auth.js';
+      import { signOut, getCurrentUser, getUserIdentity, getCachedUser } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { getVisibleProjects } from '@/shared/js/registry.js';
       import { getRoleTitle } from '@/shared/js/level.js';
@@ -1112,12 +1112,14 @@
         return label;
       }
 
-      async function renderTopUser() {
-        const user = await getCurrentUser();
-        const role = await getUserRole();
+      async function renderTopUser(user, ctx) {
+        // 会话 / 角色 / 身份均由 renderAll 预先并行取好后传入，
+        // 避免在这里串行等待三次网络往返（实测会让导航栏比卡片晚 600ms 以上）。
+        const me = user !== undefined ? user : await getCurrentUser();
+        const u = me;
 
         // ───────── 未登录：头像占位 + 注册入口 ─────────
-        if (!user) {
+        if (!u) {
           topUserInfo.innerHTML = `
             <div class="um-trigger" id="umTrigger" role="button" tabindex="0" aria-haspopup="menu" aria-expanded="false">
               <div class="um-avatar is-guest"><span class="um-letter">👤</span></div>
@@ -1150,12 +1152,13 @@
         }
 
         // ───────── 已登录 ─────────
-        const identity = await getUserIdentity();
-        const displayName = getDisplayName(user);
+        const identity = ctx && ctx.identity !== undefined ? ctx.identity : await getUserIdentity();
+        const role = ctx && ctx.role !== undefined ? ctx.role : await getUserRole();
+        const displayName = getDisplayName(u);
         const avatarUrl = identity?.avatarUrl || null;
-        const avatarLetter = getAvatarLetter(user);
+        const avatarLetter = getAvatarLetter(u);
         const identityText = buildIdentityText(identity);
-        const identityLine = buildIdentityLine(identity, user);
+        const identityLine = buildIdentityLine(identity, u);
         const roleLabel = ROLE_MAP[role] || role;
 
         const avatarHtml = avatarUrl
@@ -1185,7 +1188,7 @@
           <div class="um-panel" id="umPanel" role="menu">
             <div class="um-panel-head">
               <div class="h-name">${displayName}</div>
-              <div class="h-sub">${user.email || ''}</div>
+              <div class="h-sub">${u.email || ''}</div>
               <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">${identityBadge}
                 <span class="h-ident" style="color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.06);">${roleLabel}</span>
               </div>
@@ -1212,20 +1215,37 @@
       // ───────── 任务直达（已接取未完成）─────────
       // 只在「已登录 + 后端已配置 + 确实有未完成任务」时显示，
       // 否则整块隐藏 —— 首页对游客保持干净。
-      async function renderMissions() {
+      //
+      // ★ 两段式渲染（与导航栏同思路）：
+      //   任务列表必须问服务器，一次往返实测约 900ms。若等它，
+      //   用户会看到导航栏和卡片都出来了、任务直达却空一拍。
+      //   故：先用上次的缓存结果立刻画出来，网络回来后再覆盖。
+      //   缓存只用来"先画"，不作为真实状态依据。
+      const MISSIONS_CACHE_KEY = 'foxsir_missions_cache';
+
+      function readMissionsCache() {
+        try {
+          const raw = localStorage.getItem(MISSIONS_CACHE_KEY);
+          if (!raw) return null;
+          const j = JSON.parse(raw);
+          return Array.isArray(j.tasks) ? j.tasks : null;
+        } catch { return null; }
+      }
+
+      function writeMissionsCache(tasks) {
+        try {
+          localStorage.setItem(MISSIONS_CACHE_KEY, JSON.stringify({ tasks, at: Date.now() }));
+        } catch { /* 存不下就算了，不影响功能 */ }
+      }
+
+      /** 渲染任务直达列表；tasks 为空则整块隐藏 */
+      function paintMissions(tasks) {
         const section = document.getElementById('missionsSection');
         const listEl = document.getElementById('missionsList');
         if (!section || !listEl) return;
+        if (!tasks || !tasks.length) return;
 
-        if (!taskApiReady()) return;                       // 后端未配置 → 不显示
-
-        const user = await getCurrentUser();
-        if (!user) return;                                 // 游客 → 不显示
-
-        const r = await myTasks('accepted');               // 只取未完成的
-        if (!r.ok || !r.tasks || !r.tasks.length) return;  // 无数据 → 不显示
-
-        const rows = r.tasks.slice(0, 5).map((t) => {
+        listEl.innerHTML = tasks.slice(0, 5).map((t) => {
           const url = `/modules/content/post.html?slug=${encodeURIComponent(t.task_slug)}`;
           const when = (t.accepted_at || '').slice(0, 10);
           return `
@@ -1235,12 +1255,51 @@
                 <span class="ms-name">${escapeHtml(t.task_title || t.task_slug)}</span>
                 <span class="ms-meta">接取于 ${when}</span>
               </span>
-              <span class="ms-go">继续 →</span>
+              <span class="ms-go">提交 →</span>
             </a>`;
         }).join('');
-
-        listEl.innerHTML = rows;
         section.hidden = false;
+      }
+
+      /** 防止任务直达并发拉取两次（首屏与校正各会触发一次） */
+      let missionsInFlight = null;
+
+      async function renderMissions(user) {
+        const section = document.getElementById('missionsSection');
+        const listEl = document.getElementById('missionsList');
+        if (!section || !listEl) return;
+
+        if (!taskApiReady()) return;              // 后端未配置 → 不显示
+
+        // 已有请求在飞就复用它，避免重复往返
+        if (missionsInFlight) return missionsInFlight;
+
+        missionsInFlight = (async () => {
+          // 复用调用方已查到的用户，避免重复请求
+          const me = user !== undefined ? user : await getCurrentUser();
+          if (!me) return;                        // 游客 → 不显示
+
+          // ① 先用缓存立即画出（未登录时不会走到这里）
+          const cached = readMissionsCache();
+          if (cached && cached.length) paintMissions(cached);
+
+          // ② 再取真实数据覆盖
+          const r = await myTasks('accepted');    // 只取未完成的
+          if (!r.ok) return;                      // 失败就保留缓存画面，不动
+
+          const tasks = r.tasks || [];
+          if (tasks.length) {
+            writeMissionsCache(tasks);
+            paintMissions(tasks);
+          } else {
+            // 已无未完成任务：清缓存并隐藏
+            try { localStorage.removeItem(MISSIONS_CACHE_KEY); } catch {}
+            section.hidden = true;
+            listEl.innerHTML = '';
+          }
+        })().finally(() => { missionsInFlight = null; });
+
+        return missionsInFlight;
       }
 
       function escapeHtml(s) {
@@ -1300,9 +1359,12 @@
       // ============================================================
       // 渲染项目
       // ============================================================
-      async function renderProjects() {
-        const role = await getUserRole();
-        const visible = getVisibleProjects(role);
+      async function renderProjects(role) {
+        // 传入 role 可省去 getUserRole() 内部的一次网络校验（getCurrentUser）。
+        // 首屏由 renderAll 用缓存角色先渲染一次，网络结果回来后再覆盖，
+        // 否则模块卡片要白等 1~2 秒才出现。
+        const r = role !== undefined ? role : await getUserRole();
+        const visible = getVisibleProjects(r);
         const mobile = isMobileScreen();
 
         if (visible.length === 0) {
@@ -1346,18 +1408,78 @@
       // ============================================================
       // 渲染全部（带超时兜底）
       // ============================================================
+      //
+      // ★ 三段内容必须同时开始，不能串行：
+      //   顶部导航栏、模块卡片、任务直达 —— 任何一段排在 await 之后，
+      //   都会让用户明显看到"导航栏先空着，过一会儿才补上"。
+      //   故这里只查一次登录会话，然后三件事并行；会话查询失败也不
+      //   影响其余两段（各自有兜底）。
       async function renderAll() {
+        // ── 第一步：用本地缓存立刻画出「导航栏 + 模块卡片 + 任务直达」 ──
+        // 这三块都只需要缓存里就有的信息，不必等网络。
+        // 之前它们都排在 getCurrentUser() 之后，导致首屏有 1~2 秒空白。
+        const cached = getCachedUser();
+        const cachedRole = cached ? (cached.user_metadata?.role || 'self') : 'guest';
+
+        renderTopUser(cached, {
+          role: cachedRole,
+          identity: cached ? identityFromUser(cached) : null,
+        }).catch(() => {});
+        renderProjects(cachedRole).catch(() => {});
+
+        // 任务直达：有缓存用户就立刻用缓存列表画出来，
+        // 否则等下面的网络结果（renderMissions 内部会再调一次，属幂等）
+        if (cached) {
+          const cachedTasks = readMissionsCache();
+          if (cachedTasks && cachedTasks.length) {
+            paintMissions(cachedTasks);
+          } else {
+            renderMissions(cached).catch(() => {});
+          }
+        }
+
+        // ── 第二步：并行取齐会话/角色/身份 ──
+        // 一次并行只花最长的那次往返，供最终校正使用。
+        let user = null, role = null, identity = null;
+        try {
+          [user, role, identity] = await Promise.all([
+            getCurrentUser(),
+            getUserRole().catch(() => null),
+            getUserIdentity().catch(() => null),
+          ]);
+        } catch { /* 会话查询失败按未登录处理 */ }
+
+        // ── 第三步：用校验后的真实身份覆盖，并刷新任务直达 ──
+        const ctx = { role, identity };
         try {
           await Promise.race([
-            Promise.all([renderTopUser(), renderProjects()]),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('数据加载超时')), 8000))
+            Promise.all([
+              renderTopUser(user, ctx),
+              renderProjects(role),
+              // 任务直达失败或超时都不影响首页其余部分
+              renderMissions(user).catch((e) => console.warn('任务直达渲染失败:', e)),
+            ]),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('数据加载超时')), 8000)),
           ]);
         } catch (err) {
           console.warn('renderAll 超时或失败:', err);
           // 不阻塞界面，已渲染的部分保留
         }
-        // 任务直达单独跑：失败或超时都不影响首页其余部分
-        renderMissions().catch((e) => console.warn('任务直达渲染失败:', e));
+      }
+
+      /** 从用户对象直接取身份信息（纯本地，零网络） */
+      function identityFromUser(user) {
+        const m = (user && user.user_metadata) || {};
+        return {
+          primaryId: m.primary_identity || null,
+          primaryLabel: m.primary_label || null,
+          gender: m.gender || null,
+          roleType: m.role_type || null,
+          nickname: m.nickname || (user.email || '').split('@')[0] || '访客',
+          role: m.role || 'self',
+          points: m.points ?? 0,
+          avatarUrl: m.avatar_url || null,
+        };
       }
 
       window.addEventListener('resize', () => renderProjects());

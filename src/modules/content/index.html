@@ -22,12 +22,17 @@
       </header>
 
       <!-- 类型筛选 -->
+      <!--
+        说明：这里只列「可接取」的三种内容类型。
+        「任务反馈」不作为独立入口 —— 它由「首页任务直达」或「我的 → 接取的任务」
+        发起，而不是在内容区浏览。若日后需要放开，加回下面这行即可：
+          <button class="fbtn" data-type="note">✍️ 任务反馈</button>
+      -->
       <nav class="filters" id="typeFilters">
         <button class="fbtn active" data-type="all">全部</button>
         <button class="fbtn" data-type="task">⛓️ 玩法任务</button>
         <button class="fbtn" data-type="collection">🗂️ 主题合集</button>
         <button class="fbtn" data-type="checklist">📊 分级清单</button>
-        <button class="fbtn" data-type="note">✍️ 任务反馈</button>
       </nav>
 
       <!-- 工具条 -->
@@ -67,6 +72,8 @@
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { getUserRole } from '@/shared/js/identity.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
+      import { showToast } from '@/shared/js/ui-helpers.js';
+      import { acceptTask, myTasks, taskApiReady } from '@/shared/js/task-api.js';
 
       const grid = document.getElementById('grid');
       const stateBox = document.getElementById('stateBox');
@@ -82,7 +89,12 @@
         showHighRisk: false,
         hidePrivate: true,
         me: null,
+        /** 我已接取的任务：slug → 记录。用于卡片上直接显示接取状态与按钮 */
+        myTaskMap: new Map(),
       };
+
+      /** 可接取的内容类型（任务反馈是提交结果用的，不提供接取） */
+      const ACCEPTABLE_TYPES = ['task', 'collection', 'checklist'];
 
       // ─────────────────────────── 初始化
       async function init() {
@@ -91,6 +103,15 @@
           state.me = await getCurrentUser();
           const role = await getUserRole();
           if (state.me) document.getElementById('writeBtn').style.display = 'inline-block';
+
+          // 任务接取状态：与列表并行拉取，避免串行等待
+          if (state.me && taskApiReady()) {
+            try {
+              const r = await myTasks('all');
+              if (r.ok) (r.tasks || []).forEach((t) => state.myTaskMap.set(t.task_slug, t));
+            } catch { /* 拿不到就不显示接取按钮，不影响列表 */ }
+          }
+
           await loadList();
           renderTagBar();
           bindEvents();
@@ -136,6 +157,9 @@
       // ─────────────────────────── 渲染
       function visiblePosts() {
         return state.all.filter((p) => {
+          // 任务反馈不作为独立内容陈列：它由任务直达 / 我的页面发起提交，
+          // 属于某条任务的产出，而非可以浏览的内容。
+          if (p.type === 'note') return false;
           if (state.type !== 'all' && p.type !== state.type) return false;
           if (state.tags.length && !state.tags.every((t) => p.tags.includes(t))) return false;
           if (state.hidePrivate && p.visibility === 'private') return false;
@@ -160,7 +184,71 @@
           return;
         }
         showState(null);
-        grid.innerHTML = list.map(renderCard).join('');
+        // 卡片渲染后追加接取按钮（用户已登录且后端可用时）
+        grid.innerHTML = list.map((p) => withAcceptButton(renderCard(p), p)).join('');
+      }
+
+      /**
+       * 在卡片里插入接取按钮
+       *
+       * 为什么放在描述行右侧而不是卡片底部：
+       *   卡片整体是一个 <a>，按钮必须是它的兄弟层上的可点区域，
+       *   否则点击会连带跳转到详情页。用绝对定位覆盖在右上角，
+       *   并在点击处理里 stopPropagation + preventDefault。
+       */
+      function withAcceptButton(cardHtml, post) {
+        if (!state.me || !taskApiReady()) return cardHtml;
+        if (!ACCEPTABLE_TYPES.includes(post.type)) return cardHtml;
+
+        const mine = state.myTaskMap.get(post.slug);
+        let label, cls, action;
+        if (!mine) { label = '接取'; cls = 'is-idle'; action = 'accept'; }
+        else if (mine.status === 'submitted') { label = '已提交'; cls = 'is-done'; action = 'none'; }
+        else { label = '提交反馈'; cls = 'is-doing'; action = 'submit'; }
+
+        const btn = `<button type="button" class="card-accept ${cls}"
+            data-action="${action}" data-slug="${esc(post.slug)}"
+            data-title="${esc(post.title)}" data-type="${esc(post.type)}"
+            ${action === 'none' ? 'disabled' : ''}>${label}</button>`;
+
+        // 插到 </a> 之前，靠 CSS 绝对定位钉在卡片右上角
+        return cardHtml.replace(/<\/a>\s*$/, btn + '</a>');
+      }
+
+      /** 卡片上的接取 / 提交按钮（事件委托，避免逐个绑定） */
+      async function onCardAction(e) {
+        const btn = e.target.closest('.card-accept');
+        if (!btn) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const action = btn.dataset.action;
+        const slug = btn.dataset.slug;
+
+        // 已接取 → 去发布反馈
+        if (action === 'submit') {
+          location.href = `/modules/content/post-editor.html?type=note&task=${encodeURIComponent(slug)}`;
+          return;
+        }
+        if (action !== 'accept') return;
+
+        const old = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '接取中…';
+
+        const res = await acceptTask({ slug, title: btn.dataset.title, type: btn.dataset.type });
+        if (res.ok) {
+          state.myTaskMap.set(slug, res.task || { task_slug: slug, status: 'accepted' });
+          btn.className = 'card-accept is-doing';
+          btn.dataset.action = 'submit';
+          btn.textContent = '提交反馈';
+          btn.disabled = false;
+          showToast(res.already ? '你之前已接取过这个任务' : '已接取，可在「我的」查看进度');
+        } else {
+          showToast('接取失败：' + res.error, 'error');
+          btn.textContent = old;
+          btn.disabled = false;
+        }
       }
 
       function showState(ico, t1, t2) {
@@ -202,6 +290,9 @@
             render();
           });
         });
+
+        // 卡片上的接取 / 提交按钮（委托到 grid，卡片重渲染后依然有效）
+        grid.addEventListener('click', onCardAction);
 
         let t = null;
         searchInput.addEventListener('input', (e) => {

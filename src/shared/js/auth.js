@@ -83,6 +83,61 @@ export async function setSession(session) {
     }
 }
 
+// ===== R-01：从本地缓存同步读取用户（不做网络校验） =====
+/**
+ * 同步读取缓存的用户，用于首屏立即渲染。
+ *
+ * 为什么需要它：getCurrentUser() 每次都会向 Supabase 校验一次 token，
+ * 首屏要等这次网络往返才能画出导航栏，用户会看到明显的空档。
+ *
+ * ★ 读两个来源（实测得出，缺一不可）：
+ *   ① Supabase 自己的 <sb-xxx-auth-token>：supabase.auth.setSession() 写入的，
+ *      登录后**立刻**就有。只读 foxsir_session 会导致刚登录时首屏
+ *      闪一下「未登录」—— 因为下面那个 key 要等 getCurrentUser() 才补写。
+ *   ② foxsir_session：项目自己的镜像（auth.js setSession 写入），作兼容保留。
+ *
+ * ⚠️ 这里返回的是缓存内容，未经服务端校验：
+ *    · 只用于「先画出来」，随后应用 getCurrentUser() 的结果覆盖
+ *    · token 已过期时返回 null，避免拿过期身份渲染
+ *    · 需要可信身份的操作（写数据、鉴权判断）一律仍走 getCurrentUser()
+ *
+ * @returns {object|null}
+ */
+export function getCachedUser() {
+    // ① Supabase 自己的存储
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key || !/^sb-.*-auth-token$/.test(key)) continue;
+
+            const parsed = JSON.parse(localStorage.getItem(key) || 'null');
+            // 直接是 session，或包在 currentSession 里
+            const session = parsed?.currentSession || parsed;
+            if (!session?.user) continue;
+
+            const exp = session.expires_at;
+            if (exp && Date.now() / 1000 >= exp) return null;   // 已过期，交给 getCurrentUser 刷新
+
+            return session.user;
+        }
+    } catch { /* 继续尝试下一个来源 */ }
+
+    // ② 项目自己的镜像
+    try {
+        const raw = localStorage.getItem('foxsir_session');
+        if (!raw) return null;
+        const session = JSON.parse(raw);
+        if (!session?.user) return null;
+
+        const exp = session.expires_at;
+        if (exp && Date.now() / 1000 >= exp) return null;
+
+        return session.user;
+    } catch {
+        return null;
+    }
+}
+
 // ===== R-01：获取当前用户（优先本地缓存，但需验证有效性） =====
 export async function getCurrentUser() {
     // 1. 先从 localStorage 读取会话
@@ -125,16 +180,19 @@ export async function getCurrentUser() {
 }
 
 // ===== R-02 + R-05：获取用户身份元数据（含头像） =====
-export async function getUserIdentity() {
-    const user = await getCurrentUser();
-    if (!user) return null;
-    const meta = user.user_metadata || {};
+/**
+ * @param {object} [user] 已取得的用户对象；传入可省去一次网络校验
+ */
+export async function getUserIdentity(user) {
+    const u = user !== undefined ? user : await getCurrentUser();
+    if (!u) return null;
+    const meta = u.user_metadata || {};
     return {
         primaryId: meta.primary_identity || null,
         primaryLabel: meta.primary_label || null,
         gender: meta.gender || null,
         roleType: meta.role_type || null,
-        nickname: meta.nickname || user.email?.split('@')[0] || '访客',
+        nickname: meta.nickname || u.email?.split('@')[0] || '访客',
         role: meta.role || 'self',
         points: meta.points ?? 0,
         avatarUrl: meta.avatar_url || null,

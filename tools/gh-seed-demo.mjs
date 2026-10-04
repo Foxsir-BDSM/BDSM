@@ -229,20 +229,38 @@ ITEMS.push({
 });
 
 // ══════════════════════════════════════════ 执行
+if (process.argv.includes('--list')) {
+  console.log('════════ content/posts 内容清单 ════════\n');
+  const list = await api(`/repos/${OWNER}/${REPO}/contents/${DIR}?ref=${BRANCH}`);
+  if (!list.ok) { console.log('  （目录不存在）'); process.exit(0); }
+  const mds = list.j.filter((f) => f.name.endsWith('.md'));
+  console.log(`  共 ${mds.length} 个文件\n`);
+  for (const f of mds) {
+    const isDemo = f.name.startsWith(PREFIX) || /^示例/.test(f.name);
+    console.log(`  ${isDemo ? '[测试]' : '      '} ${f.name}`);
+  }
+  console.log('');
+  process.exit(0);
+}
+
 if (process.argv.includes('--remove')) {
   console.log('════════ 删除演示内容 ════════\n');
   const list = await api(`/repos/${OWNER}/${REPO}/contents/${DIR}?ref=${BRANCH}`);
   if (!list.ok) { console.log('  ✓ 目录不存在，无需删除'); process.exit(0); }
-  const targets = list.j.filter((f) => f.name.startsWith(PREFIX));
+  // 一并清掉测试时发布的反馈文件（标题以「示例」开头）
+  const targets = list.j.filter((f) => f.name.startsWith(PREFIX) || /^示例/.test(f.name));
+  console.log(`  待删除 ${targets.length} 个文件\n`);
   let n = 0;
   for (const f of targets) {
     const r = await api(`/repos/${OWNER}/${REPO}/contents/${DIR}/${encodeURIComponent(f.name)}`, 'DELETE', {
-      message: `chore: 删除演示内容 ${f.name}`, sha: f.sha, branch: BRANCH,
+      message: `chore: 删除演示/测试内容 ${f.name}`, sha: f.sha, branch: BRANCH,
     });
-    console.log(r.ok ? `  ✓ ${f.name}` : `  ✗ ${f.name}`);
+    console.log(r.ok ? `  ✓ ${f.name}` : `  ✗ ${f.name}  ${r.raw.slice(0, 90)}`);
     if (r.ok) n++;
   }
-  console.log(`\n  已删除 ${n} / ${targets.length} 篇`);
+  const after = await api(`/repos/${OWNER}/${REPO}/contents/${DIR}?ref=${BRANCH}`);
+  const left = after.ok ? after.j.filter((x) => x.name.endsWith('.md')).length : '?';
+  console.log(`\n  已删除 ${n} / ${targets.length} 篇，剩余 ${left} 篇`);
   process.exit(0);
 }
 

@@ -14,10 +14,15 @@ export async function getCurrentUser() {
   return data.user;
 }
 
-export async function getUserRole() {
-  const user = await getCurrentUser();
-  if (!user) return 'guest';
-  return user.user_metadata?.role || 'guest';
+/**
+ * 取用户角色
+ * @param {object} [user] 已取得的用户对象。传入可避免再次发起网络校验
+ *                        （首屏渲染时上层已查过一次，这里再查就白白多一次往返）
+ */
+export async function getUserRole(user) {
+  const u = user !== undefined ? user : await getCurrentUser();
+  if (!u) return 'guest';
+  return u.user_metadata?.role || 'guest';
 }
 
 // ★★★ 新增：获取用户昵称 ★★★

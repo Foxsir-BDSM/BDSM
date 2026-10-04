@@ -373,3 +373,35 @@ select.inp option { background: #1a1822; color: #fffffe; }
 }
 .pv-v ul { list-style: none; }
 .pv-v li { margin-bottom: 5px; line-height: 1.7; }
+
+/* ============================================================
+   关联任务（任务反馈专用）
+   ------------------------------------------------------------
+   用途：提交任务反馈时必须选定「这是哪条任务的反馈」。
+        提交成功后该任务会被标记为已提交，从待办中移除。
+   配套：js/editor.js 的 renderTaskLink()
+   ============================================================ */
+
+.task-link-empty {
+  padding: 4px 0 2px;
+}
+.task-link-empty p { margin: 0 0 6px; font-size: 13px; color: rgba(255, 255, 255, 0.62); }
+.task-link-empty p.dim { color: rgba(255, 255, 255, 0.32); font-size: 12px; }
+.task-link-empty a { color: #d4a574; text-decoration: none; }
+.task-link-empty a:hover { text-decoration: underline; }
+
+/* 发布结果里的附属说明 */
+.pub-sub {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+}
+.pub-sub.warn { color: #fbbf24; }
+
+/* 关联任务的下拉框略微强调，因为它是必选项 */
+#taskLinkBox .inp {
+  font-size: 13.5px;
+}
+#taskLinkBox .card-head .req { margin-left: 2px; }
