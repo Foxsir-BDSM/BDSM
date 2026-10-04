@@ -93,8 +93,40 @@ body {
 .guest-box .ico { font-size: 44px; opacity: 0.5; margin-bottom: 14px; }
 .guest-box p { color: rgba(255, 255, 255, 0.45); font-size: 14px; line-height: 1.8; margin-bottom: 22px; }
 
+/* ══════════ 板块选择（内容发布 / 任务反馈）══════════ */
+.mode-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+.mode-tab {
+  display: flex; align-items: flex-start; gap: 12px;
+  text-align: left; padding: 15px 17px; border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.55); cursor: pointer;
+  font-family: inherit; transition: all 0.25s ease;
+}
+.mode-tab:hover { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.85); }
+.mode-tab.on {
+  background: rgba(212, 165, 116, 0.1);
+  border-color: rgba(212, 165, 116, 0.35);
+  color: #f5d6a8;
+  box-shadow: 0 0 24px rgba(212, 165, 116, 0.07);
+}
+.mode-tab .mt-ico { font-size: 22px; line-height: 1.2; flex: none; }
+.mode-tab .mt-body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.mode-tab .mt-label { font-size: 14.5px; font-weight: 600; }
+.mode-tab .mt-desc { font-size: 11px; color: rgba(255, 255, 255, 0.3); line-height: 1.5; }
+.mode-tab.on .mt-desc { color: rgba(212, 165, 116, 0.65); }
+
+/* 任务反馈板块下类型固定，用一行说明代替类型选择 */
+.type-fixed {
+  padding: 13px 16px; border-radius: 12px;
+  background: rgba(212, 165, 116, 0.06);
+  border: 1px dashed rgba(212, 165, 116, 0.3);
+  font-size: 13px; color: rgba(245, 214, 168, 0.85);
+}
+
 /* ══════════ 类型选择 ══════════ */
-.type-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+/* 自适应列数：内容发布板块下只有 3 种类型，写死 4 列会留空 */
+.type-tabs { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
 .type-tab {
   text-align: left; padding: 14px 16px; border-radius: 14px;
   background: rgba(255, 255, 255, 0.02);

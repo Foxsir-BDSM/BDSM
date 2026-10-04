@@ -184,6 +184,21 @@ body {
 /* 有封面时按钮压在图上，加深底色保证可读 */
 .c-cover + .c-body .card-accept { background: rgba(14, 12, 10, 0.86); }
 
+/* ── 窄屏适配 ──
+   1) 没配封面的内容不再占 118px 空图（手机上占掉卡片近四成高度）
+   2) 接取按钮加大到易点按的尺寸（原先高度仅 30px） */
+@media (max-width: 620px) {
+  .c-cover { height: 132px; }
+  .c-cover-empty { height: 62px; font-size: 24px; }
+  .card-accept {
+    top: 9px; right: 9px;
+    padding: 9px 15px;
+    font-size: 12.5px;
+    min-height: 38px;
+    display: inline-flex; align-items: center;
+  }
+}
+
 .c-cover { height: 118px; background-size: cover; background-position: center; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
 .c-cover-empty {
   display: flex; align-items: center; justify-content: center;

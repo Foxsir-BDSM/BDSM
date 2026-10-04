@@ -52,11 +52,6 @@ function getTaskFromUrl() {
   } catch { return ''; }
 }
 
-/** 是否处于「提交任务反馈」上下文 */
-function isFeedbackContext() {
-  return state.typeId === FEEDBACK_TYPE || !!state.linkTaskSlug;
-}
-
 // ────────────────────────────────────────────── 工具
 const el = (id) => document.getElementById(id);
 const esc = (s) =>
@@ -227,9 +222,56 @@ function renderNestedItem(field, item, index, parentPath) {
 }
 
 // ────────────────────────────────────────────── 渲染主体
+/**
+ * 发布模式（两个板块，职责分离）
+ *
+ *   内容发布  —— 我创作一篇内容给别人看：玩法任务 / 主题合集 / 分级清单
+ *   任务反馈  —— 我提交某个已接取任务的完成情况，必须关联那一条任务
+ *
+ * 为什么分板块而不是并列四种类型：
+ *   前三种是「作品」，第四种是「对某条任务的回执」，性质不同。
+ *   并列会让人以为反馈也是一种可以随便发的内容，
+ *   从而漏掉关联任务，导致任务一直停在「进行中」。
+ */
+const MODES = {
+  content: { id: 'content', icon: '📝', label: '内容发布', desc: '创作玩法、合集或清单' },
+  feedback: { id: 'feedback', icon: '📮', label: '任务反馈', desc: '提交已接取任务的完成情况' },
+};
+/** 内容发布板块下可选的类型（不含任务反馈） */
+const CONTENT_TYPES = ['task', 'collection', 'checklist'];
+
+/** 由当前类型反推所属板块 */
+function currentMode() {
+  return state.typeId === FEEDBACK_TYPE ? 'feedback' : 'content';
+}
+
+function renderModeTabs() {
+  const box = el('modeTabs');
+  if (!box) return;
+  box.innerHTML = Object.values(MODES).map((m) => `
+    <button type="button" class="mode-tab${m.id === currentMode() ? ' on' : ''}" data-mode="${m.id}">
+      <span class="mt-ico">${m.icon}</span>
+      <span class="mt-body">
+        <span class="mt-label">${esc(m.label)}</span>
+        <span class="mt-desc">${esc(m.desc)}</span>
+      </span>
+    </button>`).join('');
+  box.querySelectorAll('.mode-tab').forEach((b) => {
+    b.addEventListener('click', () => switchMode(b.dataset.mode));
+  });
+}
+
 function renderTypeTabs() {
   const box = el('typeTabs');
-  box.innerHTML = POST_TYPES.map((t) => `
+  if (!box) return;
+
+  // 任务反馈板块：类型固定为 note，无需再选类型
+  if (currentMode() === 'feedback') {
+    box.innerHTML = `<div class="type-fixed">📮 这条反馈会以「任务反馈」发布，请指定它对应的任务</div>`;
+    return;
+  }
+
+  box.innerHTML = POST_TYPES.filter((t) => CONTENT_TYPES.includes(t.id)).map((t) => `
     <button type="button" class="type-tab${t.id === state.typeId ? ' on' : ''}" data-type="${t.id}">
       <span class="tt-ico">${t.icon}</span>
       <span class="tt-label">${esc(t.label)}</span>
@@ -238,6 +280,20 @@ function renderTypeTabs() {
   box.querySelectorAll('.type-tab').forEach((b) => {
     b.addEventListener('click', () => switchType(b.dataset.type));
   });
+}
+
+/** 切换板块；进入任务反馈板块时自动切类型为 note */
+function switchMode(mode) {
+  if (mode === currentMode()) return;
+  if (mode === 'feedback') {
+    switchType(FEEDBACK_TYPE);
+  } else {
+    // 从反馈切回内容：挑一个内容类型（默认玩法任务）
+    if (state.typeId === FEEDBACK_TYPE) switchType('task');
+  }
+  renderModeTabs();
+  renderTypeTabs();
+  renderTaskLink();
 }
 
 function renderMeta() {
@@ -404,17 +460,14 @@ function renderSections() {
 /**
  * 渲染「关联任务」选择框。
  *
- * 显示时机：类型为「任务反馈」，或从带 ?task= 的链接进入。
+ * 显示时机：处于「任务反馈」板块时。
  * 选项来源：我已接取且尚未提交的任务（已提交的不列，避免重复关联）。
- *
- * 为什么做成必选：不关联的话任务会永远停在「进行中」，
- * 用户会以为提交没成功 —— 这正是要解决的问题。
  */
 function renderTaskLink() {
   const box = el('taskLinkBox');
   if (!box) return;
 
-  if (!isFeedbackContext()) { box.style.display = 'none'; return; }
+  if (currentMode() !== 'feedback') { box.style.display = 'none'; return; }
   if (!taskApiReady()) { box.style.display = 'none'; return; }
 
   box.style.display = 'block';
@@ -634,9 +687,11 @@ function switchType(id) {
   if (hasContent && !confirm('切换类型会重置已填写的类型专属字段，确定继续？')) return;
   state.typeId = id;
   state.data = blankData(id);
-  // 切到 / 切走「任务反馈」会影响是否需要关联任务，故一并重渲染
-  if (typeof renderTaskLink === 'function') renderTaskLink();
-  renderTypeTabs(); renderSections(); renderSafety(); renderPreview();
+  // 切类型会影响所属板块（note 属于反馈板块），三处都要重渲染
+  renderModeTabs();
+  renderTypeTabs();
+  renderTaskLink();
+  renderSections(); renderSafety(); renderPreview();
   scheduleDraft();
 }
 
@@ -735,7 +790,7 @@ function validate() {
   // ── 任务反馈必须关联一条任务 ──
   // 为什么必选：不关联的话，「我的」里那条任务永远停在「进行中」，
   // 用户会以为没提交成功。关联后才能把任务置为已提交、从待办里消失。
-  if (state.typeId === FEEDBACK_TYPE || isFeedbackContext()) {
+  if (currentMode() === 'feedback') {
     if (!state.linkTaskSlug) {
       errs.push('请选择这条反馈对应的任务（未关联的任务会一直显示为「进行中」）');
     }
@@ -808,6 +863,7 @@ export async function initEditor() {
       state.availableTasks.unshift({ task_slug: state.linkTaskSlug, task_title: state.linkTaskSlug });
     }
 
+    renderModeTabs();
     renderTypeTabs();
     renderMeta();
     renderTaskLink();

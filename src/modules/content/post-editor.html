@@ -35,10 +35,19 @@
 
       <!-- 编辑器主体 -->
       <div id="editorArea" style="display: none">
-        <!-- 1) 选择类型 -->
+        <!-- 0) 选择板块（内容发布 / 任务反馈） -->
         <section class="card">
           <div class="card-head">
-            <span>① 选择发布类型</span>
+            <span>① 选择发布板块</span>
+            <span class="dim sm">两者用途不同，字段与校验也各不相同</span>
+          </div>
+          <div class="mode-tabs" id="modeTabs"></div>
+        </section>
+
+        <!-- 1) 选择类型（仅内容发布板块显示） -->
+        <section class="card">
+          <div class="card-head">
+            <span>② 选择内容类型</span>
             <span class="dim sm">不同类型用不同结构承载，切换会重置类型专属字段</span>
           </div>
           <div class="type-tabs" id="typeTabs"></div>
@@ -47,19 +56,19 @@
         <div class="editor-grid">
           <!-- 左：表单 -->
           <div class="col-form">
-            <!-- 2) 基础信息 -->
+            <!-- 2.2) 关联任务（任务反馈板块必选） -->
+            <div id="taskLinkBox" style="display: none"></div>
+
+            <!-- 3) 基础信息 -->
             <section class="card">
-              <div class="card-head"><span>② 基础信息</span></div>
+              <div class="card-head"><span>③ 基础信息</span></div>
               <div class="meta-box" id="metaBox"></div>
             </section>
 
-            <!-- 2.2) 关联任务（任务反馈必选） -->
-            <div id="taskLinkBox" style="display: none"></div>
-
-            <!-- 2.5) 安全字段（高/极高风险时出现） -->
+            <!-- 3.5) 安全字段（高/极高风险时出现） -->
             <div id="safetyBox" style="display: none"></div>
 
-            <!-- 3) 类型专属字段 -->
+            <!-- 4) 类型专属字段 -->
             <div id="sectionBox"></div>
           </div>
 
@@ -68,7 +77,7 @@
             <div class="preview-sticky">
               <div class="card">
                 <div class="card-head">
-                  <span>③ 实时预览</span>
+                  <span>⑤ 实时预览</span>
                   <span class="dim sm"><span id="pvLen">0</span> 字</span>
                 </div>
                 <div class="preview-box" id="previewBox"></div>

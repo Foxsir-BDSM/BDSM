@@ -62,7 +62,7 @@ const PAGES = [
   ['/modules/sub-archive/detail.html', ['detailContainer'], false],
   ['/modules/sub-archive/admin.html', ['管理后台'], false],
   ['/modules/content/index.html', ['欲炼之途'], false],
-  ['/modules/content/post-editor.html', ['发布内容', '选择发布类型'], false],
+  ['/modules/content/post-editor.html', ['发布内容', '选择发布板块'], false],
   ['/modules/content/post.html', ['缺少 slug'], false],
   // /modules/random/index.html 已随模块收敛移除，见 smoke.mjs 说明
   ['/404.html', ['404'], false],
