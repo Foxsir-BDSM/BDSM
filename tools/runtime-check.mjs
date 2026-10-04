@@ -50,7 +50,7 @@ if (!CHROME) {
 const PAGES = [
   ['/landing.html', ['欲界之门', '了解规则'], false],
   ['/about.html', ['欢迎来到', '权限速查表'], false],
-  ['/auth.html', ['进入欲界', '取向'], false],
+  ['/auth.html', ['进入欲界', '身份'], false],
   ['/index.html', ['SELECT YOUR PATH', '探索'], false],
   ['/profile.html', ['个人资料'], false],
   ['/my.html', ['我的'], false],

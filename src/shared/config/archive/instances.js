@@ -1,563 +1,75 @@
 // ============================================================
-// assets/config/archive/instances.js
-// 所有档案馆实例配置注册中心
+// src/shared/config/archive/instances.js
+// 档案馆 · 单一事实源（聚合层）
+// ------------------------------------------------------------
+// 档案馆的全部语义集中在这一处，首页 / 详情页 / 个人页面都从这里读。
+//
+// 本文件不再直接声明字段与 API，而是聚合下面两份「维护文件」：
+//
+//   api.js     总 API 配置（数据源 ID、API Key、表单入口、分页缓存）
+//   fields.js  字段维护文件（字段标签、详情板块、卡片映射、隐私规则、筛选字段）
+//
+// 维护流程不变：
+//   1) node tools/get_fields_diff.js   ← 对比远程字段与本地，输出 id:'名称' 差异
+//   2) 把差异粘贴回 fields.js
+//   3) 本文件自动生效，消费方无需改动
+//
+// 数据源：Zite（原 Fillout Tables）
+//   URL  https://app.zite.com/workspace/e7d18ead20743825/database/t4d3B3XvKL8/vvzaSN4ztoq
+//   表单 https://forms.fillout.com/t/tUpkJr8bb9us
+//
+// 变更记录（2026-10-04）：
+//   · 数据源从旧库 0019555500b60c58 / taRmZxGFzF5 迁到新库 e7d18ead20743825 / t4d3B3XvKL8
+//   · 表单入口从 sZm1g43KzHus 迁到 tUpkJr8bb9us
+//   · 字段从旧表 56 项替换为新表 56 项（含新增「身份」「封面展示」「是否公开×5」）
+//   · 隐私机制由「配对控制字段」简化为「独立公开开关」
+//   · 取向维度取消，筛选仅按身份
 // ============================================================
 
-// ============================================================
-// 实例 1：下位者档案馆（欲渊之庭）✅ 已完整配置
-// ============================================================
+import * as API from './api.js';
+import * as FIELDS from './fields.js';
+
+// ════════════════════════════════════════════════════════════
+// 统一档案库（原来的上下位分馆已合并，不再区分馆别）
+// ════════════════════════════════════════════════════════════
 export const SUB_ARCHIVE_CONFIG = {
   id: 'sub-archive',
-  name: '下位者档案馆',
+  name: '统一档案库',
 
-  // ============================================================
-  // 字段标签映射（FIELD_LABELS）
-  // 格式：'字段ID': '中文显示名'
-  // ============================================================
-  FIELD_LABELS: {
-    // ---- 基本信息 ----
-    fqidTsBW5js: '姓名',
-    fdPfeoZzfSM: '年龄',
-    ffcCmCH3kSE: '身高',
-    fgSKHPJhFhb: '体重',
-    fhYoXMy4jSp: '罩杯',
-    faAhwfMWp8W: '三围',
-    fsaqeVWs1cX: '职业&学历',
-    f2LQqpzRxcE: '常住地址',
-    fws6eaKNh29: '联系方式',
-    f99RpESRNBX: '颜值',
-    fb483ZvPoMH: '身材',
+  // ---- 来自 fields.js：字段维护文件 ----
+  FIELD_LABELS: FIELDS.FIELD_LABELS,
+  CARD_FIELDS: FIELDS.CARD_FIELDS,
+  SEARCH_FIELDS: FIELDS.SEARCH_FIELDS,
+  DETAIL_GROUPS: FIELDS.DETAIL_GROUPS,
+  SYSTEM_FIELD_IDS: FIELDS.SYSTEM_FIELD_IDS,
+  HOME_ONLY_FIELD_IDS: FIELDS.HOME_ONLY_FIELD_IDS,
+  EXTRA_EXCLUDED_FIELD_IDS: FIELDS.EXTRA_EXCLUDED_FIELD_IDS,
+  PRIVACY_RULES: FIELDS.PRIVACY_RULES,
+  PRIVACY_DEPENDENCIES: FIELDS.PRIVACY_DEPENDENCIES,
+  ROLE_FIELD_VISIBILITY: FIELDS.ROLE_FIELD_VISIBILITY,
+  FILTER_FIELDS: FIELDS.FILTER_FIELDS,
 
-    // ---- 生活照 ----
-    fpAFnqZh8XY: '生活照',
-    fvXfbzs1w7q: '照片2',
-    f2tp4pmcEer: '照片3',
-    feExminrRcK: '照片4',
+  // ---- 来自 api.js：总 API 配置 ----
+  BASE_ID: API.BASE_ID,
+  TABLE_ID: API.TABLE_ID,
+  VIEW_ID: API.VIEW_ID,
+  DATABASE_ID: API.BASE_ID,   // 兼容旧命名（api 层按此拼 URL）
+  API_KEY: API.API_KEY,
+  FORM_URL: API.FORM_URL,
+  DEFAULT_IMAGE: API.DEFAULT_IMAGE,
+  PAGE_SIZE: API.PAGE_SIZE,
+  CACHE_KEY: API.CACHE_KEY,
+  CACHE_TTL: API.CACHE_TTL,
 
-    // ---- 私密影像 ----
-    f5FpfrTPvQh: '乳',
-    fbbFbn2c9TV: '穴',
-    f9Jhy6F4jXh: '臀',
-    fjiCLYCpyeJ: '腿',
-    fk1ywquw4y5: '验证照',
-
-    // ---- 情感/关系 ----
-    fsD8T1Vb9xx: '当前情感状态',
-    f8vviVrV3YL: '当前子女情况',
-    fhAgx3yPgBW: '是否有主',
-    fc76hghn2cc: '是否寻找关系',
-    fe25wHSUz1s: '期望关系类型',
-    fdnp5xDJdty: '对另一半的要求',
-    fra1kdg5Eby: '都被什么人操过',
-
-    // ---- 性经验 ----
-    fv1fNHSpAW3: '第一次自慰年纪',
-    fx6wDgrKFwR: '自慰频率',
-    fbcpAQMviJU: '第一次口交年纪',
-    fpUDyXPVLiY: '第一次破处年纪',
-    frT28xE2Ers: '第一次肛交年纪',
-    ffgthuczFyn: '深喉最深',
-    fjptYmcfYNC: '淫穴最深',
-    f5Wk3u2aCfh: '菊穴最深',
-    f2CHgyFWPYw: '做爱频率',
-
-    // ---- 性爱好/经历 ----
-    f3nrrFztgvQ: '玩具',
-    ft5Ya9T9uEb: '玩具补充',
-    f2uXHj4eDb2: '最难忘的性爱',
-    fdfri1EJhKf: '最淫荡的经历',
-    fnV2QAxshjr: '最下贱的过去',
-
-    // ---- 开发进度 ----
-    faU5LW3tRNU: '身体开发进度',
-    fsnT6sCC3T8: '百人斩进度',
-    f4GnxxQ2Ggr: '是否多人',
-    f9nZe7gNevh: '最多几人同房',
-
-    // ---- 隐私确认（控制字段） ----
-    f1s9DJg4oLc: '常住地址（隐私确认）',
-    fgHLgfGRzy8: '联系方式（隐私确认）',
-    fgtX9QmBAM5: '生活照片（隐私确认）',
-    fwEcZvqiGvm: '隐私照片（隐私确认）',
-
-    // ---- 系统/表单控制 ----
-    f1i68ZWVLAD: '我已知悉',
-    fkw18M6UR5s: '继续填写',
-
-    // ---- 首页专用 ----
-    feVJMAAnX7s: '推荐指数',
-    fwK2mQMoxto: '认证',
-    fxwUAnrwpaT: 'ID',
-    fgerzjJpBTF: '公开问卷',
-    fmSgRAcdGsT: '认证',
-  },
-
-  // ============================================================
-  // 首页卡片字段映射（CARD_FIELDS）
-  // ============================================================
-  CARD_FIELDS: {
-    photo: 'fpAFnqZh8XY',
-    photoFallback: 'fvXfbzs1w7q',
-    name: 'fqidTsBW5js',
-    nameFallback: 'fqidTsBW5js',
-    age: 'fdPfeoZzfSM',
-    area: 'f2LQqpzRxcE',
-    height: 'ffcCmCH3kSE',
-    weight: 'fgSKHPJhFhb',
-    recommend: 'feVJMAAnX7s',
-    verified: 'fwK2mQMoxto',
-    // 筛选用（当前为占位，见 FILTER_FIELDS）
-    identity: null,
-    orientation: null,
-  },
-
-  // ============================================================
-  // ★★★ 筛选字段（FILTER_FIELDS）★★★
-  // 目的：按「身份 + 取向」做默认过滤。
-  //
-  // 统一档案库不再区分上下位或男女馆别：
-  //   · 档案的「身份」字段标明该条记录属于 男S/女S/男M/女M
-  //   · 列表页据访问者的「身份 + 取向」筛选出对应记录
-  //
-  // ⚠️ 当前为占位状态：两个字段 ID 尚未在 Fillout 表单中建立，
-  //    因此 filloutId 为 null。此时筛选逻辑走「无字段」降级路径：
-  //      · 身份筛选 → 不生效（含位置与性别两个维度）
-  //      · 取向筛选 → 不生效
-  //    列表页会明示「档案尚未填写身份字段」。
-  //    表单补齐后，把 filloutId 换成真实字段 ID 即生效，
-  //    并在 HOME_ONLY_FIELD_IDS / DETAIL_GROUPS 中按需登记。
-  // ============================================================
-  FILTER_FIELDS: {
-    identity: {
-      filloutId: null,            // ← 待补：Fillout 字段 ID（男S/女S/男M/女M）
-      label: '身份',
-      options: ['男S', '女S', '男M', '女M'],
-      placeholder: true,
-    },
-    orientation: {
-      filloutId: null,            // ← 待补：Fillout 字段 ID（异性/同性/双性/未定）
-      label: '取向',
-      options: ['异性', '同性', '双性', '未定'],
-      placeholder: true,
-    },
-  },
-
-  // ============================================================
-  // 搜索匹配字段（SEARCH_FIELDS）
-  // ============================================================
-  SEARCH_FIELDS: ['fqidTsBW5js', 'fsaqeVWs1cX', 'f2LQqpzRxcE'],
-
-  // ============================================================
-  // 详情页分组配置（DETAIL_GROUPS）
-  // 分组 id 以 'photos_' 开头 → 自动触发媒体网格渲染
-  // ============================================================
-  DETAIL_GROUPS: [
-    {
-      id: 'basic',
-      title: '📋 基本信息',
-      fields: [
-        'fqidTsBW5js', // 姓名
-        'fdPfeoZzfSM', // 年龄
-        'ffcCmCH3kSE', // 身高
-        'fgSKHPJhFhb', // 体重
-        'fhYoXMy4jSp', // 罩杯
-        'faAhwfMWp8W', // 三围
-        'f99RpESRNBX', // 颜值
-        'fb483ZvPoMH', // 身材
-        'fsaqeVWs1cX', // 职业&学历
-        'f2LQqpzRxcE', // 常住地址 ★受隐私控制★
-        'fws6eaKNh29', // 联系方式 ★受隐私控制★
-        'fsD8T1Vb9xx', // 当前情感状态
-        'f8vviVrV3YL', // 当前子女情况
-        'fhAgx3yPgBW', // 是否有主
-        'fc76hghn2cc', // 是否寻找关系
-        'fe25wHSUz1s', // 期望关系类型
-        'fdnp5xDJdty', // 对另一半的要求
-      ],
-    },
-    {
-      id: 'photos_life', // ★ 'photos_' 开头 → 媒体网格渲染
-      title: '📸 生活写照',
-      fields: [
-        'fpAFnqZh8XY', // 生活照 ★受隐私控制★
-        'fvXfbzs1w7q', // 照片2 ★受隐私控制★
-        'f2tp4pmcEer', // 照片3 ★受隐私控制★
-        'feExminrRcK', // 照片4 ★受隐私控制★
-      ],
-    },
-    {
-      id: 'intimate',
-      title: '🔥 亲密经历',
-      fields: [
-        'fv1fNHSpAW3', // 第一次自慰年纪
-        'fx6wDgrKFwR', // 自慰频率
-        'faU5LW3tRNU', // 身体开发进度
-        'fsnT6sCC3T8', // 百人斩进度
-        'f4GnxxQ2Ggr', // 是否多人
-        'f9nZe7gNevh', // 最多几人同房
-        'fra1kdg5Eby', // 都被什么人操过
-        'fbcpAQMviJU', // 第一次口交年纪
-        'ffgthuczFyn', // 深喉最深
-        'fpUDyXPVLiY', // 第一次破处年纪
-        'fjptYmcfYNC', // 淫穴最深
-        'frT28xE2Ers', // 第一次肛交年纪
-        'f5Wk3u2aCfh', // 菊穴最深
-        'f2CHgyFWPYw', // 做爱频率
-        'f3nrrFztgvQ', // 玩具
-        'ft5Ya9T9uEb', // 玩具补充
-        'f2uXHj4eDb2', // 最难忘的性爱
-        'fdfri1EJhKf', // 最淫荡的经历
-        'fnV2QAxshjr', // 最下贱的过去
-      ],
-    },
-    {
-      id: 'photos_private', // ★ 'photos_' 开头 → 媒体网格渲染
-      title: '🔞 私密影像',
-      fields: [
-        'f5FpfrTPvQh', // 乳 ★受隐私控制★
-        'fbbFbn2c9TV', // 穴 ★受隐私控制★
-        'f9Jhy6F4jXh', // 臀 ★受隐私控制★
-        'fjiCLYCpyeJ', // 腿 ★受隐私控制★
-        'fk1ywquw4y5', // 验证照 ★受隐私控制★
-      ],
-    },
-  ],
-
-  // ---- 详情页字段顺序（由 DETAIL_GROUPS 自动生成） ----
+  // ---- 派生：详情页字段顺序（由 DETAIL_GROUPS 展平，保持向后兼容）----
   get DETAIL_FIELD_ORDER() {
-    return this.DETAIL_GROUPS.flatMap((group) => group.fields);
-  },
-
-  // ============================================================
-  // 系统字段（隐藏，不展示）
-  // ============================================================
-  SYSTEM_FIELD_IDS: {
-    f5ipjxwBNdD: 'Source',
-  },
-
-  // ============================================================
-  // 首页专用字段（详情页隐藏）
-  // ============================================================
-  HOME_ONLY_FIELD_IDS: [
-    'fgerzjJpBTF', // 公开问卷
-    'feVJMAAnX7s', // 推荐指数
-    'fwK2mQMoxto', // 认证
-    'fxwUAnrwpaT', // ID
-  ],
-
-  // ============================================================
-  // 额外排除字段（详情页不显示）
-  // ============================================================
-  EXTRA_EXCLUDED_FIELD_IDS: [
-    'f1i68ZWVLAD', // 我已知悉
-    'fkw18M6UR5s', // 继续填写
-  ],
-
-  // ============================================================
-  // ★★★ 隐私控制规则（PRIVACY_RULES） ★★★
-  // 控制字段为 true 时，显示对应的展示字段
-  // ============================================================
-  PRIVACY_RULES: [
-    {
-      controlId: 'f1s9DJg4oLc', // 常住地址（隐私确认）
-      displayIds: ['f2LQqpzRxcE'], // 常住地址
-    },
-    {
-      controlId: 'fgHLgfGRzy8', // 联系方式（隐私确认）
-      displayIds: ['fws6eaKNh29'], // 联系方式
-    },
-    {
-      controlId: 'fgtX9QmBAM5', // 生活照片（隐私确认）
-      displayIds: ['fpAFnqZh8XY', 'fvXfbzs1w7q', 'f2tp4pmcEer', 'feExminrRcK'],
-    },
-    {
-      controlId: 'fwEcZvqiGvm', // 隐私照片（隐私确认）
-      displayIds: ['f5FpfrTPvQh', 'fbbFbn2c9TV', 'f9Jhy6F4jXh', 'fjiCLYCpyeJ', 'fk1ywquw4y5'],
-    },
-  ],
-
-  // ============================================================
-  // ★★★ 隐私依赖映射（PRIVACY_DEPENDENCIES） ★★★
-  // 格式：'受控字段ID': '控制字段ID'
-  // 用于详情页快速过滤：控制字段为 false/undefined 时，受控字段隐藏
-  // ============================================================
-  PRIVACY_DEPENDENCIES: {
-    // ---- 常住地址（控制字段：f1s9DJg4oLc） ----
-    'f2LQqpzRxcE': 'f1s9DJg4oLc',
-
-    // ---- 联系方式（控制字段：fgHLgfGRzy8） ----
-    'fws6eaKNh29': 'fgHLgfGRzy8',
-
-    // ---- 生活照片（控制字段：fgtX9QmBAM5） ----
-    // 注意：控制字段本身也是展示字段，依赖指向自己
-    'fpAFnqZh8XY': 'fgtX9QmBAM5',
-    'fvXfbzs1w7q': 'fgtX9QmBAM5',
-    'f2tp4pmcEer': 'fgtX9QmBAM5',
-    'feExminrRcK': 'fgtX9QmBAM5',
-
-    // ---- 私密影像（控制字段：fwEcZvqiGvm） ----
-    // 注意：控制字段本身也是展示字段，依赖指向自己
-    'f5FpfrTPvQh': 'fwEcZvqiGvm',
-    'fbbFbn2c9TV': 'fwEcZvqiGvm',
-    'f9Jhy6F4jXh': 'fwEcZvqiGvm',
-    'fjiCLYCpyeJ': 'fwEcZvqiGvm',
-    'fk1ywquw4y5': 'fwEcZvqiGvm',
-  },
-
-  // ============================================================
-  // 角色字段可见性（ROLE_FIELD_VISIBILITY）
-  // 白名单机制：未列出的字段对该角色不可见
-  // ============================================================
-  ROLE_FIELD_VISIBILITY: {
-    // ---- 游客：仅可见基本信息（不含隐私字段） ----
-    guest: [
-      'fqidTsBW5js',
-      'fdPfeoZzfSM',
-      'ffcCmCH3kSE',
-      'fgSKHPJhFhb',
-      'fhYoXMy4jSp',
-      'faAhwfMWp8W',
-      'fsaqeVWs1cX',
-      'f99RpESRNBX',
-      'fb483ZvPoMH',
-      'fsD8T1Vb9xx',
-      'f8vviVrV3YL',
-      'fhAgx3yPgBW',
-      'fc76hghn2cc',
-      'fe25wHSUz1s',
-      'fdnp5xDJdty',
-      'fra1kdg5Eby',
-      'fv1fNHSpAW3',
-      'fx6wDgrKFwR',
-      'fbcpAQMviJU',
-      'fpUDyXPVLiY',
-      'frT28xE2Ers',
-      'ffgthuczFyn',
-      'fjptYmcfYNC',
-      'f5Wk3u2aCfh',
-      'f2CHgyFWPYw',
-      'f3nrrFztgvQ',
-      'ft5Ya9T9uEb',
-      'f2uXHj4eDb2',
-      'fdfri1EJhKf',
-      'fnV2QAxshjr',
-      'faU5LW3tRNU',
-      'fsnT6sCC3T8',
-      'f4GnxxQ2Ggr',
-      'f9nZe7gNevh',
-      'fpAFnqZh8XY',
-      'fvXfbzs1w7q',
-      'f2tp4pmcEer',
-      'feExminrRcK',
-    ],
-
-    // ---- 普通用户：比游客多常住地址 ----
-    self: [
-      'fqidTsBW5js',
-      'fdPfeoZzfSM',
-      'ffcCmCH3kSE',
-      'fgSKHPJhFhb',
-      'fhYoXMy4jSp',
-      'faAhwfMWp8W',
-      'fsaqeVWs1cX',
-      'f99RpESRNBX',
-      'fb483ZvPoMH',
-      'fsD8T1Vb9xx',
-      'f8vviVrV3YL',
-      'fhAgx3yPgBW',
-      'fc76hghn2cc',
-      'fe25wHSUz1s',
-      'fdnp5xDJdty',
-      'fra1kdg5Eby',
-      'fv1fNHSpAW3',
-      'fx6wDgrKFwR',
-      'fbcpAQMviJU',
-      'fpUDyXPVLiY',
-      'frT28xE2Ers',
-      'ffgthuczFyn',
-      'fjptYmcfYNC',
-      'f5Wk3u2aCfh',
-      'f2CHgyFWPYw',
-      'f3nrrFztgvQ',
-      'ft5Ya9T9uEb',
-      'f2uXHj4eDb2',
-      'fdfri1EJhKf',
-      'fnV2QAxshjr',
-      'faU5LW3tRNU',
-      'fsnT6sCC3T8',
-      'f4GnxxQ2Ggr',
-      'f9nZe7gNevh',
-      'fpAFnqZh8XY',
-      'fvXfbzs1w7q',
-      'f2tp4pmcEer',
-      'feExminrRcK',
-      'f2LQqpzRxcE', // 常住地址
-      'f5FpfrTPvQh',
-      'fbbFbn2c9TV',
-      'f9Jhy6F4jXh',
-      'fjiCLYCpyeJ',
-      'fk1ywquw4y5',
-    ],
-
-    // ---- 认证用户：比普通用户多联系方式 ----
-    verified: [
-      'fqidTsBW5js',
-      'fdPfeoZzfSM',
-      'ffcCmCH3kSE',
-      'fgSKHPJhFhb',
-      'fhYoXMy4jSp',
-      'faAhwfMWp8W',
-      'fsaqeVWs1cX',
-      'f99RpESRNBX',
-      'fb483ZvPoMH',
-      'fsD8T1Vb9xx',
-      'f8vviVrV3YL',
-      'fhAgx3yPgBW',
-      'fc76hghn2cc',
-      'fe25wHSUz1s',
-      'fdnp5xDJdty',
-      'fra1kdg5Eby',
-      'fv1fNHSpAW3',
-      'fx6wDgrKFwR',
-      'fbcpAQMviJU',
-      'fpUDyXPVLiY',
-      'frT28xE2Ers',
-      'ffgthuczFyn',
-      'fjptYmcfYNC',
-      'f5Wk3u2aCfh',
-      'f2CHgyFWPYw',
-      'f3nrrFztgvQ',
-      'ft5Ya9T9uEb',
-      'f2uXHj4eDb2',
-      'fdfri1EJhKf',
-      'fnV2QAxshjr',
-      'faU5LW3tRNU',
-      'fsnT6sCC3T8',
-      'f4GnxxQ2Ggr',
-      'f9nZe7gNevh',
-      'fpAFnqZh8XY',
-      'fvXfbzs1w7q',
-      'f2tp4pmcEer',
-      'feExminrRcK',
-      'f2LQqpzRxcE',
-      'f5FpfrTPvQh',
-      'fbbFbn2c9TV',
-      'f9Jhy6F4jXh',
-      'fjiCLYCpyeJ',
-      'fk1ywquw4y5',
-      'fws6eaKNh29', // 联系方式
-    ],
-
-    // ---- 次级管理：与认证用户相同 ----
-    subadmin: [
-      'fqidTsBW5js',
-      'fdPfeoZzfSM',
-      'ffcCmCH3kSE',
-      'fgSKHPJhFhb',
-      'fhYoXMy4jSp',
-      'faAhwfMWp8W',
-      'fsaqeVWs1cX',
-      'f99RpESRNBX',
-      'fb483ZvPoMH',
-      'fsD8T1Vb9xx',
-      'f8vviVrV3YL',
-      'fhAgx3yPgBW',
-      'fc76hghn2cc',
-      'fe25wHSUz1s',
-      'fdnp5xDJdty',
-      'fra1kdg5Eby',
-      'fv1fNHSpAW3',
-      'fx6wDgrKFwR',
-      'fbcpAQMviJU',
-      'fpUDyXPVLiY',
-      'frT28xE2Ers',
-      'ffgthuczFyn',
-      'fjptYmcfYNC',
-      'f5Wk3u2aCfh',
-      'f2CHgyFWPYw',
-      'f3nrrFztgvQ',
-      'ft5Ya9T9uEb',
-      'f2uXHj4eDb2',
-      'fdfri1EJhKf',
-      'fnV2QAxshjr',
-      'faU5LW3tRNU',
-      'fsnT6sCC3T8',
-      'f4GnxxQ2Ggr',
-      'f9nZe7gNevh',
-      'fpAFnqZh8XY',
-      'fvXfbzs1w7q',
-      'f2tp4pmcEer',
-      'feExminrRcK',
-      'f2LQqpzRxcE',
-      'f5FpfrTPvQh',
-      'fbbFbn2c9TV',
-      'f9Jhy6F4jXh',
-      'fjiCLYCpyeJ',
-      'fk1ywquw4y5',
-      'fws6eaKNh29',
-    ],
-
-    // ---- 根源管理：所有字段 ----
-    admin: [
-      'fqidTsBW5js',
-      'fdPfeoZzfSM',
-      'ffcCmCH3kSE',
-      'fgSKHPJhFhb',
-      'fhYoXMy4jSp',
-      'faAhwfMWp8W',
-      'fsaqeVWs1cX',
-      'f99RpESRNBX',
-      'fb483ZvPoMH',
-      'fsD8T1Vb9xx',
-      'f8vviVrV3YL',
-      'fhAgx3yPgBW',
-      'fc76hghn2cc',
-      'fe25wHSUz1s',
-      'fdnp5xDJdty',
-      'fra1kdg5Eby',
-      'fv1fNHSpAW3',
-      'fx6wDgrKFwR',
-      'fbcpAQMviJU',
-      'fpUDyXPVLiY',
-      'frT28xE2Ers',
-      'ffgthuczFyn',
-      'fjptYmcfYNC',
-      'f5Wk3u2aCfh',
-      'f2CHgyFWPYw',
-      'f3nrrFztgvQ',
-      'ft5Ya9T9uEb',
-      'f2uXHj4eDb2',
-      'fdfri1EJhKf',
-      'fnV2QAxshjr',
-      'faU5LW3tRNU',
-      'fsnT6sCC3T8',
-      'f4GnxxQ2Ggr',
-      'f9nZe7gNevh',
-      'fpAFnqZh8XY',
-      'fvXfbzs1w7q',
-      'f2tp4pmcEer',
-      'feExminrRcK',
-      'f2LQqpzRxcE',
-      'f5FpfrTPvQh',
-      'fbbFbn2c9TV',
-      'f9Jhy6F4jXh',
-      'fjiCLYCpyeJ',
-      'fk1ywquw4y5',
-      'fws6eaKNh29',
-    ],
+    return FIELDS.DETAIL_GROUPS.flatMap((g) => g.fields);
   },
 };
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 // 统一导出
-// ------------------------------------------------------------
-// 设计（2026-10-03 定稿）：上位者档案馆与下位者档案馆已合并为
-// 单一档案库，只保留一套字段配置。原本的 DOM_ARCHIVE_CONFIG
-// 是空占位（各项配置全为 0），已删除。
-//
-// 档案不再区分「馆别」；S 与 M 的区分由表单的「身份」字段承担，
-// 列表页据用户身份与取向筛选（见 FILTER_FIELDS）。
-// ============================================================
+// ════════════════════════════════════════════════════════════
 export const ARCHIVE_INSTANCES = {
   'sub-archive': SUB_ARCHIVE_CONFIG,
 };
@@ -565,3 +77,6 @@ export const ARCHIVE_INSTANCES = {
 export function getArchiveConfig(instanceId) {
   return ARCHIVE_INSTANCES[instanceId] || null;
 }
+
+// 便于需要直接拿原始两份配置的场景
+export { API as ARCHIVE_API, FIELDS as ARCHIVE_FIELDS };

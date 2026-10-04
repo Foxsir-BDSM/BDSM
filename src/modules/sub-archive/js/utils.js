@@ -144,7 +144,7 @@ export function getCardInfo(record) {
 }
 
 // ============================================================
-// ★★★ 档案归属与筛选（身份 / 取向）★★★
+// ★★★ 档案归属与筛选（按身份）★★★
 // ------------------------------------------------------------
 // 统一档案库不再区分馆别：每条记录的身份由表单的「身份」字段标明。
 //
@@ -172,32 +172,18 @@ function parseIdentityText(text) {
   return isTop ? `${gender}_S` : `${gender}_M`;
 }
 
-/** 从文本里宽松识别取向 */
-function parseOrientationText(text) {
-  const s = String(text || '').trim();
-  if (!s) return null;
-  if (/双|bi/i.test(s)) return 'bi';
-  if (/未定|不确定|unsure|\?/i.test(s)) return 'unsure';
-  if (/异性|hetero|直/i.test(s)) return 'hetero';
-  if (/同性|homo|同/i.test(s)) return 'homo';
-  return null;
-}
-
 /**
  * 解析一条记录的归属
- * @returns {{identity:string|null, orientation:string|null, source:string}}
+ * 说明：取向维度已取消（2026-10-04），归属仅看身份
+ * @returns {{identity:string|null, source:string}}
  *   source: 'form' 表示来自表单字段；'unknown' 表示字段缺失、无法判定
  */
 export function getRecordAffiliation(record) {
   const idField = FILTER_FIELDS?.identity?.filloutId;
-  const orField = FILTER_FIELDS?.orientation?.filloutId;
-
   const identity = idField ? parseIdentityText(getFieldValue(record, idField)) : null;
-  const orientation = orField ? parseOrientationText(getFieldValue(record, orField)) : null;
 
   return {
     identity,
-    orientation,
     source: identity ? 'form' : 'unknown',
   };
 }
@@ -222,7 +208,7 @@ export function hasRealIdentityData(records) {
 }
 
 /**
- * 按「访问者身份 + 取向」过滤记录
+ * 按「访问者身份」过滤记录
  *
  * 身份筛选（位置 + 性别）只在档案带真实身份字段时生效。
  * 字段未建时不按身份过滤，避免出现空白页；

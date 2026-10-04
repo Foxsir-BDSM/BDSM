@@ -1,12 +1,11 @@
 // ============================================================
 // src/shared/config/identity-config.js
-// 身份与取向定义 —— 4 身份 + 取向
+// 身份定义 —— 4 身份
 // ------------------------------------------------------------
-// 设计（2026-10-03 定稿）：
+// 设计（2026-10-04 定稿）：
 //   · 身份只有 4 种：男S / 女S / 男M / 女M
 //     旧分类（Dom / Z / Sub / B）已废弃，不再作为身份存在
-//   · 取向是独立维度：异性 / 同性 / 双性 / 未定
-//   · 档案筛选 = 用户身份（决定看哪一侧）+ 取向（决定看哪个性别）
+//   · 取向维度已取消，档案筛选仅按身份（决定看哪一侧）
 //
 // 旧用户兼容：
 //   已注册用户可能带着 male_Dom / female_Sub 等旧值，
@@ -29,16 +28,6 @@ export const POSITION_GROUPS = {
   top: IDENTITIES.filter((i) => i.type === 'top').map((i) => i.id),
   bottom: IDENTITIES.filter((i) => i.type === 'bottom').map((i) => i.id),
 };
-
-// ══════════════════════════════════════════════ 取向（4 种）
-export const ORIENTATIONS = [
-  { id: 'hetero', label: '异性', icon: '♂♀', desc: '偏好异性' },
-  { id: 'homo',   label: '同性', icon: '♂♂', desc: '偏好同性' },
-  { id: 'bi',     label: '双性', icon: '⚥',  desc: '两者皆可' },
-  { id: 'unsure', label: '未定', icon: '❔',  desc: '暂不确定' },
-];
-
-export const ORIENTATION_IDS = ORIENTATIONS.map((o) => o.id);
 
 // ══════════════════════════════════════════════ 旧身份归并表
 /**
@@ -87,14 +76,6 @@ export function getType(identityId) {
   return found ? found.type : null;
 }
 
-export function getOrientation(id) {
-  return ORIENTATIONS.find((o) => o.id === id) || ORIENTATIONS[3];
-}
-
-export function getOrientationLabel(id) {
-  return getOrientation(id).label;
-}
-
 /** 互补位置：S 看 M，M 看 S */
 export function getComplementPosition(identityId) {
   const t = getType(identityId);
@@ -115,15 +96,20 @@ export function getCoreIdentity(identityId) {
 
 // ══════════════════════════════════════════════ 档案筛选推导
 /**
- * 由「身份 + 取向」推导档案默认筛选条件
+ * 由「身份」推导档案默认筛选条件
  *
- * @param {string} identityId 用户身份（可为旧值，会自动归并）
- * @param {string} orientationId 取向
- * @returns {{position:string|null, gender:string|null, reason:string}}
- *   position  要看的位置（top/bottom）；null = 不过滤
- *   gender    要看的性别（male/female）；null = 不过滤
+ * 设计（2026-10-04 定稿）：取向维度已取消，筛选只按身份分流：
+ *   S 侧访问者（男S / 女S）→ 默认展示 M 侧档案
+ *   M 侧访问者（男M / 女M）→ 默认展示 S 侧档案
+ *
+ * 不再按性别收窄 —— 该维度随取向一并取消。
+ *
+ * @param {string} identityId 用户身份（旧值会自动归并）
+ * @returns {{position:string|null, gender:null, reason:string}}
+ *   position  要看的位置（top/bottom）；null = 不过滤（展示全部）
+ *   gender    恒为 null（保留字段以兼容调用方）
  */
-export function deriveArchiveFilter(identityId, orientationId) {
+export function deriveArchiveFilter(identityId) {
   const me = getIdentityById(identityId);
   const pos = getComplementPosition(identityId);
 
@@ -133,25 +119,10 @@ export function deriveArchiveFilter(identityId, orientationId) {
   }
 
   const posLabel = pos === 'bottom' ? 'M' : 'S';
-  const meLabel = me.label;
-
-  if (!orientationId || orientationId === 'unsure') {
-    return { position: pos, gender: null, reason: `${meLabel} → 展示 ${posLabel} 侧档案（取向未定，不限性别）` };
-  }
-  if (orientationId === 'bi') {
-    return { position: pos, gender: null, reason: `${meLabel} → 展示 ${posLabel} 侧档案（双性，不限性别）` };
-  }
-
-  // 异性 → 看相反性别；同性 → 看相同性别
-  const wantGender = orientationId === 'hetero'
-    ? (me.gender === 'male' ? 'female' : 'male')
-    : me.gender;
-
-  const gLabel = wantGender === 'male' ? '男' : '女';
   return {
     position: pos,
-    gender: wantGender,
-    reason: `${meLabel} · ${getOrientation(orientationId).label} → 默认展示 ${gLabel}${posLabel} 档案`,
+    gender: null,
+    reason: `${me.label} → 默认展示 ${posLabel} 侧档案`,
   };
 }
 

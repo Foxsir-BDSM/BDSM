@@ -1,18 +1,30 @@
 // ============================================================
 // src/modules/sub-archive/js/config.js
-// 从全局实例配置读取下位者档案馆配置
-// ============================================================
-
+// 档案馆模块配置适配层
+// ------------------------------------------------------------
+// 单一事实源在 src/shared/config/archive/：
+//   api.js        总 API 配置
+//   fields.js     字段维护文件
+//   instances.js  聚合（本文件从这里读取）
+//
 // 说明：这里用相对路径而非 `@/` 别名，以便本模块的纯逻辑代码
 // 能被 Node 直接导入做单元验证（见 tools/check-affiliation-filter.mjs）。
+// ============================================================
+
 import { SUB_ARCHIVE_CONFIG } from '../../../shared/config/archive/instances.js';
+import {
+  CONFIG as API_CONFIG,
+  PAGE_SIZE as API_PAGE_SIZE,
+  CACHE_KEY as API_CACHE_KEY,
+  CACHE_TTL as API_CACHE_TTL,
+} from '../../../shared/config/archive/api.js';
 import {
   isPrivacyApproved,
   isFieldVisibleForRole,
   isPrivacyApprovedForField,
 } from '../../../shared/config/archive/schema.js';
 
-// ---- 导出实例配置 ----
+// ---- 字段维护文件（来自 fields.js，经 instances 聚合）----
 export const FIELD_LABELS = SUB_ARCHIVE_CONFIG.FIELD_LABELS;
 export const CARD_FIELDS = SUB_ARCHIVE_CONFIG.CARD_FIELDS;
 export const SEARCH_FIELDS = SUB_ARCHIVE_CONFIG.SEARCH_FIELDS;
@@ -29,17 +41,12 @@ export const FILTER_FIELDS = SUB_ARCHIVE_CONFIG.FILTER_FIELDS;
 // ---- 导出辅助函数 ----
 export { isPrivacyApproved, isFieldVisibleForRole, isPrivacyApprovedForField };
 
-// ---- 实例级 API 配置（每个实例独立） ----
-export const CONFIG = {
-  DATABASE_ID: '0019555500b60c58',
-  TABLE_ID: 'taRmZxGFzF5',
-  API_KEY:
-    'sk_prod_RmLkIOzDydDVignk4sW3tsKKpYaZff4xGIEfgwGhFsrGvGEzte7hkAtAZKjvhypMWx8nPbPLpEEXbxPYwPy0CTj9qpsKOPFGVYx_80053',
-  FORM_URL: 'https://forms.fillout.com/t/sZm1g43KzHus',
-  DEFAULT_IMAGE:
-    'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400"%3E%3Crect width="300" height="400" fill="%23E5E7EB"/%3E%3Ctext x="50%25" y="50%25" font-family="sans-serif" font-size="20" fill="%23999" text-anchor="middle" dy=".3em"%3E暂无图片%3C/text%3E%3C/svg%3E',
-};
+// ---- 总 API 配置（来自 api.js）----
+// 数据源：Zite / Fillout Tables
+//   baseId  = e7d18ead20743825
+//   tableId = t4d3B3XvKL8
+export const CONFIG = API_CONFIG;
 
-export const PAGE_SIZE = 20;
-export const CACHE_KEY = 'foxsir_sub_archive_cache';
-export const CACHE_TTL = 5 * 60 * 1000;
+export const PAGE_SIZE = API_PAGE_SIZE;
+export const CACHE_KEY = API_CACHE_KEY;
+export const CACHE_TTL = API_CACHE_TTL;

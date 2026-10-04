@@ -6,8 +6,8 @@ import {
   hasRealIdentityData,
 } from './utils.js';
 import { getUserRole } from '@/shared/js/identity.js';
-import { getUserIdentity } from '@/shared/js/auth.js';
-import { deriveArchiveFilter, getOrientation } from '@/shared/config/identity-config.js';
+import { getUserIdentity, getCurrentUser } from '@/shared/js/auth.js';
+import { deriveArchiveFilter } from '@/shared/config/identity-config.js';
 
 const grid = document.getElementById('gridContainer');
 const searchInput = document.getElementById('searchInput');
@@ -92,7 +92,7 @@ function renderAllCards() {
     return;
   }
 
-  // ① 归属筛选（identity / orientation）
+  // ① 归属筛选（按身份）
   let displayRecords = filterRecordsByAffiliation(allRecords, {
     position: affFilter.position === 'all' ? null : affFilter.position,
     gender: affFilter.gender === 'all' ? null : affFilter.gender,
@@ -315,7 +315,7 @@ function setupScrollListener() {
 // ★★★ 归属筛选条 ★★★
 // ============================================================
 
-/** 依据「用户身份 + 取向」推导默认筛选 */
+/** 依据「用户身份」推导默认筛选（取向维度已取消） */
 async function applyDefaultFilter() {
   let identity = null;
   try {
@@ -324,11 +324,11 @@ async function applyDefaultFilter() {
     /* 未登录或读取失败 → 保持全部 */
   }
 
-  const d = deriveArchiveFilter(identity?.primaryId || null, identity?.orientationId || null);
+  const d = deriveArchiveFilter(identity?.primaryId || null);
 
   affFilter.position = d.position || 'all';
-  affFilter.gender = d.gender || 'all';
-  affFilter.isDefault = !!(d.position || d.gender);
+  affFilter.gender = 'all';   // 性别维度已取消，恒为全部
+  affFilter.isDefault = !!d.position;
   affFilter.reason = d.reason || '';
 }
 
@@ -355,12 +355,6 @@ function renderFilterBar() {
       <button class="fb-btn${active('position', 'all')}" data-dim="position" data-val="all">全部 <i>${c.total}</i></button>
       <button class="fb-btn${active('position', 'top')}" data-dim="position" data-val="top">S <i>${c.top}</i></button>
       <button class="fb-btn${active('position', 'bottom')}" data-dim="position" data-val="bottom">M <i>${c.bottom}</i></button>
-    </div>
-    <div class="fb-row">
-      <span class="fb-label">性别</span>
-      <button class="fb-btn${active('gender', 'all')}" data-dim="gender" data-val="all">全部</button>
-      <button class="fb-btn${active('gender', 'female')}" data-dim="gender" data-val="female">女 <i>${c.female}</i></button>
-      <button class="fb-btn${active('gender', 'male')}" data-dim="gender" data-val="male">男 <i>${c.male}</i></button>
     </div>
     <div class="fb-row fb-meta">
       ${affFilter.isDefault
@@ -404,7 +398,7 @@ async function init() {
     console.warn('获取角色失败，使用 guest');
   }
 
-  // 先按身份+取向推导默认筛选，再加载数据
+  // 先按身份推导默认筛选，再加载数据
   try {
     await applyDefaultFilter();
   } catch (e) {
@@ -430,11 +424,62 @@ async function init() {
 
   searchClear.addEventListener('click', clearSearch);
 
-  document.getElementById('btnFillForm').addEventListener('click', () => {
-    window.open(CONFIG.FORM_URL, '_blank');
-  });
+  document.getElementById('btnFillForm').addEventListener('click', openFillForm);
 
   setupScrollListener();
+}
+
+// ============================================================
+// ★ 档案表单入口（带账号参数，实现内容与用户绑定）
+// ------------------------------------------------------------
+// 机制：把登录用户的信息拼进 URL，表单侧用 URL parameters 预填
+//   参数名须与 Fillout 表单 Settings → URL parameters 中登记的一致：
+//     email / name / uid
+//
+// 为什么先开空窗口再跳转：
+//   window.open 必须由用户点击同步触发，否则会被浏览器拦截弹窗。
+//   而取邮箱是异步的，所以先同步开一个占位窗口，拿到数据后再改它的地址。
+// ============================================================
+async function buildFormUrl() {
+  const base = CONFIG.FORM_URL;
+  try {
+    const user = await getCurrentUser();
+    if (!user?.email) return base; // 未登录 → 原样打开，走后台补录兜底
+
+    const params = new URLSearchParams({
+      email: user.email,
+      name: user.user_metadata?.nickname || '',
+      uid: (user.id || '').slice(0, 8),
+    });
+    return `${base}?${params.toString()}`;
+  } catch (err) {
+    console.warn('[archive] 拼装表单 URL 失败，改为裸开:', err);
+    return base;
+  }
+}
+
+async function openFillForm() {
+  // ① 同步开占位窗口，避免被弹窗拦截
+  const win = window.open('', '_blank');
+  if (win) {
+    try {
+      win.document.write(
+        '<!doctype html><meta charset="utf-8">' +
+        '<title>正在准备表单…</title>' +
+        '<body style="font-family:system-ui,sans-serif;padding:48px;color:#475569">' +
+        '<p>正在准备表单…</p></body>'
+      );
+    } catch { /* 忽略：部分浏览器限制写入 */ }
+  }
+
+  // ② 取账号信息并跳转
+  const url = await buildFormUrl();
+  if (win) {
+    win.location.href = url;
+  } else {
+    // 占位窗口被拦（极少见）→ 退回直接跳转
+    window.open(url, '_blank');
+  }
 }
 
 window.clearArchiveCache = () => {

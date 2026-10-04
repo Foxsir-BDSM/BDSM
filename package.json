@@ -28,7 +28,9 @@
     "check:my": "node tools/check-my-page.mjs",
     "check:editor": "node tools/check-content-editor.mjs",
     "check:affil": "node --no-warnings tools/check-affiliation-filter.mjs",
-    "check:orient": "node tools/check-orientation-flow.mjs",
+    "check:archive": "node --no-warnings tools/check-archive-config.mjs",
+    "check:identity": "node tools/check-identity-flow.mjs",
+    "fields": "node tools/get_fields_diff.js",
 
     "flatten": "node tools/flatten-dist.mjs",
     "verify": "npm run check && npm run build && npm run smoke:dist",

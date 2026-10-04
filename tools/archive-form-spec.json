@@ -1,0 +1,3987 @@
+{
+ "_meta": {
+  "generatedAt": "2026-10-03T22:51:52",
+  "source": "E:\\超级问卷题库.csv",
+  "target": "https://app.zite.com/editor/nGXmc3thXsus/edit/uwj2",
+  "purpose": "Zite 表单构建规格：12 章 / 39 分组 / 172 字段 / 85 条条件",
+  "fieldCount": 172,
+  "chapterCount": 12,
+  "groupCount": 39,
+  "conditionalCount": 85
+ },
+ "identityGate": {
+  "fieldId": "Q-GATE-01",
+  "label": "你的身份是",
+  "options": [
+   "男S",
+   "女S",
+   "男M",
+   "女M"
+  ],
+  "why": "所有条件显示规则的引用源，必须第一个创建"
+ },
+ "typeMap": {
+  "单选": "single_select",
+  "单选（必答）": "single_select",
+  "多选": "multi_select",
+  "多选（限2）": "multi_select",
+  "多选（限3）": "multi_select",
+  "多选 / 量表": "multi_select",
+  "量表": "linear_scale",
+  "量表（兴趣程度）": "linear_scale",
+  "文本": "short_answer",
+  "文本（必答）": "short_answer",
+  "文本 / 长文本": "long_answer",
+  "长文本": "long_answer",
+  "长文本（必答）": "long_answer",
+  "文本 / 图片": "file_upload",
+  "图片上传": "file_upload",
+  "图片上传（多张）": "file_upload",
+  "数字": "number",
+  "数字（必答）": "number",
+  "日期": "date"
+ },
+ "condRules": {
+  "top": {
+   "label": "上下位 = S",
+   "expr": "Q-GATE-01 is any of 男S, 女S",
+   "zite": "Show if Q-GATE-01 is 男S OR 女S"
+  },
+  "bottom": {
+   "label": "上下位 = M",
+   "expr": "Q-GATE-01 is any of 男M, 女M",
+   "zite": "Show if Q-GATE-01 is 男M OR 女M"
+  },
+  "female": {
+   "label": "性别 = 女",
+   "expr": "Q-GATE-01 is any of 女S, 女M",
+   "zite": "Show if Q-GATE-01 is 女S OR 女M"
+  },
+  "male": {
+   "label": "性别 = 男",
+   "expr": "Q-GATE-01 is any of 男S, 男M",
+   "zite": "Show if Q-GATE-01 is 男S OR 男M"
+  }
+ },
+ "chapters": [
+  {
+   "no": 1,
+   "title": "一、身份门",
+   "desc": "本表四个身份共用。第 1 题决定后续所有题目的显隐，请如实选择。",
+   "kind": "universal",
+   "srcModule": "一、身份门",
+   "groups": [
+    {
+     "title": "身份确认",
+     "fieldCount": 2
+    }
+   ],
+   "fieldCount": 2
+  },
+  {
+   "no": 2,
+   "title": "二、基础信息",
+   "desc": "用于建立档案与联系。地址与联系方式受隐私开关控制，可在第 11 章选择是否公开。",
+   "kind": "universal",
+   "srcModule": "二、基础信息",
+   "groups": [
+    {
+     "title": "身份标识",
+     "fieldCount": 2
+    },
+    {
+     "title": "人口属性",
+     "fieldCount": 2
+    },
+    {
+     "title": "社会属性",
+     "fieldCount": 2
+    },
+    {
+     "title": "联系方式",
+     "fieldCount": 2
+    }
+   ],
+   "fieldCount": 8
+  },
+  {
+   "no": 3,
+   "title": "三、身体信息",
+   "desc": "部分字段仅对应性别显示；开发程度相关仅下位者显示。",
+   "kind": "universal",
+   "srcModule": "三、身体信息",
+   "groups": [
+    {
+     "title": "体型",
+     "fieldCount": 5
+    },
+    {
+     "title": "敏感与特征",
+     "fieldCount": 7
+    },
+    {
+     "title": "身体开发",
+     "fieldCount": 2
+    }
+   ],
+   "fieldCount": 14
+  },
+  {
+   "no": 4,
+   "title": "四、个人形象与状态",
+   "desc": "自我描述、情感状态、关系意向与圈层经历。",
+   "kind": "universal",
+   "srcModule": "四、个人形象与状态",
+   "groups": [
+    {
+     "title": "自我形象",
+     "fieldCount": 2
+    },
+    {
+     "title": "情感状态",
+     "fieldCount": 2
+    },
+    {
+     "title": "关系状态",
+     "fieldCount": 6
+    },
+    {
+     "title": "圈层经历",
+     "fieldCount": 4
+    }
+   ],
+   "fieldCount": 14
+  },
+  {
+   "no": 5,
+   "title": "五、上位者专项",
+   "desc": "⚠️ 本章仅「男S / 女S」可见，共 41 题；下位者可跳过本章。内容涵盖经历可验证性、能力边界、安全习惯、关系形态、隐私承诺与现实条件。",
+   "kind": "top",
+   "srcModule": "五、上位者专项",
+   "groups": [
+    {
+     "title": "圈层经历",
+     "fieldCount": 6
+    },
+    {
+     "title": "能力与风格",
+     "fieldCount": 8
+    },
+    {
+     "title": "安全习惯",
+     "fieldCount": 8
+    },
+    {
+     "title": "关系形态",
+     "fieldCount": 7
+    },
+    {
+     "title": "沟通方式",
+     "fieldCount": 3
+    },
+    {
+     "title": "隐私与影像",
+     "fieldCount": 5
+    },
+    {
+     "title": "现实条件",
+     "fieldCount": 4
+    }
+   ],
+   "fieldCount": 41
+  },
+  {
+   "no": 6,
+   "title": "六、性经历与偏好",
+   "desc": "经历回顾与偏好；部分字段仅下位者或对应性别显示。",
+   "kind": "universal",
+   "srcModule": "六、性经历与偏好",
+   "groups": [
+    {
+     "title": "初次经历",
+     "fieldCount": 4
+    },
+    {
+     "title": "经历统计",
+     "fieldCount": 3
+    },
+    {
+     "title": "多人场景",
+     "fieldCount": 1
+    },
+    {
+     "title": "难忘经历",
+     "fieldCount": 4
+    },
+    {
+     "title": "自慰",
+     "fieldCount": 4
+    },
+    {
+     "title": "性爱偏好",
+     "fieldCount": 5
+    },
+    {
+     "title": "生殖器相关",
+     "fieldCount": 5
+    }
+   ],
+   "fieldCount": 26
+  },
+  {
+   "no": 7,
+   "title": "七、露出与影像",
+   "desc": "露出倾向、影像意愿与素材提交。照片受隐私开关控制。",
+   "kind": "universal",
+   "srcModule": "七、露出与影像",
+   "groups": [
+    {
+     "title": "露出",
+     "fieldCount": 5
+    },
+    {
+     "title": "影像",
+     "fieldCount": 7
+    },
+    {
+     "title": "陌生人互动",
+     "fieldCount": 3
+    }
+   ],
+   "fieldCount": 15
+  },
+  {
+   "no": 8,
+   "title": "八、玩法偏好",
+   "desc": "逐项标注兴趣程度（1–5 分 / 未接触）。部分条目仅特定身份可见。",
+   "kind": "universal",
+   "srcModule": "九、兴趣体系 · 具体玩法条目",
+   "groups": [
+    {
+     "title": "女装 / 伪娘类",
+     "fieldCount": 8
+    },
+    {
+     "title": "舔舐类",
+     "fieldCount": 4
+    },
+    {
+     "title": "女性生殖器相关",
+     "fieldCount": 11
+    },
+    {
+     "title": "男性生殖器相关",
+     "fieldCount": 3
+    },
+    {
+     "title": "调教相关",
+     "fieldCount": 2
+    }
+   ],
+   "fieldCount": 28
+  },
+  {
+   "no": 9,
+   "title": "九、安全与边界",
+   "desc": "安全协议与红线声明。本章为必填核心，请如实填写。",
+   "kind": "universal",
+   "srcModule": "十、安全与边界",
+   "groups": [
+    {
+     "title": "安全协议",
+     "fieldCount": 5
+    },
+    {
+     "title": "边界",
+     "fieldCount": 3
+    }
+   ],
+   "fieldCount": 8
+  },
+  {
+   "no": 10,
+   "title": "十、对上位者的确认",
+   "desc": "⚠️ 本章仅「男M / 女M」可见，共 6 题。这是第 5 章「上位者专项」的镜像——一份入场前的自我确认清单。",
+   "kind": "bottom",
+   "srcModule": "十一、对上位者的确认",
+   "groups": [
+    {
+     "title": "对上位者的确认",
+     "fieldCount": 6
+    }
+   ],
+   "fieldCount": 6
+  },
+  {
+   "no": 11,
+   "title": "十一、隐私与公开",
+   "desc": "逐项选择哪些内容可以公开。未选择公开的字段在档案中显示为「未公开」。",
+   "kind": "universal",
+   "srcModule": "十二、隐私与公开",
+   "groups": [
+    {
+     "title": "公开设置",
+     "fieldCount": 8
+    }
+   ],
+   "fieldCount": 8
+  },
+  {
+   "no": 12,
+   "title": "十二、问卷体验",
+   "desc": "最后两个问题，帮助我们改进问卷。",
+   "kind": "universal",
+   "srcModule": "十三、问卷体验",
+   "groups": [
+    {
+     "title": "评价",
+     "fieldCount": 2
+    }
+   ],
+   "fieldCount": 2
+  }
+ ],
+ "fields": [
+  {
+   "seq": 1,
+   "id": "Q-GATE-01",
+   "chapterNo": 1,
+   "chapter": "一、身份门",
+   "group": "身份确认",
+   "label": "你的身份是",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "男S",
+    "女S",
+    "男M",
+    "女M"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示（问卷第 1 题）",
+   "condZite": null,
+   "note": "★ 关键题：四个身份共用一份问卷的总开关，决定后续所有性别/上下位题目的显隐",
+   "privacy": "公开"
+  },
+  {
+   "seq": 2,
+   "id": "Q-GATE-02",
+   "chapterNo": 1,
+   "chapter": "一、身份门",
+   "group": "身份确认",
+   "label": "你的取向是",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "异性",
+    "同性",
+    "双性",
+    "未定"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "决定档案库默认展示谁",
+   "privacy": "公开"
+  },
+  {
+   "seq": 3,
+   "id": "Q-B01",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "身份标识",
+   "label": "姓名",
+   "rawType": "文本（必答）",
+   "ziteType": "short_answer",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 档案匹配字段，请与平台昵称保持一致",
+   "privacy": "公开"
+  },
+  {
+   "seq": 4,
+   "id": "Q-B02",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "身份标识",
+   "label": "爱称 / 希望被怎么称呼",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 5,
+   "id": "Q-B05",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "人口属性",
+   "label": "年龄",
+   "rawType": "数字（必答）",
+   "ziteType": "number",
+   "required": true,
+   "options": [
+    "18–99"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 必须满 18 岁",
+   "privacy": "公开"
+  },
+  {
+   "seq": 6,
+   "id": "Q-B06",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "人口属性",
+   "label": "出生年月",
+   "rawType": "日期",
+   "ziteType": "date",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 7,
+   "id": "Q-B07",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "社会属性",
+   "label": "职业",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 8,
+   "id": "Q-B08",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "社会属性",
+   "label": "学历",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "初中及以下",
+    "高中",
+    "大专",
+    "本科",
+    "硕士及以上"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 9,
+   "id": "Q-B10",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "联系方式",
+   "label": "常住地址 / 所在区域",
+   "rawType": "文本（必答）",
+   "ziteType": "short_answer",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 受隐私开关控制，未同意公开则档案显示「未公开」",
+   "privacy": "隐私（可控制公开）"
+  },
+  {
+   "seq": 10,
+   "id": "Q-B11",
+   "chapterNo": 2,
+   "chapter": "二、基础信息",
+   "group": "联系方式",
+   "label": "联系方式",
+   "rawType": "文本（必答）",
+   "ziteType": "short_answer",
+   "required": true,
+   "options": [
+    "QQ",
+    "微信",
+    "TG",
+    "推特",
+    "Bluesky 号"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 受隐私开关控制",
+   "privacy": "隐私（可控制公开）"
+  },
+  {
+   "seq": 11,
+   "id": "Q-BD01",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "体型",
+   "label": "身高（cm）",
+   "rawType": "数字（必答）",
+   "ziteType": "number",
+   "required": true,
+   "options": [
+    "140–220"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 12,
+   "id": "Q-BD02",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "体型",
+   "label": "体重（kg）",
+   "rawType": "数字（必答）",
+   "ziteType": "number",
+   "required": true,
+   "options": [
+    "30–150"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 13,
+   "id": "Q-BD03",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "体型",
+   "label": "罩杯",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F 及以上"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "★ 女性专属：男S/男M 不显示此题",
+   "privacy": "公开"
+  },
+  {
+   "seq": 14,
+   "id": "Q-BD04",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "体型",
+   "label": "三围",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [
+    "胸围",
+    "腰围",
+    "臀围"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "★ 女性专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 15,
+   "id": "Q-BD05",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "体型",
+   "label": "脚码",
+   "rawType": "数字",
+   "ziteType": "number",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 16,
+   "id": "Q-BD06",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "身体哪些地方比较敏感",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "颈",
+    "耳",
+    "胸",
+    "腰",
+    "腿",
+    "足",
+    "其他"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 17,
+   "id": "Q-BD07",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "最喜欢的身体部位（最多 3 项）",
+   "rawType": "多选（限3）",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开",
+   "maxSelect": 3
+  },
+  {
+   "seq": 18,
+   "id": "Q-BD08",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "喜欢这三个部位的原因",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 19,
+   "id": "Q-BD09",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "身体部位记录：乳",
+   "rawType": "文本 / 图片",
+   "ziteType": "file_upload",
+   "required": false,
+   "options": [],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "",
+   "privacy": "私密影像",
+   "multiple": false
+  },
+  {
+   "seq": 20,
+   "id": "Q-BD10",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "身体部位记录：穴",
+   "rawType": "文本 / 图片",
+   "ziteType": "file_upload",
+   "required": false,
+   "options": [],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "",
+   "privacy": "私密影像",
+   "multiple": false
+  },
+  {
+   "seq": 21,
+   "id": "Q-BD11",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "身体部位记录：臀",
+   "rawType": "文本 / 图片",
+   "ziteType": "file_upload",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "私密影像",
+   "multiple": false
+  },
+  {
+   "seq": 22,
+   "id": "Q-BD12",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "敏感与特征",
+   "label": "身体部位记录：腿",
+   "rawType": "文本 / 图片",
+   "ziteType": "file_upload",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "私密影像",
+   "multiple": false
+  },
+  {
+   "seq": 23,
+   "id": "Q-BD13",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "身体开发",
+   "label": "目前身体开发程度",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "完全未开发",
+    "轻度",
+    "中度",
+    "深度"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属：S 侧无此题",
+   "privacy": "公开"
+  },
+  {
+   "seq": 24,
+   "id": "Q-BD14",
+   "chapterNo": 3,
+   "chapter": "三、身体信息",
+   "group": "身体开发",
+   "label": "身体开发进度（自述）",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 25,
+   "id": "Q-P05",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "自我形象",
+   "label": "日常表现和私下有什么不一样",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 26,
+   "id": "Q-P06",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "自我形象",
+   "label": "一句话形容自己",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 27,
+   "id": "Q-P07",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "情感状态",
+   "label": "当前情感状态",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "单身",
+    "恋爱中",
+    "已婚",
+    "离异",
+    "保密"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 28,
+   "id": "Q-P08",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "情感状态",
+   "label": "当前子女情况",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "无",
+    "有"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性相关；如认为男侧也需填写可放宽",
+   "privacy": "公开"
+  },
+  {
+   "seq": 29,
+   "id": "Q-REL01",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "是否有主 / 是否有奴",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "没有",
+    "有",
+    "不确定"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 题干随身份自动切换：M 显示「是否有主」，S 显示「是否有奴」",
+   "privacy": "公开"
+  },
+  {
+   "seq": 30,
+   "id": "Q-REL02",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "是否寻找关系",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否",
+    "随缘"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 31,
+   "id": "Q-REL03",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "期望关系类型",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "长期主奴",
+    "短期调教",
+    "网调",
+    "现实",
+    "情侣",
+    "主奴兼情侣"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 32,
+   "id": "Q-REL04",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "对另一半的要求",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 33,
+   "id": "Q-REL05",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "你希望网调还是线下",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "网调",
+    "线下",
+    "都可以"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 34,
+   "id": "Q-REL06",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "关系状态",
+   "label": "是否接受新手 / 零经验的对象",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "接受",
+    "不接受",
+    "看情况"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · S 侧视角",
+   "privacy": "公开"
+  },
+  {
+   "seq": 35,
+   "id": "Q-EXP01",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "圈层经历",
+   "label": "入圈时长",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "1 年以内",
+    "1–3 年",
+    "3–5 年",
+    "5 年以上"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 36,
+   "id": "Q-EXP02",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "圈层经历",
+   "label": "过往调教关系数量",
+   "rawType": "数字",
+   "ziteType": "number",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 37,
+   "id": "Q-EXP03",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "圈层经历",
+   "label": "最长调教时间",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "★ S 侧专属（源题库仅此 1 条，S 侧字段整体不足，见文末缺口清单）",
+   "privacy": "公开"
+  },
+  {
+   "seq": 38,
+   "id": "Q-EXP04",
+   "chapterNo": 4,
+   "chapter": "四、个人形象与状态",
+   "group": "圈层经历",
+   "label": "调教频率",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每天",
+    "每周数次",
+    "每周一次",
+    "不定期"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "★ S 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 39,
+   "id": "Q-EXP05",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "带过的下位者人数",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "0 人",
+    "1–2 人",
+    "3–5 人",
+    "6–10 人",
+    "10 人以上"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 可验证性：M 最关心 S 是否有真实带教经历",
+   "privacy": "公开"
+  },
+  {
+   "seq": 40,
+   "id": "Q-EXP06",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "最长的一段关系持续了多久",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "3 个月以内",
+    "半年",
+    "1 年",
+    "2 年",
+    "3 年以上"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 长期关系的维持能力",
+   "privacy": "公开"
+  },
+  {
+   "seq": 41,
+   "id": "Q-EXP07",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "是否有下位者愿意作为介绍人 / 背书",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "有，可提供",
+    "有，但需先沟通",
+    "没有"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 信任背书（M 视角重要）",
+   "privacy": "公开"
+  },
+  {
+   "seq": 42,
+   "id": "Q-EXP08",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "过往是否有过需要中止或就医的情况",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "没有",
+    "有，已妥善处理",
+    "不便说明"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 安全履历（如实填写，不追究过往）",
+   "privacy": "公开"
+  },
+  {
+   "seq": 43,
+   "id": "Q-EXP09",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "对上述情况的处理方式与复盘",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S 且 Q-EXP08 = 有",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 看 S 如何面对失误，比失误本身更重要",
+   "privacy": "公开"
+  },
+  {
+   "seq": 44,
+   "id": "Q-EXP10",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "圈层经历",
+   "label": "圈内活动参与频率",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "几乎不参加",
+    "偶尔",
+    "经常",
+    "组织者"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 圈层活跃度",
+   "privacy": "公开"
+  },
+  {
+   "seq": 45,
+   "id": "Q-CAP01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "你的主导风格是",
+   "rawType": "多选（限2）",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "严格规训型",
+    "温柔引导型",
+    "心理掌控型",
+    "仪式感型",
+    "玩法探索型",
+    "随性相处型"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · M 视角首要问题：风格是否合得来",
+   "privacy": "公开",
+   "maxSelect": 2
+  },
+  {
+   "seq": 46,
+   "id": "Q-CAP02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "最擅长的三件事",
+   "rawType": "多选（限3）",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "沟通与谈判",
+    "仪式设计",
+    "心理引导",
+    "感官控制",
+    "节奏掌控",
+    "事后护理",
+    "长期关系维护"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开",
+   "maxSelect": 3
+  },
+  {
+   "seq": 47,
+   "id": "Q-CAP03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "明确不擅长或不愿涉及的部分",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 坦白边界比罗列能力更能建立信任",
+   "privacy": "公开"
+  },
+  {
+   "seq": 48,
+   "id": "Q-CAP04",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "目前仍在学习或想提升的方向",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 是否有成长意愿",
+   "privacy": "公开"
+  },
+  {
+   "seq": 49,
+   "id": "Q-CAP05",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "在 26 个玩法大类中，你自评熟练的有哪些",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "对应模块七的 26 个大类"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 与模块七的兴趣矩阵交叉，形成「兴趣 × 能力」对照",
+   "privacy": "公开"
+  },
+  {
+   "seq": 50,
+   "id": "Q-CAP06",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "你通常如何制定一次完整的安排",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 看是否有计划性，仅描述流程不涉及操作细节",
+   "privacy": "公开"
+  },
+  {
+   "seq": 51,
+   "id": "Q-CAP07",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "面对下位者临时喊停，你的第一反应是",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "立即停止并确认状态",
+    "先安抚再询问原因",
+    "视情况判断",
+    "会先了解是否只是紧张"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★ 安全态度试金石，M 视角最关键的一题",
+   "privacy": "公开"
+  },
+  {
+   "seq": 52,
+   "id": "Q-CAP08",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "能力与风格",
+   "label": "你如何看待「下位者提出异议」",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 权力动态的健康度",
+   "privacy": "公开"
+  },
+  {
+   "seq": 53,
+   "id": "Q-SAF01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "事前沟通你通常会覆盖哪些内容",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "边界与红线",
+    "安全词",
+    "中止信号",
+    "身体状况",
+    "心理状态",
+    "期望与底线",
+    "事后护理方式",
+    "紧急联系人"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★ 覆盖越全，说明流程越成熟",
+   "privacy": "公开"
+  },
+  {
+   "seq": 54,
+   "id": "Q-SAF02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "是否要求事前确认安全词与中止信号",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每次都会",
+    "大多数时候",
+    "偶尔",
+    "不特意确认"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 55,
+   "id": "Q-SAF03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "是否禁止首次见面即执行高风险项目",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "禁止",
+    "视情况",
+    "不禁止"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 56,
+   "id": "Q-SAF04",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "事后护理你会做哪些",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "身体检查",
+    "补水保暖",
+    "情绪安抚",
+    "复盘反馈",
+    "陪伴至状态平稳",
+    "次日回访"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★ 后护理是很多 S 忽略、而 M 极其在意的一环",
+   "privacy": "公开"
+  },
+  {
+   "seq": 57,
+   "id": "Q-SAF05",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "是否接受下位者指定「绝对不碰」的区域",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "完全接受",
+    "基本接受",
+    "需协商"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 58,
+   "id": "Q-SAF06",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "是否愿意在必要时与下位者的紧急联系人取得联系",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "愿意",
+    "需先约定",
+    "不愿意"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 59,
+   "id": "Q-SAF07",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "紧急情况下的处理原则",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 仅原则声明，不含操作指导",
+   "privacy": "公开"
+  },
+  {
+   "seq": 60,
+   "id": "Q-SAF08",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "安全习惯",
+   "label": "是否了解并能识别常见的身体不适信号",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "系统学习过",
+    "大致了解",
+    "了解不多",
+    "依赖对方反馈"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 61,
+   "id": "Q-RELN01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "你希望的见面频率",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每天",
+    "每周 2–3 次",
+    "每周一次",
+    "每两周",
+    "不定期"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 62,
+   "id": "Q-RELN02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "是否要求关系排他",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "要求排他",
+    "不要求",
+    "需协商"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 63,
+   "id": "Q-RELN03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "是否接受下位者同时有现实伴侣",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "接受",
+    "需知情",
+    "不接受"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 64,
+   "id": "Q-RELN04",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "你希望关系如何结束",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "随时可提出，无需理由",
+    "需当面沟通",
+    "需约定冷静期"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★「如何退出」比「如何开始」更能反映关系的安全性",
+   "privacy": "公开"
+  },
+  {
+   "seq": 65,
+   "id": "Q-RELN05",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "日常联系的频率与时段期待",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 66,
+   "id": "Q-RELN06",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "是否接受下位者保留部分私人空间",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "完全接受",
+    "基本接受",
+    "希望尽量透明"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 67,
+   "id": "Q-RELN07",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "关系形态",
+   "label": "是否愿意定期做一次关系复盘",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每月",
+    "每季度",
+    "有问题时",
+    "不需要"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 68,
+   "id": "Q-COM01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "沟通方式",
+   "label": "你的指令风格偏向",
+   "rawType": "多选（限2）",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "简洁直接",
+    "循序渐进",
+    "引导式提问",
+    "情境式描述",
+    "严肃规训",
+    "轻松玩笑"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开",
+   "maxSelect": 2
+  },
+  {
+   "seq": 69,
+   "id": "Q-COM02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "沟通方式",
+   "label": "期望下位者如何反馈不适",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "直接说出口",
+    "用安全词",
+    "用手势或信号",
+    "事后再说",
+    "不希望打断"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 70,
+   "id": "Q-COM03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "沟通方式",
+   "label": "出现分歧时你倾向",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "当场暂停并沟通",
+    "事后单独谈",
+    "由我决定",
+    "视情况"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 71,
+   "id": "Q-PRV01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "隐私与影像",
+   "label": "拍摄的照片视频如何保存",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "仅本地加密",
+    "私密相册",
+    "云端加密",
+    "不做特殊处理"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★ M 最担心的一环",
+   "privacy": "公开"
+  },
+  {
+   "seq": 72,
+   "id": "Q-PRV02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "隐私与影像",
+   "label": "是否会公开或分享下位者的影像",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "绝不",
+    "打码后可能",
+    "需逐次征得同意",
+    "会分享"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · ★ 此项为信任底线",
+   "privacy": "公开"
+  },
+  {
+   "seq": 73,
+   "id": "Q-PRV03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "隐私与影像",
+   "label": "关系结束后是否归还或删除影像",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "全部删除",
+    "归还本人",
+    "保留",
+    "需协商"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 74,
+   "id": "Q-PRV04",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "隐私与影像",
+   "label": "是否会向他人透露下位者的真实身份信息",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "绝不",
+    "仅圈内化名",
+    "视情况"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 75,
+   "id": "Q-PRV05",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "隐私与影像",
+   "label": "哪些信息你承诺永不外泄",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "真实姓名",
+    "住址",
+    "工作单位",
+    "联系方式",
+    "影像素材",
+    "圈内身份关联"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 76,
+   "id": "Q-LIV01",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "现实条件",
+   "label": "所在城市与常驻区域",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 决定能否线下",
+   "privacy": "隐私（可控制公开）"
+  },
+  {
+   "seq": 77,
+   "id": "Q-LIV02",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "现实条件",
+   "label": "是否接受异地下位者",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "接受",
+    "仅接受可定期见面",
+    "不接受"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 78,
+   "id": "Q-LIV03",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "现实条件",
+   "label": "是否具备固定且私密的场地",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "有",
+    "没有",
+    "需另外安排"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建 · 场地是安全与隐私的前提",
+   "privacy": "公开"
+  },
+  {
+   "seq": 79,
+   "id": "Q-LIV04",
+   "chapterNo": 5,
+   "chapter": "五、上位者专项",
+   "group": "现实条件",
+   "label": "可投入的时间与精力",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "几乎全天可支配",
+    "每天固定时段",
+    "仅周末",
+    "不固定"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 80,
+   "id": "Q-E01",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "初次经历",
+   "label": "第一次自慰是什么时候",
+   "rawType": "文本 / 长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 81,
+   "id": "Q-E02",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "初次经历",
+   "label": "第一次做爱的时间与经过",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 82,
+   "id": "Q-E03",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "初次经历",
+   "label": "第一次破处年纪",
+   "rawType": "数字",
+   "ziteType": "number",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 83,
+   "id": "Q-E04",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "初次经历",
+   "label": "破处经历（时间地点关系）",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 84,
+   "id": "Q-E06",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "经历统计",
+   "label": "百人斩进度",
+   "rawType": "数字",
+   "ziteType": "number",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 85,
+   "id": "Q-E07",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "经历统计",
+   "label": "都被什么人发生过关系",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 86,
+   "id": "Q-E08",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "经历统计",
+   "label": "做爱频率",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每天",
+    "每周数次",
+    "每周一次",
+    "每月",
+    "不定期"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 87,
+   "id": "Q-E10",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "多人场景",
+   "label": "最多几人同房",
+   "rawType": "数字",
+   "ziteType": "number",
+   "required": false,
+   "options": [],
+   "condKey": "broken",
+   "condRaw": "Q-E09 = 是",
+   "condZite": "BROKEN: 依赖已删除的 Q-E09，条件永假",
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 88,
+   "id": "Q-E11",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "难忘经历",
+   "label": "最难忘的性爱",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 89,
+   "id": "Q-E12",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "难忘经历",
+   "label": "最刺激 / 难忘的经历",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 90,
+   "id": "Q-E13",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "难忘经历",
+   "label": "最淫荡的经历",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 91,
+   "id": "Q-E14",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "难忘经历",
+   "label": "最下贱的过去",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 92,
+   "id": "Q-E15",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "自慰",
+   "label": "最喜欢在什么情况下自慰",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 93,
+   "id": "Q-E16",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "自慰",
+   "label": "常用自慰方式",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 94,
+   "id": "Q-E17",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "自慰",
+   "label": "高潮时有什么表现",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 95,
+   "id": "Q-E18",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "自慰",
+   "label": "第一次高潮感受",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 96,
+   "id": "Q-E19",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "性爱偏好",
+   "label": "性爱的姿势偏好",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 97,
+   "id": "Q-E20",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "性爱偏好",
+   "label": "口交的喜好",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "喜欢",
+    "一般",
+    "不喜欢",
+    "未尝试"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "女性身份显示「被口 / 口交」，男性身份显示「口交」",
+   "privacy": "公开"
+  },
+  {
+   "seq": 98,
+   "id": "Q-E21",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "性爱偏好",
+   "label": "性爱时会发出什么样的声音",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 99,
+   "id": "Q-E22",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "性爱偏好",
+   "label": "做爱时你希望的穿着",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 100,
+   "id": "Q-E23",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "性爱偏好",
+   "label": "做爱时希望对方羞辱你的方式",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "★ M 侧专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 101,
+   "id": "Q-E24",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "生殖器相关",
+   "label": "对于阴茎的看法",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "男M/S 与女S/M 关注点不同，题干可随身份调整",
+   "privacy": "公开"
+  },
+  {
+   "seq": 102,
+   "id": "Q-E25",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "生殖器相关",
+   "label": "第一次看见阴茎是什么时候",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 103,
+   "id": "Q-E26",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "生殖器相关",
+   "label": "第一次看见阴茎的感受",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 104,
+   "id": "Q-E27",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "生殖器相关",
+   "label": "睾丸相关体验（挤压 / 击打）",
+   "rawType": "多选 / 量表",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "未尝试",
+    "能接受",
+    "喜欢",
+    "不接受"
+   ],
+   "condKey": "male",
+   "condRaw": "性别 = 男",
+   "condZite": "Show if Q-GATE-01 is 男S OR 男M",
+   "note": "★ 男性专属",
+   "privacy": "公开"
+  },
+  {
+   "seq": 105,
+   "id": "Q-E28",
+   "chapterNo": 6,
+   "chapter": "六、性经历与偏好",
+   "group": "生殖器相关",
+   "label": "阳具崇拜倾向",
+   "rawType": "量表",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "完全不",
+    "轻微",
+    "一般",
+    "强烈"
+   ],
+   "condKey": "male",
+   "condRaw": "性别 = 男",
+   "condZite": "Show if Q-GATE-01 is 男S OR 男M",
+   "note": "★ 男性专属",
+   "privacy": "公开",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 106,
+   "id": "Q-EX01",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "露出",
+   "label": "是否尝试过或幻想过露出",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "尝试过",
+    "幻想过",
+    "都没有"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 107,
+   "id": "Q-EX02",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "露出",
+   "label": "接受露出的最大尺度",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "不接受",
+    "私密空间",
+    "半公开",
+    "公开场合"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 108,
+   "id": "Q-EX03",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "露出",
+   "label": "幻想露出最刺激的玩法",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 109,
+   "id": "Q-EX04",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "露出",
+   "label": "是否拍摄过露出性感照片",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 110,
+   "id": "Q-EX05",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "露出",
+   "label": "是否希望在户外等场景尝试",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否",
+    "看情况"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 111,
+   "id": "Q-EX06",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "是否希望拍摄自己的照片或视频",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否",
+    "视内容而定"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 112,
+   "id": "Q-EX07",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "有拍摄全裸写真的意愿吗",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 113,
+   "id": "Q-EX08",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "能够接受最大尺度的拍摄内容",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "不外拍",
+    "半裸",
+    "全裸",
+    "露脸全裸"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 114,
+   "id": "Q-EX09",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "是否与陌生人分享过",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 115,
+   "id": "Q-EX10",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "生活照片",
+   "rawType": "图片上传（多张）",
+   "ziteType": "file_upload",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 受隐私开关控制",
+   "privacy": "生活照（可控制公开）",
+   "multiple": true
+  },
+  {
+   "seq": 116,
+   "id": "Q-EX11",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "隐私照片",
+   "rawType": "图片上传（多张）",
+   "ziteType": "file_upload",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 受隐私开关控制",
+   "privacy": "私密影像（受隐私开关控制）",
+   "multiple": true
+  },
+  {
+   "seq": 117,
+   "id": "Q-EX12",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "影像",
+   "label": "验证素材（与手写 @Foxsir 合照等）",
+   "rawType": "图片上传",
+   "ziteType": "file_upload",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 用于「本人填写」核验",
+   "privacy": "私密影像",
+   "multiple": false
+  },
+  {
+   "seq": 118,
+   "id": "Q-EX13",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "陌生人互动",
+   "label": "当陌生人跟你聊相关内容时，你的内心是",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "反感",
+    "无感",
+    "接受",
+    "享受"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 119,
+   "id": "Q-EX14",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "陌生人互动",
+   "label": "如果有人给你发私密照片，你的反应是",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "反感",
+    "无感",
+    "接受",
+    "享受"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 120,
+   "id": "Q-EX15",
+   "chapterNo": 7,
+   "chapter": "七、露出与影像",
+   "group": "陌生人互动",
+   "label": "如果被偷摸偷拍，你的反应是",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "报警",
+    "反感",
+    "无感",
+    "刺激"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 121,
+   "id": "Q-SP-241-01",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "普通女装",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 122,
+   "id": "Q-SP-241-02",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "性感女装",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 123,
+   "id": "Q-SP-241-03",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "女仆装",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 124,
+   "id": "Q-SP-241-04",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "女性内衣",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 125,
+   "id": "Q-SP-241-05",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "义乳",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 126,
+   "id": "Q-SP-241-06",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "假阴",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 127,
+   "id": "Q-SP-241-07",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "女装外出",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 128,
+   "id": "Q-SP-241-08",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女装 / 伪娘类",
+   "label": "暴露女装",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "跨性别恋物：男M 的伪娘/女装场景同样适用，故不按性别屏蔽",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 129,
+   "id": "Q-SP-217-01",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "舔舐类",
+   "label": "舔舐",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "M 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 130,
+   "id": "Q-SP-217-02",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "舔舐类",
+   "label": "舔精",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "M 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 131,
+   "id": "Q-SP-217-03",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "舔舐类",
+   "label": "舔阴",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "M 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 132,
+   "id": "Q-SP-217-04",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "舔舐类",
+   "label": "舔肛",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "M 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 133,
+   "id": "Q-SP-261-01",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "乳环",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 134,
+   "id": "Q-SP-261-02",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴环",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 135,
+   "id": "Q-SP-261-03",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴道内窥镜",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 136,
+   "id": "Q-SP-261-04",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "乳夹",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 137,
+   "id": "Q-SP-261-05",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "乳夹坠物",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 138,
+   "id": "Q-SP-261-06",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴唇坠物",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 139,
+   "id": "Q-SP-261-07",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴唇牵引",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 140,
+   "id": "Q-SP-261-08",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴唇挤压",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 141,
+   "id": "Q-SP-261-09",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "阴唇击打",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 142,
+   "id": "Q-SP-261-10",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "踩阴",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 143,
+   "id": "Q-SP-261-11",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "女性生殖器相关",
+   "label": "扩阴",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "female",
+   "condRaw": "性别 = 女",
+   "condZite": "Show if Q-GATE-01 is 女S OR 女M",
+   "note": "女性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 144,
+   "id": "Q-SP-029-01",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "男性生殖器相关",
+   "label": "睾丸挤压",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "male",
+   "condRaw": "性别 = 男",
+   "condZite": "Show if Q-GATE-01 is 男S OR 男M",
+   "note": "男性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 145,
+   "id": "Q-SP-029-02",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "男性生殖器相关",
+   "label": "睾丸击打",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "male",
+   "condRaw": "性别 = 男",
+   "condZite": "Show if Q-GATE-01 is 男S OR 男M",
+   "note": "男性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 146,
+   "id": "Q-SP-029-03",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "男性生殖器相关",
+   "label": "阳具崇拜",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "male",
+   "condRaw": "性别 = 男",
+   "condZite": "Show if Q-GATE-01 is 男S OR 男M",
+   "note": "男性专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 147,
+   "id": "Q-SP-624-01",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "调教相关",
+   "label": "外出调教",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "S 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 148,
+   "id": "Q-SP-624-02",
+   "chapterNo": 8,
+   "chapter": "八、玩法偏好",
+   "group": "调教相关",
+   "label": "伴侣被他人调教",
+   "rawType": "量表（兴趣程度）",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–5 分",
+    "未接触"
+   ],
+   "condKey": "top",
+   "condRaw": "上下位 = S",
+   "condZite": "Show if Q-GATE-01 is 男S OR 女S",
+   "note": "S 侧专属",
+   "privacy": "仅讨论，不含操作指导",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  },
+  {
+   "seq": 149,
+   "id": "Q-S01",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "安全协议",
+   "label": "你的安全词或安全信号",
+   "rawType": "文本（必答）",
+   "ziteType": "short_answer",
+   "required": true,
+   "options": [
+    "如 Red",
+    "Yellow",
+    "Green 或自定"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 四身份通用，必填",
+   "privacy": "公开"
+  },
+  {
+   "seq": 150,
+   "id": "Q-S02",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "安全协议",
+   "label": "中止条件（出现什么必须立刻停止）",
+   "rawType": "长文本（必答）",
+   "ziteType": "long_answer",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 151,
+   "id": "Q-S03",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "安全协议",
+   "label": "是否禁止独自执行高风险项目",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "禁止",
+    "不禁止"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 152,
+   "id": "Q-S04",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "安全协议",
+   "label": "紧急联系人或就近就医方式",
+   "rawType": "文本",
+   "ziteType": "short_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "隐私（可控制公开）"
+  },
+  {
+   "seq": 153,
+   "id": "Q-S05",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "安全协议",
+   "label": "事后护理需求",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "补水",
+    "保暖",
+    "按摩",
+    "安抚",
+    "复盘",
+    "独处"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 154,
+   "id": "Q-S06",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "边界",
+   "label": "绝对红线（任何情况下都不接受）",
+   "rawType": "长文本（必答）",
+   "ziteType": "long_answer",
+   "required": true,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 四身份通用，必填",
+   "privacy": "公开"
+  },
+  {
+   "seq": 155,
+   "id": "Q-S07",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "边界",
+   "label": "需要提前沟通的事项",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 156,
+   "id": "Q-S08",
+   "chapterNo": 9,
+   "chapter": "九、安全与边界",
+   "group": "边界",
+   "label": "心理与身体状况需说明的部分",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "受控（可不公开）"
+  },
+  {
+   "seq": 157,
+   "id": "Q-SM01",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "对方是否明确告知过安全词与中止信号",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "已明确告知",
+    "需要我主动问",
+    "没有"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建 · M 视角：入场前的第一道确认",
+   "privacy": "公开"
+  },
+  {
+   "seq": 158,
+   "id": "Q-SM02",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "我要求对方事前必答的问题",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "圈龄与带教经历",
+    "是否有介绍人",
+    "擅长与不擅长的项目",
+    "事后护理方式",
+    "影像保存方式",
+    "场地情况"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 159,
+   "id": "Q-SM03",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "我希望在什么阶段确认对方的安全习惯",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "首次沟通就确认",
+    "见面之前",
+    "见面当场",
+    "相处一段时间后"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 160,
+   "id": "Q-SM04",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "我是否会告知第三方我的行踪",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "每次都会",
+    "重要场合会",
+    "偶尔",
+    "不会"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建 · ★ 建议勾选「每次都会」",
+   "privacy": "公开"
+  },
+  {
+   "seq": 161,
+   "id": "Q-SM05",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "我需要的额外保障",
+   "rawType": "多选",
+   "ziteType": "multi_select",
+   "required": false,
+   "options": [
+    "公共场合首次见面",
+    "保留紧急联系人",
+    "约定安全回拨",
+    "不接受首次即私密场地",
+    "无额外要求"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 162,
+   "id": "Q-SM06",
+   "chapterNo": 10,
+   "chapter": "十、对上位者的确认",
+   "group": "对上位者的确认",
+   "label": "若对方拒绝提供上述信息，我会",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "终止接触",
+    "暂缓并继续观察",
+    "仍然接受"
+   ],
+   "condKey": "bottom",
+   "condRaw": "上下位 = M",
+   "condZite": "Show if Q-GATE-01 is 男M OR 女M",
+   "note": "🔲 本表新建",
+   "privacy": "公开"
+  },
+  {
+   "seq": 163,
+   "id": "Q-PV01",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "本表单内容你希望公开吗",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "公开",
+    "不公开"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 对应现有「公开问卷」字段，控制档案是否进入列表",
+   "privacy": "公开"
+  },
+  {
+   "seq": 164,
+   "id": "Q-PV02",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "常住地址是否公开",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "公开",
+    "不公开"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 隐私开关：为「不公开」时档案显示「未公开」",
+   "privacy": "公开"
+  },
+  {
+   "seq": 165,
+   "id": "Q-PV03",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "联系方式是否公开",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "公开",
+    "不公开"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 隐私开关",
+   "privacy": "公开"
+  },
+  {
+   "seq": 166,
+   "id": "Q-PV04",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "生活照片是否公开",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "公开",
+    "不公开"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 隐私开关",
+   "privacy": "公开"
+  },
+  {
+   "seq": 167,
+   "id": "Q-PV05",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "隐私照片是否公开",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "公开",
+    "不公开"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 隐私开关",
+   "privacy": "公开"
+  },
+  {
+   "seq": 168,
+   "id": "Q-PV06",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "是否希望暴露自己的情趣和喜好",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "是",
+    "否",
+    "部分"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 169,
+   "id": "Q-PV07",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "如果被身边人知道会怎么办",
+   "rawType": "长文本",
+   "ziteType": "long_answer",
+   "required": false,
+   "options": [],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 170,
+   "id": "Q-PV08",
+   "chapterNo": 11,
+   "chapter": "十一、隐私与公开",
+   "group": "公开设置",
+   "label": "本人填写确认",
+   "rawType": "单选（必答）",
+   "ziteType": "single_select",
+   "required": true,
+   "options": [
+    "确认"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "★ 对应「本人填写」标记（原「认证」字段），表示档案由本人知情填写",
+   "privacy": "公开"
+  },
+  {
+   "seq": 171,
+   "id": "Q-F02",
+   "chapterNo": 12,
+   "chapter": "十二、问卷体验",
+   "group": "评价",
+   "label": "问卷体验",
+   "rawType": "单选",
+   "ziteType": "single_select",
+   "required": false,
+   "options": [
+    "很好",
+    "一般",
+    "不适"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开"
+  },
+  {
+   "seq": 172,
+   "id": "Q-F03",
+   "chapterNo": 12,
+   "chapter": "十二、问卷体验",
+   "group": "评价",
+   "label": "问卷评分",
+   "rawType": "量表",
+   "ziteType": "linear_scale",
+   "required": false,
+   "options": [
+    "1–10 分"
+   ],
+   "condKey": null,
+   "condRaw": "始终显示",
+   "condZite": null,
+   "note": "",
+   "privacy": "公开",
+   "scale": {
+    "min": 1,
+    "max": 5,
+    "minLabel": "不感兴趣",
+    "maxLabel": "非常感兴趣"
+   }
+  }
+ ],
+ "_issues": {
+  "optionless": [
+   {
+    "id": "Q-BD07",
+    "label": "最喜欢的身体部位（最多 3 项）",
+    "type": "multi_select"
+   },
+   {
+    "id": "Q-E16",
+    "label": "常用自慰方式",
+    "type": "multi_select"
+   },
+   {
+    "id": "Q-E19",
+    "label": "性爱的姿势偏好",
+    "type": "multi_select"
+   },
+   {
+    "id": "Q-E22",
+    "label": "做爱时你希望的穿着",
+    "type": "multi_select"
+   }
+  ],
+  "unknownTypes": [],
+  "unknownConds": [],
+  "brokenCond": [
+   {
+    "id": "Q-E10",
+    "label": "最多几人同房",
+    "cond": "Q-E09 = 是"
+   }
+  ]
+ },
+ "_notes": [
+  "章节顺序按计划第十部分：第 5 章（上位者专项）与第 10 章（对上位者的确认）相邻呼应。",
+  "原「九、兴趣体系 · 具体玩法条目」改名为「八、玩法偏好」——模块八已清空，沿用旧编号会误导。",
+  "Q-E10 的显示条件指向已删除的 Q-E09，条件永假，按用户要求原样保留。",
+  "172 题在原表中全部标记「是否必填 = 是」；本规格仅对原表标注（必答）的题置 required=true。",
+  "章节与分组的标题/说明用 Zite 的说明型字段承载，不收集数据。"
+ ]
+}

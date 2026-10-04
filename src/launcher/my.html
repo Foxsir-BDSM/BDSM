@@ -549,7 +549,7 @@
       import { getUserRole } from '@/shared/js/identity.js';
       import { getRoleTitle, getRoleInfo, formatPoints } from '@/shared/js/level.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
-      import { IDENTITIES, getOrientation } from '@/shared/config/identity-config.js';
+      import { IDENTITIES } from '@/shared/config/identity-config.js';
 
       const ROLE_MAP = {
         guest: '访客',
@@ -654,7 +654,6 @@
         const primary = IDENTITIES.find((i) => i.id === identity?.primaryId);
         const points = user?.user_metadata?.points ?? 0;
         const roleInfo = identity?.primaryId ? getRoleInfo(identity.primaryId) : null;
-        const orientation = identity?.orientationId ? getOrientation(identity.orientationId) : null;
 
         setKv(document.getElementById('identityKv'), [
           [
@@ -665,13 +664,6 @@
                 } · ${primary.type === 'top' ? '上位' : '下位'}</span>`
               : '未设置',
             !primary,
-          ],
-          [
-            '取向',
-            orientation
-              ? `<span class="chip">${orientation.icon} ${esc(orientation.label)}</span>`
-              : '未设置',
-            !orientation,
           ],
           ['角色', roleInfo?.title ? `<span class="chip">${esc(roleInfo.title)}</span> <span style="color:rgba(255,255,255,0.35);font-size:12px;">${esc(roleInfo.desc)}</span>` : '—', !roleInfo?.title],
           ['积分', `${points}`, false],

@@ -12,7 +12,7 @@ export const SUPABASE_ANON_KEY =
 //
 // 2026-10-03：原「欲主之殿(dom-archive)」与「欲渊之庭(sub-archive)」
 // 已合并为单一档案库，不再按上下位分馆；S 与 M 的区分由档案的
-// 「身份」字段承担，列表页据用户身份与取向筛选。
+// 「身份」字段承担，列表页据用户身份筛选。
 export const PROJECTS = [
   {
     id: 'sub-archive',
