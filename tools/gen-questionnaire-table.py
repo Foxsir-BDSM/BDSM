@@ -18,8 +18,8 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 CSV_SRC = r'E:\新建文件夹\超级题库_完整CSV_V1.csv'
-OUT_CSV = os.path.join(ROOT, '超级问卷题库_四身份版.csv')
-OUT_MD = os.path.join(ROOT, '超级问卷题库_四身份版.md')
+OUT_CSV = os.path.join(ROOT, '_dev', 'docs', '数据表', '超级问卷题库_四身份版.csv')
+OUT_MD = os.path.join(ROOT, '_dev', 'docs', '数据表', '超级问卷题库_四身份版.md')
 
 ALL4 = '男S/女S/男M/女M'
 F = T = '是'

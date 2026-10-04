@@ -535,7 +535,7 @@ for (const [id, name, loc, impact] of ISSUES) {
 lines.push('');
 lines.push('*本表由 `tools/gen-feature-table.mjs` 生成，可随代码变更重新生成。*');
 
-const outFile = path.join(ROOT, '功能点全量梳理表.md');
+const outFile = path.join(ROOT, '_dev', 'docs', '草稿', '功能点全量梳理表.md');
 fs.writeFileSync(outFile, lines.join('\n'), 'utf8');
 
 // ── 同时生成 CSV（带 UTF-8 BOM，Excel 双击可直接正确显示中文）──
@@ -550,7 +550,7 @@ for (const sec of SECTIONS) {
     csv.push([sec.title.replace(/^[一二三四五六七]、/, ''), ...r].map(csvCell).join(','));
   }
 }
-const csvFile = path.join(ROOT, '功能点全量梳理表.csv');
+const csvFile = path.join(ROOT, '_dev', 'docs', '草稿', '功能点全量梳理表.csv');
 fs.writeFileSync(csvFile, '\ufeff' + csv.join('\r\n'), 'utf8');
 
 console.log(`已生成: ${path.relative(ROOT, outFile)}`);

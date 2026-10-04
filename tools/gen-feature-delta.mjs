@@ -3,8 +3,8 @@
  * tools/gen-feature-delta.mjs
  *
  * 产出「功能点全量梳理表」的增量补丁：
- *   · 功能点全量梳理表_增量补丁.md   —— 新增/变更的功能行，附合并说明
- *   · 功能点全量梳理表_增量补丁.csv  —— 同内容 CSV（UTF-8 BOM）
+ *   · _dev/docs/草稿/功能点全量梳理表_增量补丁.md   —— 新增/变更的功能行，附合并说明
+ *   · _dev/docs/草稿/功能点全量梳理表_增量补丁.csv  —— 同内容 CSV（UTF-8 BOM）
  *
  * 用途：主表可能正在 Excel 中被编辑（文件被锁），不改动它，
  *       改为单独产出补丁，由使用者自行合并。
@@ -108,7 +108,7 @@ lines.push(`**本补丁合计新增 ${total} 行。**`);
 lines.push('');
 lines.push('*主表可由 `node tools/gen-feature-table.mjs` 重新生成（需先关闭 Excel）。*');
 
-const mdOut = path.join(ROOT, '功能点全量梳理表_增量补丁.md');
+const mdOut = path.join(ROOT, '_dev', 'docs', '草稿', '功能点全量梳理表_增量补丁.md');
 fs.writeFileSync(mdOut, lines.join('\n'), 'utf8');
 
 // CSV（UTF-8 BOM），跳过锁定文件
@@ -120,7 +120,7 @@ const csv = [['区块', '合并动作', ...COLS].map(csvCell).join(',')];
 for (const [section, rows] of Object.entries(ROWS)) {
   for (const r of rows) csv.push([section, '新增', ...r].map(csvCell).join(','));
 }
-const csvOut = path.join(ROOT, '功能点全量梳理表_增量补丁.csv');
+const csvOut = path.join(ROOT, '_dev', 'docs', '草稿', '功能点全量梳理表_增量补丁.csv');
 try {
   fs.writeFileSync(csvOut, '\ufeff' + csv.join('\r\n'), 'utf8');
   console.log(`已生成: ${path.relative(ROOT, csvOut)}  (${csv.length - 1} 行)`);

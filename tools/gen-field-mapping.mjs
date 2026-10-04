@@ -3,8 +3,8 @@
  * tools/gen-field-mapping.mjs
  * 生成「旧库 → 新库」字段映射表，供手工迁移数据使用
  *
- * 输出：docs/数据表/字段映射_旧库到新库.md
- *      docs/数据表/字段映射_旧库到新库.csv
+ * 输出：_dev/docs/数据表/字段映射_旧库到新库.md
+ *      _dev/docs/数据表/字段映射_旧库到新库.csv
  *
  * 只读：不改动任何数据库内容。
  */
@@ -102,7 +102,7 @@ for (const of of oldFields) {
 const matchedNewIds = new Set(rows.map((r) => r.newId).filter(Boolean));
 const newOnly = newFields.filter((f) => !matchedNewIds.has(f.id));
 
-const OUT_DIR = path.join(process.cwd(), 'docs', '数据表');
+const OUT_DIR = path.join(process.cwd(), '_dev', 'docs', '数据表');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 // ── Markdown
@@ -185,8 +185,8 @@ console.log(`  新库无对应: ${unmappable.length}`);
 console.log(`  新库独有  : ${newOnly.length}`);
 console.log('');
 console.log('  输出:');
-console.log('    docs/数据表/字段映射_旧库到新库.md');
-console.log('    docs/数据表/字段映射_旧库到新库.csv');
+console.log('    _dev/docs/数据表/字段映射_旧库到新库.md');
+console.log('    _dev/docs/数据表/字段映射_旧库到新库.csv');
 console.log('');
 if (unmappable.length) {
   console.log('  无法迁移的旧字段:');

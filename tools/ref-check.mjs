@@ -34,7 +34,9 @@ const ROOT = path.resolve(__dirname, '..');
 /** @ 别名目录（与 vite.config.js 的 resolve.alias 保持一致） */
 const ALIAS = path.join(ROOT, 'src');
 
-const IGNORE_DIRS = new Set(['node_modules', '.git', 'dist', '.probe', '.shots', '_archive']);
+// 说明：_dev/ 存放开发资料与历史归档（含早期的 HTML 快照），
+//       不参与构建，故排除在引用校验之外。
+const IGNORE_DIRS = new Set(['node_modules', '.git', 'dist', '.probe', '.shots', '_dev']);
 
 /** 本工具自身文件，跳过扫描（否则会把源码里的正则当引用） */
 const SELF = fileURLToPath(import.meta.url);

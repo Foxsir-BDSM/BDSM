@@ -3,7 +3,7 @@
 // 白名单中的字段，标签差异将被忽略
 //
 // 用法：node tools/get_fields_diff.js
-// 输出：field_diff.txt（按「字段id: '名称'」格式，可直接粘贴回 FIELD_LABELS）
+// 输出：_dev/docs/数据表/field_diff.txt（按「字段id: '名称'」格式，可直接粘贴回 FIELD_LABELS）
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 // ============================================================
 const { BASE_ID, TABLE_ID, API_KEY } = await import('../src/shared/config/archive/api.js');
 const DATABASE_ID = BASE_ID;
-const OUTPUT_FILE = path.resolve(__dirname, '../field_diff.txt');
+const OUTPUT_FILE = path.resolve(__dirname, '../_dev/docs/数据表/field_diff.txt');
 
 // ============================================================
 // 2. 白名单：这些字段的标签差异将被忽略

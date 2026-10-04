@@ -6,7 +6,7 @@
  *
  *   node tools/extract-inventory.mjs           控制台摘要
  *   node tools/extract-inventory.mjs --json    输出 JSON
- *   node tools/extract-inventory.mjs --write   写入 docs/_inventory.json
+ *   node tools/extract-inventory.mjs --write   写入 _dev/docs/数据表/_inventory.json
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -123,13 +123,13 @@ for (const f of files) {
 
 const args = process.argv.slice(2);
 if (args.includes('--write')) {
-  fs.mkdirSync(path.join(ROOT, 'docs'), { recursive: true });
+  fs.mkdirSync(path.join(ROOT, '_dev', 'docs', '数据表'), { recursive: true });
   fs.writeFileSync(
-    path.join(ROOT, 'docs', '_inventory.json'),
+    path.join(ROOT, '_dev', 'docs', '数据表', '_inventory.json'),
     JSON.stringify(result, null, 2),
     'utf8'
   );
-  console.log('已写入 docs/_inventory.json');
+  console.log('已写入 _dev/docs/数据表/_inventory.json');
 }
 if (args.includes('--json')) {
   console.log(JSON.stringify(result, null, 2));

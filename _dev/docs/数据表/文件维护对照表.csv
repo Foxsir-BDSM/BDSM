@@ -50,7 +50,6 @@ src/launcher/profile.html,HTML,启动器,个人资料 /profile.html,资料查看
 src/modules/content/index.html,HTML,模块·内容,内容列表 /modules/content/,内容板块列表（原任务区 + 知识区合并为「欲炼之途」）,分类与筛选项来自 content-types.js。,,./js/content-types.js、./js/render.js、admin/content-manager.js、shared/js/auth.js、shared/js/identity.js、shared/js/loading.js,（页面，不被引用）,—
 src/modules/content/post-editor.html,HTML,模块·内容,内容编辑器 /modules/content/post-editor.html,结构化内容编辑器（Fillout 级表单化编辑）,★ 字段结构由 content-types.js 定义，编辑器按定义自动生成表单；新增字段只改 content-types.js。,,./js/editor.js,（页面，不被引用）,—
 src/modules/content/post.html,HTML,模块·内容,内容详情 /modules/content/post.html,单篇内容展示（按内容类型渲染不同版式）,渲染分支在 renderers.js，新增内容类型要同时改 content-types.js 与 renderers.js。,,./js/content-types.js、./js/render.js、admin/content-manager.js、shared/js/auth.js、shared/js/loading.js,（页面，不被引用）,—
-src/modules/random/index.html,HTML,模块·随机,随机模块 /modules/random/,占位页（模块骨架，尚未实现功能）,如需实现功能，参照档案馆的目录结构：index.html + js/ + css/，并在 registry.js 注册。,,—,（页面，不被引用）,—
 src/modules/sub-archive/admin.html,HTML,模块·档案馆,档案馆后台 /modules/sub-archive/admin.html,档案隐私勾选管理表格,可编辑字段定义在 js/admin.js。,,modules/sub-archive/js/admin.js,（页面，不被引用）,—
 src/modules/sub-archive/detail.html,HTML,模块·档案馆,档案详情 /modules/sub-archive/detail.html,单条档案详情：按板块展示字段、媒体网格、隐私可见性控制,板块划分完全由 fields.js 的 DETAIL_GROUPS 决定，本页无字段列表。,,modules/sub-archive/js/detail.js,（页面，不被引用）,—
 src/modules/sub-archive/index.html,HTML,模块·档案馆,档案列表 /modules/sub-archive/,档案列表页：搜索框、身份筛选条、「母の曝光」填写按钮、卡片墙容器,结构改动少；筛选条由 home.js 动态渲染（renderFilterBar），不是写死在本页。,,modules/sub-archive/js/home.js,（页面，不被引用）,—

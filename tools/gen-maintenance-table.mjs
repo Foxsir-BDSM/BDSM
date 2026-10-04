@@ -3,8 +3,8 @@
  * tools/gen-maintenance-table.mjs —— 生成「文件维护对照表」
  *
  * 输出：
- *   docs/文件维护对照表.csv     （Excel 可直接打开，带 UTF-8 BOM）
- *   docs/文件维护对照表.md      （便于在编辑器/网页中查阅）
+ *   _dev/docs/数据表/文件维护对照表.csv  （Excel 可直接打开，带 UTF-8 BOM）
+ *   _dev/docs/数据表/文件维护对照表.md   （便于在编辑器/网页中查阅）
  *
  * 表格列（按用户要求）：
  *   文件名 | 归属页面 | 具备功能 | 后续维护/调整（要改这个文件时该注意什么）
@@ -448,7 +448,7 @@ Object.keys(DEPS.js).forEach((f) => {
 // ════════════════════════════════════════════════════════════
 // 输出
 // ════════════════════════════════════════════════════════════
-const OUT_DIR = path.join(ROOT, 'docs');
+const OUT_DIR = path.join(ROOT, '_dev', 'docs', '数据表');
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
 const HEAD = ['文件名', '类型', '所属分层', '归属页面', '具备功能', '后续维护/调整（要改这个文件时）', '改动风险提示', '本文件依赖', '被谁依赖', '动态导入'];
@@ -529,5 +529,5 @@ if (missing.length) {
   missing.slice(0, 20).forEach((r) => console.log(`     · ${r.file}`));
 }
 console.log('\n  输出:');
-console.log('    docs/文件维护对照表.csv');
-console.log('    docs/文件维护对照表.md');
+console.log('    _dev/docs/数据表/文件维护对照表.csv');
+console.log('    _dev/docs/数据表/文件维护对照表.md');

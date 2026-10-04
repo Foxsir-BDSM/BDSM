@@ -9,3 +9,10 @@ dist/
 .probe/
 .shots/
 _BDSM_*
+
+# _dev/ 存放开发资料与历史归档，**纳入版本控制**（文档需随项目保留），
+# 但不参与构建 —— 见 vite.config.js 的 watch ignore。
+# 以下为脚本生成的临时产物，不入库：
+tools/.deps.json
+tools/.fields-snapshot.json
+tools/.select-options.json

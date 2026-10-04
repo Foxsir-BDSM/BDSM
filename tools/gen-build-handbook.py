@@ -11,7 +11,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 SPEC = os.path.join(ROOT, 'tools', 'archive-form-spec.json')
-OUT = os.path.join(ROOT, '表单搭建手册.md')
+OUT = os.path.join(ROOT, '_dev', 'docs', '数据表', '表单搭建手册.md')
 
 with open(SPEC, encoding='utf-8') as f:
     spec = json.load(f)

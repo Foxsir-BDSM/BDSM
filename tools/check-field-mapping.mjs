@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const md = fs.readFileSync(path.join(process.cwd(), 'docs', '数据表', '字段映射_旧库到新库.md'), 'utf8');
+const md = fs.readFileSync(path.join(process.cwd(), '_dev', 'docs', '数据表', '字段映射_旧库到新库.md'), 'utf8');
 
 // 解析第一节映射表
 const sec1 = md.split('## 一、')[1].split('## 二、')[0];

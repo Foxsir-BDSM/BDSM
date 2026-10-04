@@ -147,8 +147,8 @@ export default defineConfig({
         glob.sync(
           ['src/**/*.html', ...JS_ENTRIES],
           {
-            // _archive/ 为不参与构建的历史归档；dist 与 node_modules 排除
-            ignore: ['node_modules/**', 'dist/**', '_archive/**', 'tools/**', 'sop/**', 'docs/**'],
+            // _dev/ 为不参与构建的开发资料与历史归档；dist 与 node_modules 排除
+            ignore: ['node_modules/**', 'dist/**', '_dev/**', 'tools/**'],
             cwd: __dirname,
           }
         ).map((file) => {
