@@ -852,6 +852,87 @@
           font-size: 11px;
         }
       }
+
+      /* ============================================================
+      任务直达 —— 已接取未完成的任务
+      位置：模块入口下方
+      显隐：由 renderMissions() 控制（未登录 / 无数据 / 后端未配置 → 整块隐藏）
+      ============================================================ */
+      .missions-section {
+        max-width: 1100px;
+        margin: 0 auto 48px;
+        padding: 0 24px;
+      }
+      .ms-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .ms-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.86);
+        letter-spacing: 0.4px;
+        margin: 0;
+      }
+      .ms-more {
+        font-size: 12px;
+        color: rgba(212, 165, 116, 0.85);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: color 0.2s ease;
+      }
+      .ms-more:hover { color: #d4a574; }
+      .ms-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .ms-item {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        padding: 13px 16px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.028);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        text-decoration: none;
+        transition: all 0.25s ease;
+      }
+      .ms-item:hover {
+        background: rgba(212, 165, 116, 0.07);
+        border-color: rgba(212, 165, 116, 0.28);
+        transform: translateX(3px);
+      }
+      .ms-ico { font-size: 17px; flex: none; opacity: 0.85; }
+      .ms-body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .ms-name {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .ms-meta { font-size: 11px; color: rgba(255, 255, 255, 0.28); }
+      .ms-go {
+        flex: none;
+        font-size: 12px;
+        color: rgba(212, 165, 116, 0.75);
+        white-space: nowrap;
+      }
+      @media (max-width: 640px) {
+        .missions-section { padding: 0 16px; margin-bottom: 34px; }
+        .ms-item { padding: 12px 13px; gap: 10px; }
+        .ms-go { display: none; }
+      }
     </style>
     <script type="importmap">
       {
@@ -860,18 +941,19 @@
         }
       }
     </script>
-    <script type="module" crossorigin src="/assets/src_launcher_index-CmD3XOKP.js"></script>
+    <script type="module" crossorigin src="/assets/src_launcher_index-BIkjGrI0.js"></script>
     <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
     <link rel="modulepreload" crossorigin href="/assets/src_shared_js_loading.js-C5kTLZs_.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_config.js-L-wnioNO.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_config.js-Cs-ypjnK.js">
     <link rel="modulepreload" crossorigin href="/assets/src_shared_js_request.js-BophGKQa.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_supabase-client.js-BFhD9Q3b.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_guard.js-CuJP27jg.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_auth.js-Bv1CBx9o.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_identity.js-DafAG6L5.js">
-    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_registry.js-BdpZxZ_3.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_supabase-client.js-CjfvqUCl.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_guard.js-CxVqZ9Ev.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_auth.js-C_b4Qmz2.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_identity.js-CeF7N600.js">
+    <link rel="modulepreload" crossorigin href="/assets/src_shared_js_registry.js-DE10R89j.js">
     <link rel="modulepreload" crossorigin href="/assets/identity-config-DxVibQxh.js">
     <link rel="modulepreload" crossorigin href="/assets/src_shared_js_level.js-CYrQlvAu.js">
+    <link rel="modulepreload" crossorigin href="/assets/task-api-BzoDt_I8.js">
     <link rel="stylesheet" crossorigin href="/assets/src_launcher_index-D5p-_es8.css">
   </head>
   <body>
@@ -924,6 +1006,19 @@
       ============================================================ -->
       <section class="projects-section">
         <div class="project-grid" id="projectGrid"></div>
+      </section>
+
+      <!-- ============================================================
+      任务直达（已接取未完成的任务）
+      说明：仅登录用户可见；数据来自 Cloudflare Worker，
+            未配置后端或未登录时整块隐藏，不影响首页其余部分。
+      ============================================================ -->
+      <section class="missions-section" id="missionsSection" hidden>
+        <div class="ms-head">
+          <h2 class="ms-title">⚡ 任务直达</h2>
+          <a class="ms-more" href="/my.html">全部任务 →</a>
+        </div>
+        <div class="ms-list" id="missionsList"></div>
       </section>
 
       <!-- ============================================================

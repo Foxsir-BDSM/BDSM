@@ -12,6 +12,7 @@
       <div class="page-top">
         <a href="./index.html" class="back-link">← 返回欲炼之途</a>
         <div class="top-actions">
+          <button type="button" class="btn btn-primary sm" id="acceptBtn" style="display:none">接取任务</button>
           <button type="button" class="btn btn-ghost sm" id="copyBtn">🔗 复制链接</button>
         </div>
       </div>
@@ -34,8 +35,94 @@
       import { fetchContentList, parseFrontmatter, getToken } from '@/admin/content-manager.js';
       import { getCurrentUser } from '@/shared/js/auth.js';
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
+      import { showToast } from '@/shared/js/ui-helpers.js';
+      import { acceptTask, myTasks, taskApiReady } from '@/shared/js/task-api.js';
 
       const box = document.getElementById('detailBox');
+      const acceptBtn = document.getElementById('acceptBtn');
+
+      /** 当前内容（接取时需要它的 slug / 标题 / 类型） */
+      let currentPost = null;
+
+      // ────────────────────────────────────────── 接取任务
+      /**
+       * 按内容类型决定是否显示「接取」入口
+       * 说明：四种内容里，前三种（玩法任务/主题合集/分级清单）是「可执行」的，
+       *       任务反馈（原见解随笔）是提交结果用的，不提供接取。
+       */
+      const ACCEPTABLE_TYPES = ['task', 'collection', 'checklist'];
+
+      async function setupAcceptButton(post) {
+        if (!acceptBtn) return;
+
+        // 后端未配置 / 类型不可接取 → 不显示
+        if (!taskApiReady() || !ACCEPTABLE_TYPES.includes(post.type)) {
+          acceptBtn.style.display = 'none';
+          return;
+        }
+
+        const me = await getCurrentUser();
+        if (!me) {
+          acceptBtn.style.display = 'inline-flex';
+          acceptBtn.textContent = '登录后可接取';
+          acceptBtn.disabled = true;
+          return;
+        }
+
+        acceptBtn.style.display = 'inline-flex';
+
+        // 已经接过就直接显示状态，避免重复点击
+        const r = await myTasks('all');
+        const mine = r.ok ? (r.tasks || []).find((t) => t.task_slug === post.slug) : null;
+
+        if (!mine) {
+          acceptBtn.textContent = '✅ 接取任务';
+          acceptBtn.disabled = false;
+          acceptBtn.dataset.mode = 'accept';
+        } else if (mine.status === 'submitted') {
+          acceptBtn.textContent = '🎉 已提交反馈';
+          acceptBtn.disabled = true;
+          acceptBtn.dataset.mode = 'done';
+        } else {
+          acceptBtn.textContent = '📝 已接取 · 去提交反馈';
+          acceptBtn.disabled = false;
+          acceptBtn.dataset.mode = 'goto';
+        }
+      }
+
+      acceptBtn?.addEventListener('click', async () => {
+        if (!currentPost) return;
+        const mode = acceptBtn.dataset.mode;
+
+        // 已接取 → 引导去发布反馈
+        if (mode === 'goto') {
+          const url = `./post-editor.html?type=note&task=${encodeURIComponent(currentPost.slug)}`;
+          location.href = url;
+          return;
+        }
+        if (mode !== 'accept') return;
+
+        acceptBtn.disabled = true;
+        const old = acceptBtn.textContent;
+        acceptBtn.textContent = '接取中…';
+
+        const res = await acceptTask({
+          slug: currentPost.slug,
+          title: currentPost.title,
+          type: currentPost.type,
+        });
+
+        if (res.ok) {
+          showToast(res.already ? '你之前已接取过这个任务' : '已接取，去「我的」可查看进度');
+          acceptBtn.textContent = res.already ? '📝 已接取 · 去提交反馈' : '📝 已接取 · 去提交反馈';
+          acceptBtn.dataset.mode = 'goto';
+          acceptBtn.disabled = false;
+        } else {
+          showToast('接取失败：' + res.error, 'error');
+          acceptBtn.textContent = old;
+          acceptBtn.disabled = false;
+        }
+      });
 
       function showError(ico, title, desc, action) {
         box.innerHTML = `<div class="state">
@@ -102,6 +189,10 @@
 
           document.title = post.title + ' · 欲炼之途';
           box.innerHTML = renderDetail(post);
+          currentPost = post;
+
+          // 接取入口（按类型与登录状态决定是否显示）
+          setupAcceptButton(post);
 
           // 极高风险折叠展开
           const expandBtn = document.getElementById('expandBtn');

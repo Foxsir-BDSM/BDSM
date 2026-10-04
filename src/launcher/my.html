@@ -290,6 +290,68 @@
       }
       .empty .cta:hover { background: rgba(212, 165, 116, 0.2); transform: translateY(-1px); }
 
+      /* ── 接取的任务行 ── */
+      .mission-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 13px 2px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .mission-row:last-child { border-bottom: none; }
+      .mission-row .m-main { flex: 1; min-width: 0; }
+      .mission-row .m-title {
+        display: block;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        transition: color 0.2s ease;
+      }
+      .mission-row .m-title:hover { color: #d4a574; }
+      .mission-row .m-meta {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.28);
+        margin-top: 4px;
+      }
+      .mission-row .m-status {
+        flex: none;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      .mission-row .m-status.doing {
+        color: #d4a574;
+        background: rgba(212, 165, 116, 0.12);
+        border: 1px solid rgba(212, 165, 116, 0.3);
+      }
+      .mission-row .m-status.done {
+        color: #4ade80;
+        background: rgba(74, 222, 128, 0.1);
+        border: 1px solid rgba(74, 222, 128, 0.25);
+      }
+      .mission-row .cta {
+        flex: none;
+        padding: 5px 13px;
+        border-radius: 8px;
+        font-size: 12px;
+        color: #d4a574;
+        background: rgba(212, 165, 116, 0.1);
+        border: 1px solid rgba(212, 165, 116, 0.22);
+        text-decoration: none;
+        white-space: nowrap;
+        transition: all 0.25s ease;
+      }
+      .mission-row .cta:hover { background: rgba(212, 165, 116, 0.2); }
+
+      @media (max-width: 560px) {
+        .mission-row { flex-wrap: wrap; gap: 8px; }
+        .mission-row .m-main { flex: 1 1 100%; }
+      }
+
       /* 预留标签 */
       .soon {
         display: inline-block;
@@ -510,17 +572,13 @@
           <div class="card">
             <div class="card-head">
               <span>接取的任务记录</span>
-              <span class="soon" style="margin: 0">待开放</span>
+              <span id="missionHint" style="font-size: 11px; color: rgba(255,255,255,0.18)"></span>
             </div>
             <div id="missionList">
               <div class="empty">
                 <div class="ico">⛓️</div>
-                <div class="t1">还没有接取记录</div>
-                <div class="t2">
-                  接取任务、提交返图与完成进度都会留痕在这里。<br />
-                  任务接取与返图功能正在开发中。
-                </div>
-                <a href="/modules/content/" class="cta">先去欲炼之途看看 →</a>
+                <div class="t1">读取中…</div>
+                <div class="t2">正在获取你的任务记录。</div>
               </div>
             </div>
           </div>
@@ -589,6 +647,96 @@
       import { showLoading, hideLoading } from '@/shared/js/loading.js';
       import { showToast } from '@/shared/js/ui-helpers.js';
       import { IDENTITIES } from '@/shared/config/identity-config.js';
+      import { myTasks, taskApiReady } from '@/shared/js/task-api.js';
+
+      // ══════════════════════════════════════════════════════
+      // 接取的任务
+      // ------------------------------------------------------
+      // 数据来自 Cloudflare Worker（D1），只返回当前登录用户自己的记录。
+      // 未配置后端时（taskApiReady() 为假）给出友好提示，不报错。
+      // ══════════════════════════════════════════════════════
+      const STATUS_TEXT = {
+        accepted: { label: '进行中', cls: 'doing' },
+        submitted: { label: '已提交', cls: 'done' },
+      };
+
+      function missionEmpty(ico, t1, t2, cta) {
+        return `<div class="empty">
+          <div class="ico">${ico}</div>
+          <div class="t1">${t1}</div>
+          <div class="t2">${t2 || ''}</div>
+          ${cta || ''}
+        </div>`;
+      }
+
+      function renderMission(t) {
+        const st = STATUS_TEXT[t.status] || STATUS_TEXT.accepted;
+        const when = (t.accepted_at || '').slice(0, 10);
+        const url = `/modules/content/post.html?slug=${encodeURIComponent(t.task_slug)}`;
+        const action = t.status === 'submitted'
+          ? `<a class="cta" href="${url}">查看任务</a>`
+          : `<a class="cta" href="/modules/content/post-editor.html?type=note&task=${encodeURIComponent(t.task_slug)}">提交反馈</a>`;
+
+        return `
+          <div class="mission-row">
+            <div class="m-main">
+              <a class="m-title" href="${url}">${escapeHtml(t.task_title || t.task_slug)}</a>
+              <div class="m-meta">接取于 ${when}${t.submitted_at ? ' · 提交于 ' + t.submitted_at.slice(0, 10) : ''}</div>
+            </div>
+            <span class="m-status ${st.cls}">${st.label}</span>
+            ${action}
+          </div>`;
+      }
+
+      function escapeHtml(s) {
+        return String(s ?? '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+
+      async function loadMissions() {
+        const listEl = document.getElementById('missionList');
+        const hintEl = document.getElementById('missionHint');
+        const cntEl = document.getElementById('cntMissions');
+        if (!listEl) return;
+
+        if (!taskApiReady()) {
+          if (cntEl) cntEl.textContent = '0';
+          listEl.innerHTML = missionEmpty('🔧', '任务服务尚未接通',
+            '后端地址尚未配置，接取与进度功能暂不可用。');
+          return;
+        }
+
+        const r = await myTasks('all');
+        if (!r.ok) {
+          if (cntEl) cntEl.textContent = '0';
+          const isAuth = /登录|401/.test(r.error || '');
+          listEl.innerHTML = missionEmpty(isAuth ? '🔐' : '⚠️',
+            isAuth ? '请先登录' : '读取失败',
+            isAuth ? '登录后才能查看你的任务记录。' : escapeHtml(r.error || ''),
+            isAuth ? '<a href="/auth.html" class="cta">去登录 →</a>' : '');
+          return;
+        }
+
+        const tasks = r.tasks || [];
+        const doing = tasks.filter((t) => t.status === 'accepted').length;
+        if (cntEl) cntEl.textContent = String(tasks.length);
+        if (hintEl) hintEl.textContent = tasks.length ? `进行中 ${doing} · 共 ${tasks.length}` : '';
+
+        if (!tasks.length) {
+          listEl.innerHTML = missionEmpty('⛓️', '还没有接取记录',
+            '在欲炼之途打开一个任务，点「接取任务」即可开始。',
+            '<a href="/modules/content/" class="cta">先去欲炼之途看看 →</a>');
+          return;
+        }
+
+        // 进行中的排在前面
+        const sorted = [...tasks].sort((a, b) => {
+          if (a.status === b.status) return (b.accepted_at || '').localeCompare(a.accepted_at || '');
+          return a.status === 'accepted' ? -1 : 1;
+        });
+        listEl.innerHTML = sorted.map(renderMission).join('');
+      }
 
       const ROLE_MAP = {
         guest: '访客',
@@ -929,12 +1077,10 @@
           renderStats(user, identity);
           renderIdentity(user, identity, role);
 
-          // 任务记录：数据模型未建，保持空态
-          document.getElementById('cntMissions').textContent = '0';
-
           // 异步加载真实数据（不阻塞首屏）
           renderArchive(user);
           renderPosts(user);
+          loadMissions();
         } catch (err) {
           console.error('[my] 初始化失败:', err);
         } finally {
