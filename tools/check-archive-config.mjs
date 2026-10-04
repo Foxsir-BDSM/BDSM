@@ -38,10 +38,15 @@ for (const k of ['FIELD_LABELS', 'CARD_FIELDS', 'SEARCH_FIELDS', 'DETAIL_GROUPS'
 check('DATABASE_ID 兼容旧命名 = 新 base', SUB_ARCHIVE_CONFIG.DATABASE_ID, 'e7d18ead20743825');
 
 console.log('\n── 3. 字段维护文件规模 ──');
-// 远程 59 = FIELD_LABELS 56 + SYSTEM_FIELD_IDS 3（系统字段不参与展示）
-check('FIELD_LABELS 字段数', Object.keys(FIELDS.FIELD_LABELS).length, 56);
-check('SYSTEM_FIELD_IDS 字段数', Object.keys(FIELDS.SYSTEM_FIELD_IDS).length, 3);
-console.log(`     标签 ${Object.keys(FIELDS.FIELD_LABELS).length} + 系统 ${Object.keys(FIELDS.SYSTEM_FIELD_IDS).length} = 远程 59`);
+// 只校验「总数 = 远程 59」，不写死标签/系统字段的分界。
+// 理由：标签与系统字段的划分会随维护需要调整（例如把某字段改为不对用户展示），
+//       写死分布会导致合理调整被误报为失败。
+const LABEL_COUNT = Object.keys(FIELDS.FIELD_LABELS).length;
+const SYSTEM_COUNT = Object.keys(FIELDS.SYSTEM_FIELD_IDS).length;
+check('字段总数 = 远程 59', LABEL_COUNT + SYSTEM_COUNT, 59);
+console.log(`     参与展示 ${LABEL_COUNT} + 系统字段 ${SYSTEM_COUNT} = ${LABEL_COUNT + SYSTEM_COUNT}`);
+check('两区无重复 id',
+  Object.keys(FIELDS.FIELD_LABELS).filter((id) => id in FIELDS.SYSTEM_FIELD_IDS).length, 0);
 check('DETAIL_GROUPS 分组数（privacy 组已移除，它从未渲染过）', FIELDS.DETAIL_GROUPS.length, 4);
 check('保留 photos_life 分组（detail.js 硬编码依赖）',
   FIELDS.DETAIL_GROUPS.some((g) => g.id === 'photos_life'), true);

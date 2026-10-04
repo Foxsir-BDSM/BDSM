@@ -141,22 +141,21 @@ export const FIELD_LABELS = {
   frNSBFFkJpQ: '名称',
 
   // ---- 隐私公开开关（5 个）----
-  fkAEd2CE2gQ: '是否公开问卷内容',
-  fedNsXf9DNV: '是否公开常住地址',
-  fiaG3fZjmZC: '是否公开联系方式',
-  fhUrgTMzZnb: '是否公开生活照片',
-  fi8wfWQmC96: '是否公开隐私照片',
+  fkAEd2CE2gQ: '问卷内容',
+  fedNsXf9DNV: '常住地址',
+  fiaG3fZjmZC: '联系方式',
+  fhUrgTMzZnb: '生活照片',
+  fi8wfWQmC96: '隐私照片',
 
   // ---- 身份与确认 ----
   fwz4nCDQfZH: '身份',
-  fwKCmynWaVf: '我已确认上述为我真实意愿',
   fb7zJUvkBhe: '首页认证标签',
 
   // ---- 基础信息 ----
   fkHpgmVVTg7: '姓名',
   f57DddbxHNc: '年龄',
-  fviPchG4Lfi: '身高（cm）',
-  f7rpwNruYeG: '体重（kg）',
+  fviPchG4Lfi: '身高',
+  f7rpwNruYeG: '体重',
   ft45UeL5YUS: '罩杯',
   f6RtmHTmp5K: '三围',
   fwiiuSAVzaT: '职业&学历',
@@ -215,6 +214,7 @@ export const FIELD_LABELS = {
 export const SYSTEM_FIELD_IDS = {
   fkYBsZUhZCv: 'Source',
   ftHNftMNZgW: '点赞数',
+  fwKCmynWaVf: '我已确认上述为我真实意愿',
   f8JxmbLPMBL: '备注',
 };
 
