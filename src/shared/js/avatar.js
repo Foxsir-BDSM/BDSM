@@ -1,5 +1,5 @@
 // 职责    头像上传与读取（Supabase Storage 的 avatars 桶）。
-// 归属页面 资料页 /profile.html
+// 归属页面 编辑资料页 /profile.html（入口在「我的」页面的「编辑资料」按钮）
 // 依赖    shared/js/supabase-client.js
 // 被依赖   launcher/profile.html
 //

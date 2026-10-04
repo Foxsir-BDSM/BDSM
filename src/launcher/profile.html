@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
-    <title>个人资料 · Foxsir</title>
+    <title>编辑资料 · Foxsir</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -247,15 +247,15 @@
   <body>
     <div class="wrap">
       <div class="page-top">
-        <a href="/index.html" class="back-link">← 返回控制中心</a>
-        <div class="page-title">个人资料</div>
+        <a href="/my.html" class="back-link">← 返回我的</a>
+        <div class="page-title">编辑资料</div>
       </div>
 
       <!-- 未登录提示 -->
       <div class="card" id="guestCard" style="display: none">
         <div class="guest-box">
-          <div class="ico">👤</div>
-          <p>你当前是<b>游客模式</b><br />登录后可以设置头像、昵称与个人身份</p>
+          <div class="ico">✏️</div>
+          <p>你当前是<b>游客模式</b><br />登录后可以设置头像与昵称</p>
           <div class="actions" style="justify-content: center">
             <a href="/auth.html" class="btn btn-primary" style="text-decoration: none">🌿 注册 / 登录</a>
             <a href="/index.html" class="btn btn-ghost" style="text-decoration: none">先去逛逛</a>
@@ -311,9 +311,9 @@
           <div class="notice" id="saveNotice"></div>
         </div>
 
-        <!-- 身份与等级 -->
+        <!-- 身份与等级（只读）-->
         <div class="card">
-          <div class="card-title">身份与角色</div>
+          <div class="card-title">身份与角色 <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,0.22);margin-left:6px;">只读</span></div>
           <div class="info-row">
             <span class="k">主身份</span>
             <span class="v" id="primaryIdentity">—</span>
@@ -328,7 +328,18 @@
           </div>
           <div class="hint" style="font-size: 11px; color: rgba(255,255,255,0.18); margin-top: 14px; line-height: 1.7">
             <b style="color: rgba(255,255,255,0.3)">身份</b>决定你的角色（主 / 奴）与档案馆默认展示谁，<b style="color: rgba(255,255,255,0.3)">平台角色</b>决定你的权限层级。<br />
-            身份目前需联系管理员调整，后续会开放自助修改。
+            ⚠️ 身份<b style="color: rgba(255,255,255,0.3)">不可自助修改</b>：它同时影响权限与档案筛选，
+            开放自助会带来越权风险。<br />
+            如需调整，请通过管理面板或联系管理员。
+          </div>
+        </div>
+
+        <!-- 回到我的 -->
+        <div class="card">
+          <div class="card-title">相关页面</div>
+          <div class="actions">
+            <a href="/my.html" class="btn btn-ghost" style="text-decoration: none">← 返回我的</a>
+            <a href="/modules/sub-archive/" class="btn btn-ghost" style="text-decoration: none">🌊 去档案馆</a>
           </div>
         </div>
 
@@ -592,5 +603,3 @@
     </script>
   </body>
 </html>
-
-/* ══════════ 取向相关样式已移除（2026-10-04 决策：筛选仅按身份）══════════ */

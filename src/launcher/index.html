@@ -998,7 +998,9 @@
       // ============================================================
       // 渲染顶栏用户菜单（类微信右上角）
       //   收起态：头像 + 昵称 + 身份
-      //   点击展开：个人资料 / 管理面板（管理员）/ 登出
+      //   点击展开：我的 / 管理面板（管理员）/ 登出
+//   注：原「个人资料」入口已取消 —— 资料页是编辑表单而非浏览页，
+//       入口统一放在「我的」页面顶部的「编辑资料」按钮。
       //   未登录：头像占位 + 注册入口
       // ============================================================
 
@@ -1037,7 +1039,7 @@
             <div class="um-panel" id="umPanel" role="menu">
               <div class="um-panel-head">
                 <div class="h-name">游客模式</div>
-                <div class="h-sub">注册后可保存身份、等级与个人资料</div>
+                <div class="h-sub">注册后可设置头像与昵称</div>
               </div>
               <a href="/auth.html" class="um-item" role="menuitem">
                 <span class="um-ico">🌿</span> 注册 / 登录
@@ -1099,9 +1101,6 @@
             </div>
             <a href="/my.html" class="um-item" role="menuitem">
               <span class="um-ico">🗂️</span> 我的
-            </a>
-            <a href="/profile.html" class="um-item" role="menuitem">
-              <span class="um-ico">👤</span> 个人资料
             </a>
             ${adminItem}
             <div class="um-divider"></div>

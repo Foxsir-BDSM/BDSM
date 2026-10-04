@@ -52,7 +52,7 @@ const PAGES = [
   ['/about.html', ['欢迎来到', '权限速查表'], false],
   ['/auth.html', ['进入欲界', '身份'], false],
   ['/index.html', ['SELECT YOUR PATH', '探索'], false],
-  ['/profile.html', ['个人资料'], false],
+  ['/profile.html', ['编辑资料'], false],
   ['/my.html', ['我的'], false],
   ['/module.html', ['module-detail-card'], false],
   ['/admin.html', ['管理面板', '下位档案'], false],

@@ -33,7 +33,9 @@
     "check:imports": "node --no-warnings tools/check-missing-imports.mjs",
     "check:render": "node tools/check-archive-render.mjs",
     "fields:snapshot": "node --no-warnings tools/snapshot-fields.mjs",
-    "fields:verify": "node --no-warnings tools/verify-restructure.mjs"
+    "fields:verify": "node --no-warnings tools/verify-restructure.mjs",
+    "check:orphan": "node --no-warnings tools/check-orphan-text.mjs",
+    "check:profile": "node tools/check-profile-entry.mjs"
   },
   "keywords": [],
   "author": "",
