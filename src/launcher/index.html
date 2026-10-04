@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f0e17" />
     <title>Foxsir · 欲研所</title>
     <link rel="icon" href="../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
     <!-- ===== R-02 等级样式 ===== -->
@@ -680,17 +681,35 @@
          8. 响应式 · 平板 820px（保持左右结构）
          ============================================================ */
       @media (max-width: 820px) {
+        /* 顶栏保持同一行：左 logo+名字，右用户菜单。
+           原先是 column 方向 + align-self:flex-end，于是手机/平板上
+           名字与菜单各占一行，看起来就是「错行」。
+           放不下时靠字号收缩与溢出省略解决，不换行。 */
         .top-bar {
-          flex-direction: column;
-          align-items: stretch;
-          gap: 8px;
+          flex-direction: row;
+          flex-wrap: nowrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
           padding-bottom: 14px;
         }
+        .top-bar .logo-area {
+          flex: 1 1 auto;
+          min-width: 0;
+        }
         .top-bar .user-menu {
-          align-self: flex-end;
+          align-self: center;
+          flex: none;
         }
         .top-bar .user-menu .um-panel {
           right: 0;
+        }
+        .top-bar .brand-text { min-width: 0; }
+        .top-bar .brand-text h1,
+        .top-bar .brand-text .tagline {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .welcome-card {

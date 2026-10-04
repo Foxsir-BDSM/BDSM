@@ -173,10 +173,11 @@ await js(`(function(){
 await sleep(6000);
 
 const tbl = await js(`(function(){
-  // 只取档案表格：用 .table-scroll 收窄范围，
-  // 否则用户权限那张表（隐藏但仍在 DOM 中）的表头也会被算进来
-  var ths = [].map.call(document.querySelectorAll('.table-scroll .admin-table th'), function(t){ return t.textContent.trim(); });
-  var scroll = document.querySelector('.table-scroll');
+  // 只取档案表格：用 #subRecordsContainer 收窄范围。
+  // 用户权限那张表（已隐藏但仍在 DOM 中）的表头也会被 .admin-table 选中。
+  var root = document.getElementById('subRecordsContainer');
+  var ths = [].map.call(root.querySelectorAll('.admin-table th'), function(t){ return t.textContent.trim(); });
+  var scroll = root.querySelector('.table-scroll');
   var toolbar = document.querySelector('#pane-subArchive .toolbar');
   var cs = toolbar ? getComputedStyle(toolbar) : null;
   var push = document.getElementById('pushSubBtn');
@@ -205,11 +206,12 @@ await sleep(6000);
 
 const mob = await js(`(function(){
   var vw = document.documentElement.clientWidth;
-  var ths = [].map.call(document.querySelectorAll('.table-scroll .admin-table th'), function(t){
+  var root = document.getElementById('subRecordsContainer');
+  var ths = [].map.call(root.querySelectorAll('.admin-table th'), function(t){
     var r = t.getBoundingClientRect();
     return { text: t.textContent.trim(), w: Math.round(r.width), h: Math.round(r.height), ws: getComputedStyle(t).whiteSpace };
   });
-  var wrap = document.querySelector('.table-scroll');
+  var wrap = root.querySelector('.table-scroll');
   var toolbar = document.querySelector('#pane-subArchive .toolbar');
   var tcs = toolbar ? getComputedStyle(toolbar) : null;
   var header = document.querySelector('.admin-header');

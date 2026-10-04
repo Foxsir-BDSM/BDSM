@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f0e17" />
     <link rel="icon" href="../../shared/assets/images/OIP-C.jpg" type="image/jpeg" />
     <title>欲炼之途 · Foxsir</title>
     <link rel="stylesheet" href="./css/content.css" />
@@ -10,19 +11,24 @@
   <body>
     <div class="wrap">
       <header class="page-head">
-        <!-- 顶栏：左侧 home 图标，右侧发布内容。
-             手机上不再显示「返回控制中心 / 刷新」两个按钮 ——
-             返回改用 home 图标，刷新改用下拉手势。 -->
-        <a href="/index.html" class="head-ico" id="homeBtn" title="返回控制中心" aria-label="返回控制中心">🏠</a>
-        <div class="brand">
-          <h1>⛓️ 欲炼之途</h1>
-          <p class="sub">玩法 · 见闻 · 见解 —— 一个可以发布自己玩法与见解的地方</p>
+        <!-- 顶栏布局
+             桌面：左 = 图标 + 名称（左对齐）／右 = 返回、刷新、发布内容
+             手机：左 = 图标 + 名称（左对齐）／右 = home 图标 + 「发布」两个字
+             手机上把发布写成文字而非 ✍️ 图标 —— 图标看不出是要干什么。 -->
+        <div class="head-left">
+          <span class="head-logo" aria-hidden="true">⛓️</span>
+          <div class="brand">
+            <h1>欲炼之途</h1>
+            <p class="sub">玩法 · 见闻 · 见解 —— 一个可以发布自己玩法与见解的地方</p>
+          </div>
         </div>
+
         <div class="head-actions" id="headActions">
           <a href="/index.html" class="btn btn-ghost only-desktop">← 返回控制中心</a>
           <button type="button" class="btn btn-ghost only-desktop" id="refreshBtn">🔄 刷新</button>
+          <a href="/index.html" class="head-ico only-mobile" id="homeBtn" title="返回控制中心" aria-label="返回控制中心">🏠</a>
           <a href="./post-editor.html" class="btn btn-primary" id="writeBtn" style="display: none">
-            <span class="only-desktop">✍️ 发布内容</span><span class="only-mobile">✍️</span>
+            <span class="only-desktop">✍️ 发布内容</span><span class="only-mobile">发布</span>
           </a>
         </div>
       </header>

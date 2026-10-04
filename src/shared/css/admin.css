@@ -578,7 +578,11 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 .table-scroll .admin-table {
-  min-width: 560px;   /* 7 列的下限宽度 */
+  min-width: 560px;   /* 档案表（7 列）的下限宽度 */
+}
+/* 用户权限表：4 列但邮箱很长，另给一个下限 */
+#userTableContainer .admin-table {
+  min-width: 620px;
 }
 
 /* ============================================================
@@ -647,4 +651,13 @@ body {
   .admin-table th,
   .admin-table td { padding: 6px 9px; }
   .admin-table input[type='checkbox'] { width: 17px; height: 17px; }
+
+  /* 用户权限表：角色徽章与下拉不要被压扁 */
+  .role-badge { white-space: nowrap; }
+  .role-select { min-width: 116px; }
+  /* 邮箱在窄屏允许折行，避免单列吃掉整屏宽度 */
+  #userTableContainer .admin-table td:nth-child(2) {
+    max-width: 190px;
+    word-break: break-all;
+  }
 }

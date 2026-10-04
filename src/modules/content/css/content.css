@@ -25,6 +25,9 @@ body {
   display: flex; justify-content: space-between; align-items: flex-end;
   gap: 16px; flex-wrap: wrap; margin-bottom: 20px;
 }
+/* 左半区：图标 + 名称，整体左对齐（名称不再自带图标，改用独立元素以便对齐） */
+.head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.head-logo { font-size: 30px; line-height: 1; flex: none; }
 .brand h1 {
   font-family: 'Georgia', serif; font-size: 28px; font-weight: 700; letter-spacing: 1px;
   background: linear-gradient(135deg, #f5d6a8, #d4a574);
@@ -432,23 +435,38 @@ body {
 @media (max-width: 620px) {
   /* 顶栏改为「home | 标题 | 发布」三段式 */
   .page-head {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    display: flex;
     align-items: center;
-    gap: 11px;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: nowrap;
   }
+  .head-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .head-logo { font-size: 21px; line-height: 1; flex: none; }
   .head-ico { display: inline-flex; }
   .only-desktop { display: none !important; }
   .only-mobile { display: inline; }
   .brand { min-width: 0; }
-  .brand h1 { font-size: 19px; }
+  .brand h1 { font-size: 19px; white-space: nowrap; }
   .brand .sub { display: none; }       /* 副标题在手机上要占两行，去掉 */
-  .head-actions { gap: 0; }
+  .head-actions {
+    gap: 7px;
+    flex: none;
+    display: flex;
+    align-items: center;
+  }
   .head-actions .btn-primary {
-    padding: 9px 15px;
-    font-size: 15px;
+    padding: 9px 16px;
+    font-size: 14px;
     min-height: 40px;
     display: inline-flex; align-items: center;
+    white-space: nowrap;
   }
 
   /* 筛选：图标横排，一行放下四个 */

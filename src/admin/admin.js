@@ -124,7 +124,10 @@ function renderUserTable() {
     return;
   }
 
-  let html = `<table class="admin-table">
+  // 四列：昵称 / 邮箱 / 当前角色 / 新角色。
+  // 窄屏下邮箱较长会把「新角色」下拉挤出屏幕，故套一层横向滚动容器，
+  // 由 .table-scroll 负责滚动（与档案表格同一套样式）。
+  let html = `<div class="table-scroll"><table class="admin-table">
     <thead><tr><th>昵称</th><th>邮箱</th><th>当前角色</th><th>新角色</th></tr></thead>
     <tbody>`;
   users.forEach((u) => {
@@ -145,7 +148,7 @@ function renderUserTable() {
       <td><select class="role-select" data-email="${u.email}">${options}</select></td>
     </tr>`;
   });
-  html += `</tbody></table>`;
+  html += `</tbody></table></div>`;
   userTableContainer.innerHTML = html;
 
   // 绑定下拉选择事件

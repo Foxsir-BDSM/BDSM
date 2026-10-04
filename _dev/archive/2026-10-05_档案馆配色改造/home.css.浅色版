@@ -39,10 +39,10 @@
 
 /* ===== 卡片 ===== */
 .card {
-  background: #0f0e17;
+  background: #ffffff;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -53,7 +53,7 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.42);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
 }
 
 .card-image-wrap {
@@ -61,7 +61,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   overflow: hidden;
-  background-color: rgba(255,255,255,0.07);
+  background-color: #e5e7eb;
 }
 
 .card-image-wrap img {
@@ -82,12 +82,12 @@
   top: 8px;
   right: 8px;
   background: rgba(34, 197, 94, 0.9);
-  color: #0f0e17;
+  color: #fff;
   font-size: 14px;
   line-height: 1;
   padding: 4px 6px;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.52);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   z-index: 2;
   pointer-events: none;
   user-select: none;
@@ -101,7 +101,7 @@
   right: 0;
   padding: 12px 12px 10px 12px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
-  color: #0f0e17;
+  color: #ffffff;
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -131,9 +131,9 @@
   gap: 4px;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255,255,255,0.45);
-  background: #0f0e17;
-  border-top: 1px solid rgba(255,255,255,0.024);
+  color: #555555;
+  background: #ffffff;
+  border-top: 1px solid #f0f0f0;
 }
 
 .card-footer .info-row {
@@ -149,7 +149,7 @@
 
 .card-footer .info-row .value {
   font-weight: 500;
-  color: rgba(255,255,255,0.92);
+  color: #222222;
 }
 
 .card-footer .info-row.row-height-weight {
@@ -186,7 +186,7 @@
 }
 
 .stars-container .no-rating {
-  color: rgba(255,255,255,0.32);
+  color: #999;
   font-size: 13px;
   letter-spacing: normal;
 }
