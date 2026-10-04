@@ -21,13 +21,10 @@
         </div>
       </header>
 
-      <!-- 类型筛选 -->
-      <!--
-        说明：这里只列「可接取」的三种内容类型。
-        「任务反馈」不作为独立入口 —— 它由「首页任务直达」或「我的 → 接取的任务」
-        发起，而不是在内容区浏览。若日后需要放开，加回下面这行即可：
-          <button class="fbtn" data-type="note">✍️ 任务反馈</button>
-      -->
+      <!-- 类型筛选
+           只列「可接取」的三种类型。任务反馈不作为独立入口 ——
+           它由「首页任务直达」或「我的 → 接取的任务」发起，而非在内容区浏览。
+           如需恢复该入口，在下方 nav 里加一个 data-type="note" 的按钮即可。 -->
       <nav class="filters" id="typeFilters">
         <button class="fbtn active" data-type="all">全部</button>
         <button class="fbtn" data-type="task">⛓️ 玩法任务</button>
