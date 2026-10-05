@@ -93,36 +93,93 @@
   user-select: none;
 }
 
-/* ===== 图片底部文字 ===== */
+/* ===== 图片底部：姓名 / 年龄 =====
+   设计为一条**纵向渐进**的毛玻璃带，只托住这两行文字：
+     · 不用整片渐变遮罩 —— 那会把封面压暗，照片有黑有白不好统一
+     · 毛玻璃取「底下真实像素」做模糊，黑白照片上都成立
+     · ★ 用纵向渐变遮罩让模糊强度自下而上渐隐 —— 避免一条硬边横切照片。
+       单纯给 backdrop-filter 加均匀模糊 + 横向渐隐会显得生硬；
+       纵向 mask 让玻璃"化开"到照片里，过渡自然。
+     · 元素本体向上多留 16px，供渐变遮罩淡出（那部分几乎不遮挡画面）
+   兼容：不支持 mask 时退化为均匀玻璃条；不支持 backdrop-filter 时
+        提高底色不透明度，文字仍可读。 */
 .card-image-caption {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 12px 12px 10px 12px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
-  /* ★ 必须是浅色：这段文字叠在照片上，底下还有一层深色渐变。
-     深色主题改造时曾被机械替换成 #0f0e17，导致姓名年龄在图上几乎看不见。 */
+  /* 上内边距留出渐隐区间，下内边距贴住文字 */
+  padding: 26px 12px 7px 12px;
+  /* 底色本身也做纵向渐变，与模糊同步淡出 */
+  background: linear-gradient(
+    to top,
+    rgba(10, 9, 14, 0.46) 0%,
+    rgba(10, 9, 14, 0.30) 42%,
+    rgba(10, 9, 14, 0.10) 72%,
+    rgba(10, 9, 14, 0) 100%
+  );
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  backdrop-filter: blur(12px) saturate(150%);
+  /* 纵向遮罩：底部全强度 → 顶部完全淡出，消除硬边 */
+  -webkit-mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 34%,
+    rgba(0, 0, 0, 0.55) 66%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to top,
+    #000 0%,
+    #000 34%,
+    rgba(0, 0, 0, 0.55) 66%,
+    transparent 100%
+  );
+  /* ★ 必须是浅色：这是一条压在照片上的玻璃层。
+     深色主题改造时曾被机械替换成 #0f0e17，导致姓名年龄几乎看不见。 */
   color: #ffffff;
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 7px;
   flex-wrap: wrap;
   z-index: 1;
 }
 
+/* 文字必须落在遮罩的全强度区内，否则会被一起淡掉 */
+.card-name,
+.card-age {
+  /* 抵消上内边距，把文字压到底部实心区 */
+  position: relative;
+}
+
+/* 不支持毛玻璃时提高底色不透明度，保证文字可读 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card-image-caption {
+    background: linear-gradient(
+      to top,
+      rgba(10, 9, 14, 0.82) 0%,
+      rgba(10, 9, 14, 0.62) 42%,
+      rgba(10, 9, 14, 0.24) 72%,
+      rgba(10, 9, 14, 0) 100%
+    );
+  }
+}
+
 .card-name {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.3px;
+  line-height: 1.25;
+  /* 毛玻璃已提供对比，阴影只需很轻，避免文字发糊 */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
 .card-age {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  opacity: 0.9;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.25;
+  opacity: 0.92;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
 /* ===== 卡片底部 ===== */
