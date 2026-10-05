@@ -101,7 +101,9 @@
   right: 0;
   padding: 12px 12px 10px 12px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 100%);
-  color: #0f0e17;
+  /* ★ 必须是浅色：这段文字叠在照片上，底下还有一层深色渐变。
+     深色主题改造时曾被机械替换成 #0f0e17，导致姓名年龄在图上几乎看不见。 */
+  color: #ffffff;
   display: flex;
   align-items: baseline;
   gap: 8px;
